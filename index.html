@@ -71,7 +71,7 @@
                     <div class="ml-10 flex items-baseline space-x-4">
                         <a href="#about" class="nav-link text-gray-500 hover:text-brand-green px-3 py-2 rounded-md text-sm font-medium">About</a>
                         <a href="#dashboard" class="nav-link text-gray-500 hover:text-brand-green px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
-                        <a href="#gemini-creator" class="nav-link text-gray-500 hover:text-brand-green px-3 py-2 rounded-md text-sm font-medium">AI Creator</a>
+                        <a href="#featured-remedies" class="nav-link text-gray-500 hover:text-brand-green px-3 py-2 rounded-md text-sm font-medium">Featured Remedies</a>
                         <a href="#screenshots" class="nav-link text-gray-500 hover:text-brand-green px-3 py-2 rounded-md text-sm font-medium">Screenshots</a>
                         <a href="https://github.com/alainaasyed/RemedySense" target="_blank" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-full text-sm font-medium">View on GitHub</a>
                     </div>
@@ -153,36 +153,61 @@
             </div>
         </section>
 
-        <!-- Gemini AI Creator Section (New Feature) -->
-        <section id="gemini-creator" class="py-20 bg-white">
+        <!-- Static Featured Remedies Section (Replaces Gemini AI Creator) -->
+        <section id="featured-remedies" class="py-20 bg-white">
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-12">
-                    <h2 class="text-3xl font-bold text-brand-text gradient-text">✨ AI Remedy Creator</h2>
-                    <p class="mt-4 text-lg text-slate-500">Experience the generative power of AI. Describe a skin challenge, and Gemini will formulate a natural remedy for you, demonstrating the flexibility of a data-driven approach.</p>
+                    <h2 class="text-3xl font-bold text-brand-text gradient-text">🌿 Featured Remedies for Common Issues</h2>
+                    <p class="mt-4 text-lg text-slate-500">Since the AI creator is unavailable, explore our expertly curated remedies for the most frequent skin concerns, based on the predictive model's output.</p>
                 </div>
 
                 <div class="bg-brand-subtle p-6 rounded-xl shadow-lg">
-                    <form id="remedy-form" class="space-y-4">
-                        <div>
-                            <label for="userIssue" class="block text-sm font-medium text-slate-700 mb-1">Your Specific Skin Challenge (e.g., Acne flare-up, post-sun redness):</label>
-                            <input type="text" id="userIssue" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-brand-green focus:border-brand-green" placeholder="e.g., I have extremely dry patches on my cheeks." required>
+                    <!-- NEW CONTENT START -->
+                    <div class="space-y-4">
+                        <div class="mb-6 p-4 bg-white rounded-lg border border-slate-200">
+                            <h4 class="font-bold text-lg mb-2 text-brand-green-dark">Quick Issue Identifier (8 Common Issues):</h4>
+                            <ul class="text-sm text-slate-600 space-y-1 list-disc list-inside ml-4 grid sm:grid-cols-2">
+                                <li>**Acne & Blemishes:** Clogged pores, inflammation, breakouts.</li>
+                                <li>**Dryness & Dehydration:** Tightness, flakiness, rough texture.</li>
+                                <li>**Redness & Irritation:** Visible flushing, irritation, sensitivity.</li>
+                                <li>**Oily Skin & Pores:** Shiny T-zone, excess oil, enlarged pores.</li>
+                                <li>**Dark Spots:** Patches of darkened skin, post-acne marks, sun spots.</li>
+                                <li>**Fine Lines & Wrinkles:** Creases, loss of firmness, dullness.</li>
+                                <li>**Eczema & Itch:** Extremely dry, scaly, intensely itchy patches.</li>
+                                <li>**Sunburn Relief:** Acute redness, pain, and heat from sun exposure.</li>
+                            </ul>
                         </div>
+                        
                         <div>
-                            <label for="userGoal" class="block text-sm font-medium text-slate-700 mb-1">Desired Outcome & Vibe (e.g., Quick fix, overnight treatment, gentle solution):</label>
-                            <input type="text" id="userGoal" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-brand-green focus:border-brand-green" placeholder="e.g., I need a quick fix that smells fresh." required>
+                            <label for="issueSelector" class="block text-sm font-medium text-slate-700 mb-1">Select the Skin Issue:</label>
+                            <select id="issueSelector" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-brand-green focus:border-brand-green">
+                                <option value="select" disabled selected>-- Select an issue to view its remedy --</option>
+                                <option value="acne">Acne & Blemishes</option>
+                                <option value="dryness">Dryness & Dehydration</option>
+                                <option value="redness">Redness & Irritation</option>
+                                <option value="oily">Oily Skin & Enlarged Pores</option>
+                                <option value="darkspots">Dark Spots & Hyperpigmentation</option>
+                                <option value="lines">Fine Lines & Wrinkles</option>
+                                <option value="eczema">Eczema & Itchy Patches</option>
+                                <option value="sunburn">Sunburn & Redness Relief</option>
+                            </select>
                         </div>
-                        <button type="submit" id="generate-btn" class="w-full bg-brand-green hover:bg-brand-green-dark text-white font-bold py-3 rounded-full transition duration-300 flex items-center justify-center">
-                            <span id="btn-text">✨ Generate Personalized Remedy</span>
-                            <div id="loading-spinner" class="hidden animate-spin rounded-full h-5 w-5 border-b-2 border-white ml-2"></div>
+                        
+                        <button type="button" id="show-remedy-btn" class="w-full bg-brand-green hover:bg-brand-green-dark text-white font-bold py-3 rounded-full transition duration-300 flex items-center justify-center">
+                            View Expert Remedy
                         </button>
-                    </form>
+                    </div>
 
                     <div id="remedy-results" class="mt-8 p-6 bg-white rounded-lg border border-slate-200 hidden">
                         <h3 class="text-2xl font-bold mb-4 text-brand-green-dark" id="result-name"></h3>
                         
                         <div class="space-y-4">
                             <div>
-                                <h4 class="font-semibold text-lg text-brand-text">Description:</h4>
+                                <h4 class="font-semibold text-lg text-brand-text">Issue Description:</h4>
+                                <p class="text-slate-600" id="result-issue-description"></p>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-lg text-brand-text">Remedy Description:</h4>
                                 <p class="text-slate-600" id="result-description"></p>
                             </div>
                             <div>
@@ -195,6 +220,7 @@
                             </div>
                         </div>
                     </div>
+                    <!-- NEW CONTENT END -->
                      <div id="error-message" class="mt-4 p-3 bg-red-100 text-red-700 rounded-lg hidden"></div>
                 </div>
             </div>
@@ -354,150 +380,107 @@
             renderIngredients();
 
 
-            // --- Gemini API Logic for AI Remedy Creator ---
-            const remedyForm = document.getElementById('remedy-form');
-            const generateBtn = document.getElementById('generate-btn');
-            const btnText = document.getElementById('btn-text');
-            const loadingSpinner = document.getElementById('loading-spinner');
+            // --- Static Remedies Showcase Logic (Replaces Gemini API Logic) ---
+            const showRemedyBtn = document.getElementById('show-remedy-btn');
+            const issueSelector = document.getElementById('issueSelector');
             const remedyResults = document.getElementById('remedy-results');
             const errorElement = document.getElementById('error-message');
 
-            const apiKey = ""; // API key is provided by the runtime environment
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
-
-            // Define the structured output schema for the LLM
-            const responseSchema = {
-                type: "OBJECT",
-                properties: {
-                    "remedyName": { "type": "STRING", "description": "A creative, natural-sounding name for the remedy." },
-                    "description": { "type": "STRING", "description": "A short, engaging description of the remedy's benefits." },
-                    "keyIngredients": { 
-                        "type": "ARRAY", 
-                        "description": "2-3 natural ingredients needed for the remedy.",
-                        "items": { "type": "STRING" }
-                    },
-                    "instructions": { "type": "STRING", "description": "A brief, step-by-step instruction on how to prepare and apply the remedy." }
+            // Static data for 8 common issues
+            const commonRemedies = {
+                acne: {
+                    issueDesc: "Characterized by inflammation, pimples, blackheads, and whiteheads due to clogged pores and excess oil. Requires antibacterial and anti-inflammatory action.",
+                    remedyName: "Turmeric & Honey Clarifying Mask",
+                    description: "A potent anti-inflammatory and antibacterial treatment that calms active breakouts, reduces redness, and promotes clear skin.",
+                    keyIngredients: ["1 tsp Turmeric powder", "1 tbsp Raw Honey", "1/2 tsp Plain Yogurt (optional, for binding)"],
+                    instructions: "Mix ingredients into a paste. Apply a thin layer to clean skin, focusing on troubled areas. Leave on for 10-15 minutes, then rinse thoroughly with cool water. Use 2-3 times per week."
                 },
-                "propertyOrdering": ["remedyName", "description", "keyIngredients", "instructions"]
-            };
-
-            // Define the System Instruction to guide the model's persona
-            const systemPrompt = "You are a world-class Natural Skincare Formulation Expert. Your task is to invent a unique, natural home remedy based on the user's input. You must use common natural ingredients found in a typical home or garden. Respond ONLY with a JSON object that strictly adheres to the provided schema.";
-
-            const maxRetries = 5;
-            
-            async function fetchWithRetry(payload, retries = 0) {
-                try {
-                    const response = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-
-                    if (!response.ok) {
-                         // Check for rate limit or other temporary errors
-                        if (response.status === 429 || response.status >= 500 && retries < maxRetries) {
-                            const delay = Math.pow(2, retries) * 1000;
-                            await new Promise(resolve => setTimeout(resolve, delay));
-                            return fetchWithRetry(payload, retries + 1);
-                        }
-                        throw new Error(`API request failed with status: ${response.status}`);
-                    }
-                    return response.json();
-                } catch (error) {
-                    if (retries < maxRetries) {
-                        const delay = Math.pow(2, retries) * 1000;
-                        await new Promise(resolve => setTimeout(resolve, delay));
-                        return fetchWithRetry(payload, retries + 1);
-                    }
-                    throw new Error(`Failed to fetch remedy after ${maxRetries} attempts: ${error.message}`);
+                dryness: {
+                    issueDesc: "Symptoms include flaking, tightness, rough texture, and potential itching, often caused by a compromised skin barrier and lack of moisture/oils. Needs deep hydration and barrier repair.",
+                    remedyName: "Avocado & Rosehip Deep Moisture Balm",
+                    description: "A rich, emollient treatment packed with essential fatty acids and vitamins to replenish moisture, soothe dry patches, and strengthen the skin's barrier.",
+                    keyIngredients: ["1/4 mashed ripe Avocado", "1 tsp Rosehip Oil", "1/2 tsp Aloe Vera gel"],
+                    instructions: "Combine the mashed avocado, rosehip oil, and aloe vera gel. Apply a thick layer to dry areas like a mask. Leave on for 20 minutes, then gently wipe off the excess with a soft cloth. Use nightly until dryness subsides."
+                },
+                redness: {
+                    issueDesc: "Involves persistent flushing, visible capillaries, and sensitivity, often triggered by irritation, weather, or underlying sensitivity conditions. Requires cooling and soothing ingredients.",
+                    remedyName: "Cool Green Tea & Chamomile Compress",
+                    description: "A gentle, anti-irritation compress utilizing the powerful antioxidants of green tea and the calming properties of chamomile to quickly reduce visible redness and soothe heat.",
+                    keyIngredients: ["1 Green Tea Bag (brewed and cooled)", "1 Chamomile Tea Bag (brewed and cooled)", "Small, soft facial cloth"],
+                    instructions: "Brew both tea bags and let the liquid cool completely (or chill in the fridge). Soak the facial cloth in the chilled liquid. Gently press and lay the compress over the red or irritated areas for 5-10 minutes. Do not rinse. Apply a simple moisturizer afterwards. Use daily."
+                },
+                oily: {
+                    issueDesc: "Characterized by a persistent shiny appearance, excess sebum production, and often accompanied by enlarged pores. Requires gentle astringency and balancing.",
+                    remedyName: "Witch Hazel & Mint Astringent Toner",
+                    description: "A refreshing toner that utilizes the natural astringency of witch hazel to tighten pores and reduce oiliness, while mint provides a cool, clarifying sensation.",
+                    keyIngredients: ["1/4 cup Witch Hazel (liquid)", "1 tsp Fresh Mint Juice (or 5 drops peppermint essential oil, if available)", "1/2 tsp Lemon Juice (optional, for extra brightening)"],
+                    instructions: "Mix ingredients in a clean spray bottle or container. After cleansing, apply to the face with a cotton pad, avoiding the eye area. Use once daily. Shake well before use. Store in the fridge for extra cooling."
+                },
+                darkspots: {
+                    issueDesc: "Patches of darkened skin, including sun spots, age spots, and post-inflammatory hyperpigmentation (PIH) from acne. Requires gentle exfoliation and brightening.",
+                    remedyName: "Potato & Lemon Brightening Spot Treatment",
+                    description: "Uses the mild bleaching power of lemon and the catecholase enzyme in potatoes to gently fade dark spots and even out skin tone over time.",
+                    keyIngredients: ["1 tbsp Grated Potato (raw)", "1/4 tsp Lemon Juice", "Pinch of Turmeric (optional, for anti-inflammatory boost)"],
+                    instructions: "Combine ingredients into a paste. Apply directly onto the dark spots using a cotton swab. Leave on for 10 minutes maximum (do not exceed, especially with lemon). Rinse thoroughly. **Use only at night** as lemon makes skin sun-sensitive."
+                },
+                lines: {
+                    issueDesc: "Fine lines, wrinkles, and loss of skin elasticity/firmness, primarily related to reduced collagen and environmental damage. Needs antioxidant protection and hydration.",
+                    remedyName: "Flaxseed & Banana Firming Mask",
+                    description: "A deeply hydrating and antioxidant-rich mask. Flaxseeds provide omega-3s, and banana offers vitamins to plump the skin and reduce the appearance of fine lines.",
+                    keyIngredients: ["1 tbsp Ground Flaxseed", "1/4 Mashed Ripe Banana", "2 tbsp Hot Water"],
+                    instructions: "Mix flaxseed and hot water; let sit for 5 minutes until gel forms. Stir in mashed banana. Apply a thick layer to the face and neck. Relax for 15-20 minutes, then rinse gently with lukewarm water. Use 2-3 times per week."
+                },
+                eczema: {
+                    issueDesc: "Extremely dry, scaly, and intensely itchy patches of skin (dermatitis). The skin barrier is severely compromised. Needs intense calming, moisture, and protection.",
+                    remedyName: "Colloidal Oatmeal & Coconut Oil Compress",
+                    description: "An ancient remedy using the powerful anti-itch and anti-inflammatory properties of oatmeal combined with the barrier-repairing moisture of coconut oil.",
+                    keyIngredients: ["1 cup Colloidal Oatmeal (finely ground)", "2 tbsp Coconut Oil (melted)", "Warm Bath Water"],
+                    instructions: "Pour the oatmeal and melted coconut oil into a warm bath. Soak in the tub for 15-20 minutes, allowing the soothing mixture to coat the skin. Gently pat skin dry afterwards, leaving a light film of oil on the skin for maximum relief. Can be used daily during flare-ups."
+                },
+                sunburn: {
+                    issueDesc: "Acute redness, pain, and heat resulting from overexposure to UV radiation. The skin is actively damaged and inflamed. Requires immediate cooling and repair.",
+                    remedyName: "Aloe Vera & Cucumber Cooling Gel",
+                    description: "A highly effective, cooling, and hydrating gel that provides immediate relief from the pain and heat of a sunburn while delivering reparative compounds to the skin.",
+                    keyIngredients: ["2 tbsp Pure Aloe Vera Gel", "1/4 Shredded or Blended Cucumber", "Optional: 5 drops of Chamomile tea liquid (cooled)"],
+                    instructions: "Mix the Aloe Vera gel and shredded cucumber (straining any excess liquid). Apply a thick, cool layer over the sunburnt area. Leave on for 30 minutes before gently wiping off any residue. Reapply every 2-3 hours as needed for continued relief."
                 }
-            }
-
-
-            async function generateRemedy(issue, goal) {
+            };
+            
+            function showStaticRemedy() {
                 errorElement.classList.add('hidden');
                 remedyResults.classList.add('hidden');
                 
-                generateBtn.disabled = true;
-                btnText.textContent = 'Generating...';
-                loadingSpinner.classList.remove('hidden');
-
-                const userQuery = `My skin challenge is: "${issue}". My desired outcome/vibe is: "${goal}". Please invent a natural remedy for me.`;
-
-                const payload = {
-                    contents: [{ parts: [{ text: userQuery }] }],
-                    systemInstruction: { parts: [{ text: systemPrompt }] },
-                    generationConfig: {
-                        responseMimeType: "application/json",
-                        responseSchema: responseSchema
-                    }
-                };
-                
-                try {
-                    const result = await fetchWithRetry(payload);
-                    
-                    const candidate = result.candidates?.[0];
-                    if (!candidate || !candidate.content?.parts?.[0]?.text) {
-                        throw new Error("Received an invalid response from the AI model.");
-                    }
-
-                    const jsonString = candidate.content.parts[0].text;
-                    const remedyData = JSON.parse(jsonString);
-
-                    // Update the DOM with results
-                    document.getElementById('result-name').textContent = remedyData.remedyName || 'New Formulation';
-                    document.getElementById('result-description').textContent = remedyData.description || 'Description not available.';
-                    document.getElementById('result-instructions').textContent = remedyData.instructions || 'Instructions not available.';
-
-                    const ingredientsList = document.getElementById('result-ingredients');
-                    ingredientsList.innerHTML = '';
-                    if (Array.isArray(remedyData.keyIngredients)) {
-                         remedyData.keyIngredients.forEach(ing => {
-                            const li = document.createElement('li');
-                            li.textContent = ing;
-                            ingredientsList.appendChild(li);
-                        });
-                    } else {
-                        const li = document.createElement('li');
-                        li.textContent = 'Ingredients list is malformed.';
-                        ingredientsList.appendChild(li);
-                    }
-
-                    remedyResults.classList.remove('hidden');
-
-                } catch (e) {
-                    console.error("Gemini API Error:", e);
-                    
-                    let displayMessage = `Error: Could not generate remedy. Please try again. (${e.message})`;
-
-                    // Specific handling for 403 error reported in the message
-                    if (e.message.includes('403')) {
-                        displayMessage = "Authentication Error (403): The AI service is currently unavailable. This typically means the API key is invalid or the Gemini service has not been enabled for this project. Please notify the environment provider.";
-                    }
-
-                    errorElement.textContent = displayMessage;
+                const selectedIssue = issueSelector.value;
+                if (selectedIssue === 'select') {
+                    errorElement.textContent = "Please select a common issue from the list above.";
                     errorElement.classList.remove('hidden');
-
-                } finally {
-                    generateBtn.disabled = false;
-                    btnText.textContent = '✨ Generate Personalized Remedy';
-                    loadingSpinner.classList.add('hidden');
+                    return;
                 }
+                
+                const remedy = commonRemedies[selectedIssue];
+                
+                // Update the DOM with results
+                document.getElementById('result-name').textContent = remedy.remedyName;
+                document.getElementById('result-issue-description').textContent = remedy.issueDesc; // New element
+                document.getElementById('result-description').textContent = remedy.description;
+
+                const ingredientsList = document.getElementById('result-ingredients');
+                ingredientsList.innerHTML = '';
+                remedy.keyIngredients.forEach(ing => {
+                    const li = document.createElement('li');
+                    li.textContent = ing;
+                    ingredientsList.appendChild(li);
+                });
+                
+                document.getElementById('result-instructions').textContent = remedy.instructions;
+
+                remedyResults.classList.remove('hidden');
             }
 
-            remedyForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const issue = document.getElementById('userIssue').value.trim();
-                const goal = document.getElementById('userGoal').value.trim();
-                if (issue && goal) {
-                    generateRemedy(issue, goal);
-                } else {
-                    errorElement.textContent = "Please fill out both the skin challenge and desired outcome.";
-                    errorElement.classList.remove('hidden');
-                }
-            });
-            // End of Gemini API Logic
+            showRemedyBtn.addEventListener('click', showStaticRemedy);
+
+            // Removed all non-functional Gemini API logic.
+
         });
     </script>
 </body>
