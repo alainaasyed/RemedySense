@@ -468,7 +468,15 @@
 
                 } catch (e) {
                     console.error("Gemini API Error:", e);
-                    errorElement.textContent = `Error: Could not generate remedy. Please try again. (${e.message})`;
+                    
+                    let displayMessage = `Error: Could not generate remedy. Please try again. (${e.message})`;
+
+                    // Specific handling for 403 error reported in the message
+                    if (e.message.includes('403')) {
+                        displayMessage = "Authentication Error (403): The AI service is currently unavailable. This typically means the API key is invalid or the Gemini service has not been enabled for this project. Please notify the environment provider.";
+                    }
+
+                    errorElement.textContent = displayMessage;
                     errorElement.classList.remove('hidden');
 
                 } finally {
