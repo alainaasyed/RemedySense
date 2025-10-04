@@ -162,7 +162,7 @@
                 </div>
 
                 <div class="bg-brand-subtle p-6 rounded-xl shadow-lg">
-                    <!-- NEW CONTENT START -->
+                    <!-- Issue Selector -->
                     <div class="space-y-4">
                         <div class="mb-6 p-4 bg-white rounded-lg border border-slate-200">
                             <h4 class="font-bold text-lg mb-2 text-brand-green-dark">Quick Issue Identifier (8 Common Issues):</h4>
@@ -198,30 +198,41 @@
                         </button>
                     </div>
 
-                    <div id="remedy-results" class="mt-8 p-6 bg-white rounded-lg border border-slate-200 hidden">
-                        <h3 class="text-2xl font-bold mb-4 text-brand-green-dark" id="result-name"></h3>
-                        
-                        <div class="space-y-4">
-                            <div>
-                                <h4 class="font-semibold text-lg text-brand-text">Issue Description:</h4>
-                                <p class="text-slate-600" id="result-issue-description"></p>
+                    <!-- Remedy Results Section (Updated to include Image) -->
+                    <div id="remedy-results" class="mt-8 p-6 bg-white rounded-lg shadow-xl border-t-4 border-brand-green hidden">
+                        <div class="grid md:grid-cols-3 gap-6">
+                            <!-- Image Column -->
+                            <div class="md:col-span-1 flex justify-center items-start p-2">
+                                <img id="result-image" src="" alt="Visual representation of the selected skin issue" 
+                                     class="w-full max-w-xs md:max-w-none h-auto aspect-square object-cover rounded-lg shadow-xl border-4 border-brand-green/20 transition-all duration-500 transform scale-100 hover:scale-[1.02]">
                             </div>
-                            <div>
-                                <h4 class="font-semibold text-lg text-brand-text">Remedy Description:</h4>
-                                <p class="text-slate-600" id="result-description"></p>
-                            </div>
-                            <div>
-                                <h4 class="font-semibold text-lg text-brand-text">Key Ingredients:</h4>
-                                <ul class="list-disc list-inside text-slate-600 ml-4" id="result-ingredients"></ul>
-                            </div>
-                             <div>
-                                <h4 class="font-semibold text-lg text-brand-text">Instructions:</h4>
-                                <p class="text-slate-600" id="result-instructions"></p>
+                            
+                            <!-- Text Content Column -->
+                            <div class="md:col-span-2 space-y-4">
+                                <h3 class="text-2xl font-bold mb-2 text-brand-green-dark" id="result-name"></h3>
+
+                                <div>
+                                    <h4 class="font-semibold text-lg text-brand-text">Issue Description:</h4>
+                                    <p class="text-slate-600" id="result-issue-description"></p>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-lg text-brand-text">Remedy Description:</h4>
+                                    <p class="text-slate-600" id="result-description"></p>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-lg text-brand-text">Key Ingredients:</h4>
+                                    <ul class="list-disc list-inside text-slate-600 ml-4" id="result-ingredients"></ul>
+                                </div>
+                                 <div>
+                                    <h4 class="font-semibold text-lg text-brand-text">Instructions:</h4>
+                                    <p class="text-slate-600" id="result-instructions"></p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <!-- NEW CONTENT END -->
-                     <div id="error-message" class="mt-4 p-3 bg-red-100 text-red-700 rounded-lg hidden"></div>
+                    <!-- End Remedy Results Section -->
+                    
+                    <div id="error-message" class="mt-4 p-3 bg-red-100 text-red-700 rounded-lg hidden"></div>
                 </div>
             </div>
         </section>
@@ -277,21 +288,28 @@
             // --- Chart.js Doughnut Chart ---
             const skinConcernsData = {
                 labels: [
-                    'Acne & Blemishes',
-                    'Dryness & Dehydration',
-                    'Redness & Irritation',
-                    'Dark Spots & Hyperpigmentation',
-                    'Fine Lines & Wrinkles'
+                    'Acne & Blemishes (30%)',
+                    'Dryness & Dehydration (20%)',
+                    'Redness & Irritation (15%)',
+                    'Oily Skin & Pores (12%)',
+                    'Dark Spots (10%)',
+                    'Fine Lines & Wrinkles (7%)',
+                    'Eczema & Itch (4%)',
+                    'Sunburn Relief (2%)'
                 ],
                 datasets: [{
                     label: 'Distribution of Concerns',
-                    data: [35, 25, 20, 15, 5],
+                    // Data must sum to 100 for a doughnut chart
+                    data: [30, 20, 15, 12, 10, 7, 4, 2],
                     backgroundColor: [
-                        '#10b981',
-                        '#34d399',
+                        '#059669', // Dark Green
+                        '#10b981', // Brand Green
+                        '#34d399', 
                         '#6ee7b7',
                         '#a7f3d0',
-                        '#d1fae5'
+                        '#d1fae5',
+                        '#99f6e4', // Light Cyan
+                        '#2dd4bf' // Cyan
                     ],
                     borderColor: '#f1f5f9',
                     borderWidth: 3,
@@ -317,7 +335,8 @@
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
-                                    return `${context.label}: ${context.raw}%`;
+                                    // Tooltip shows the label as defined in the data array (e.g., "Acne & Blemishes (30%)")
+                                    return context.label;
                                 }
                             }
                         }
@@ -341,7 +360,18 @@
                 { name: 'Oatmeal', tags: ['moisturizing'], color: 'bg-orange-100', textColor: 'text-orange-800' },
                 { name: 'Rosehip Oil', tags: ['antioxidant', 'moisturizing'], color: 'bg-rose-100', textColor: 'text-rose-800' },
                 { name: 'Chamomile', tags: ['anti-inflammatory'], color: 'bg-stone-100', textColor: 'text-stone-800' },
-                { name: 'Vitamin C', tags: ['antioxidant'], color: 'bg-orange-200', textColor: 'text-orange-900' }
+                { name: 'Vitamin C', tags: ['antioxidant'], color: 'bg-orange-200', textColor: 'text-orange-900' },
+                // --- New Ingredients Added ---
+                { name: 'Shea Butter', tags: ['moisturizing'], color: 'bg-purple-100', textColor: 'text-purple-800' },
+                { name: 'Jojoba Oil', tags: ['moisturizing'], color: 'bg-indigo-100', textColor: 'text-indigo-800' },
+                { name: 'Witch Hazel', tags: ['anti-inflammatory'], color: 'bg-fuchsia-100', textColor: 'text-fuchsia-800' },
+                { name: 'Licorice Root', tags: ['antioxidant', 'anti-inflammatory'], color: 'bg-pink-100', textColor: 'text-pink-800' },
+                { name: 'Calendula', tags: ['anti-inflammatory'], color: 'bg-red-100', textColor: 'text-red-800' },
+                { name: 'Pomegranate', tags: ['antioxidant'], color: 'bg-red-200', textColor: 'text-red-900' },
+                { name: 'Squalane', tags: ['moisturizing'], color: 'bg-sky-100', textColor: 'text-sky-800' },
+                { name: 'Niacinamide', tags: ['anti-inflammatory'], color: 'bg-blue-100', textColor: 'text-blue-800' },
+                { name: 'Kaolin Clay', tags: ['anti-inflammatory'], color: 'bg-gray-100', textColor: 'text-gray-800' },
+                { name: 'Resveratrol', tags: ['antioxidant'], color: 'bg-violet-100', textColor: 'text-violet-800' }
             ];
 
             const grid = document.getElementById('ingredient-grid');
@@ -355,7 +385,7 @@
                 
                 filteredIngredients.forEach(ing => {
                     const card = document.createElement('div');
-                    card.className = `ingredient-card p-4 rounded-lg text-center ${ing.color} ${ing.textColor}`;
+                    card.className = `ingredient-card p-4 rounded-lg text-center ${ing.color} ${ing.textColor} shadow-sm hover:shadow-md transition duration-200`;
                     card.innerHTML = `<span class="font-semibold text-sm">${ing.name}</span>`;
                     grid.appendChild(card);
                 });
@@ -380,80 +410,101 @@
             renderIngredients();
 
 
-            // --- Static Remedies Showcase Logic (Replaces Gemini API Logic) ---
+            // --- Static Remedies Showcase Logic ---
             const showRemedyBtn = document.getElementById('show-remedy-btn');
             const issueSelector = document.getElementById('issueSelector');
             const remedyResults = document.getElementById('remedy-results');
             const errorElement = document.getElementById('error-message');
+            const resultImage = document.getElementById('result-image');
 
-            // Static data for 8 common issues
+
+            /*
+                ===================================================================
+                INSTRUCTIONS FOR ADDING IMAGES:
+                
+                Replace the URL placeholder string (e.g., "https://placehold.co/...") 
+                for each issue below with your actual image URL.
+                
+                IMPORTANT: Ensure your URL is wrapped in double quotes ("") and that 
+                each remedy block is separated by a comma (,). Do NOT delete the 
+                comma after the URL string (except for the very last item, 'sunburn').
+                ===================================================================
+            */
             const commonRemedies = {
                 acne: {
                     issueDesc: "Characterized by inflammation, pimples, blackheads, and whiteheads due to clogged pores and excess oil. Requires antibacterial and anti-inflammatory action.",
                     remedyName: "Turmeric & Honey Clarifying Mask",
                     description: "A potent anti-inflammatory and antibacterial treatment that calms active breakouts, reduces redness, and promotes clear skin.",
                     keyIngredients: ["1 tsp Turmeric powder", "1 tbsp Raw Honey", "1/2 tsp Plain Yogurt (optional, for binding)"],
-                    instructions: "Mix ingredients into a paste. Apply a thin layer to clean skin, focusing on troubled areas. Leave on for 10-15 minutes, then rinse thoroughly with cool water. Use 2-3 times per week."
+                    instructions: "Mix ingredients into a paste. Apply a thin layer to clean skin, focusing on troubled areas. Leave on for 10-15 minutes, then rinse thoroughly with cool water. Use 2-3 times per week.",
+                    image: "https://as1.ftcdn.net/v2/jpg/04/62/24/16/1000_F_462241699_MdCfRcKXjsvYtNaGnWa0Fr7gwbyrzk5y.jpg" // REPLACE THIS URL
                 },
                 dryness: {
                     issueDesc: "Symptoms include flaking, tightness, rough texture, and potential itching, often caused by a compromised skin barrier and lack of moisture/oils. Needs deep hydration and barrier repair.",
                     remedyName: "Avocado & Rosehip Deep Moisture Balm",
                     description: "A rich, emollient treatment packed with essential fatty acids and vitamins to replenish moisture, soothe dry patches, and strengthen the skin's barrier.",
                     keyIngredients: ["1/4 mashed ripe Avocado", "1 tsp Rosehip Oil", "1/2 tsp Aloe Vera gel"],
-                    instructions: "Combine the mashed avocado, rosehip oil, and aloe vera gel. Apply a thick layer to dry areas like a mask. Leave on for 20 minutes, then gently wipe off the excess with a soft cloth. Use nightly until dryness subsides."
+                    instructions: "Combine the mashed avocado, rosehip oil, and aloe vera gel. Apply a thick layer to dry areas like a mask. Leave on for 20 minutes, then gently wipe off the excess with a soft cloth. Use nightly until dryness subsides.",
+                    image: "https://i.ytimg.com/vi/2iOthk7SDlY/maxresdefault.jpg" // REPLACE THIS URL
                 },
                 redness: {
                     issueDesc: "Involves persistent flushing, visible capillaries, and sensitivity, often triggered by irritation, weather, or underlying sensitivity conditions. Requires cooling and soothing ingredients.",
                     remedyName: "Cool Green Tea & Chamomile Compress",
                     description: "A gentle, anti-irritation compress utilizing the powerful antioxidants of green tea and the calming properties of chamomile to quickly reduce visible redness and soothe heat.",
                     keyIngredients: ["1 Green Tea Bag (brewed and cooled)", "1 Chamomile Tea Bag (brewed and cooled)", "Small, soft facial cloth"],
-                    instructions: "Brew both tea bags and let the liquid cool completely (or chill in the fridge). Soak the facial cloth in the chilled liquid. Gently press and lay the compress over the red or irritated areas for 5-10 minutes. Do not rinse. Apply a simple moisturizer afterwards. Use daily."
+                    instructions: "Brew both tea bags and let the liquid cool completely (or chill in the fridge). Soak the facial cloth in the chilled liquid. Gently press and lay the compress over the red or irritated areas for 5-10 minutes. Do not rinse. Apply a simple moisturizer afterwards. Use daily.",
+                    image: "https://ciaobellaaesthetics.co.uk/wp-content/uploads/2020/09/redness-on-face-2-696x409-1.jpg" // REPLACE THIS URL
                 },
                 oily: {
                     issueDesc: "Characterized by a persistent shiny appearance, excess sebum production, and often accompanied by enlarged pores. Requires gentle astringency and balancing.",
                     remedyName: "Witch Hazel & Mint Astringent Toner",
                     description: "A refreshing toner that utilizes the natural astringency of witch hazel to tighten pores and reduce oiliness, while mint provides a cool, clarifying sensation.",
                     keyIngredients: ["1/4 cup Witch Hazel (liquid)", "1 tsp Fresh Mint Juice (or 5 drops peppermint essential oil, if available)", "1/2 tsp Lemon Juice (optional, for extra brightening)"],
-                    instructions: "Mix ingredients in a clean spray bottle or container. After cleansing, apply to the face with a cotton pad, avoiding the eye area. Use once daily. Shake well before use. Store in the fridge for extra cooling."
+                    instructions: "Mix ingredients in a clean spray bottle or container. After cleansing, apply to the face with a cotton pad, avoiding the eye area. Use once daily. Shake well before use. Store in the fridge for extra cooling.",
+                    image: "https://tse3.mm.bing.net/th/id/OIP.Vx8Ld2Q0lPnQWngOY1ixOgHaHa?pid=Api&P=0&h=180" // REPLACE THIS URL
                 },
                 darkspots: {
                     issueDesc: "Patches of darkened skin, including sun spots, age spots, and post-inflammatory hyperpigmentation (PIH) from acne. Requires gentle exfoliation and brightening.",
                     remedyName: "Potato & Lemon Brightening Spot Treatment",
                     description: "Uses the mild bleaching power of lemon and the catecholase enzyme in potatoes to gently fade dark spots and even out skin tone over time.",
                     keyIngredients: ["1 tbsp Grated Potato (raw)", "1/4 tsp Lemon Juice", "Pinch of Turmeric (optional, for anti-inflammatory boost)"],
-                    instructions: "Combine ingredients into a paste. Apply directly onto the dark spots using a cotton swab. Leave on for 10 minutes maximum (do not exceed, especially with lemon). Rinse thoroughly. **Use only at night** as lemon makes skin sun-sensitive."
+                    instructions: "Combine ingredients into a paste. Apply directly onto the dark spots using a cotton swab. Leave on for 10 minutes maximum (do not exceed, especially with lemon). Rinse thoroughly. **Use only at night** as lemon makes skin sun-sensitive.",
+                    image: "https://skincancer-specialists.com/wp-content/uploads/2023/05/woman-with-dark-spot-on-face.jpg" // REPLACE THIS URL
                 },
                 lines: {
                     issueDesc: "Fine lines, wrinkles, and loss of skin elasticity/firmness, primarily related to reduced collagen and environmental damage. Needs antioxidant protection and hydration.",
                     remedyName: "Flaxseed & Banana Firming Mask",
                     description: "A deeply hydrating and antioxidant-rich mask. Flaxseeds provide omega-3s, and banana offers vitamins to plump the skin and reduce the appearance of fine lines.",
                     keyIngredients: ["1 tbsp Ground Flaxseed", "1/4 Mashed Ripe Banana", "2 tbsp Hot Water"],
-                    instructions: "Mix flaxseed and hot water; let sit for 5 minutes until gel forms. Stir in mashed banana. Apply a thick layer to the face and neck. Relax for 15-20 minutes, then rinse gently with lukewarm water. Use 2-3 times per week."
+                    instructions: "Mix flaxseed and hot water; let sit for 5 minutes until gel forms. Stir in mashed banana. Apply a thick layer to the face and neck. Relax for 15-20 minutes, then rinse gently with lukewarm water. Use 2-3 times per week.",
+                    image: "https://tse3.mm.bing.net/th/id/OIP.Ov021PRqKLV-o_zAqJyaCwHaEK?pid=Api&P=0&h=180" // REPLACE THIS URL
                 },
                 eczema: {
                     issueDesc: "Extremely dry, scaly, and intensely itchy patches of skin (dermatitis). The skin barrier is severely compromised. Needs intense calming, moisture, and protection.",
                     remedyName: "Colloidal Oatmeal & Coconut Oil Compress",
                     description: "An ancient remedy using the powerful anti-itch and anti-inflammatory properties of oatmeal combined with the barrier-repairing moisture of coconut oil.",
                     keyIngredients: ["1 cup Colloidal Oatmeal (finely ground)", "2 tbsp Coconut Oil (melted)", "Warm Bath Water"],
-                    instructions: "Pour the oatmeal and melted coconut oil into a warm bath. Soak in the tub for 15-20 minutes, allowing the soothing mixture to coat the skin. Gently pat skin dry afterwards, leaving a light film of oil on the skin for maximum relief. Can be used daily during flare-ups."
+                    instructions: "Pour the oatmeal and melted coconut oil into a warm bath. Soak in the tub for 15-20 minutes, allowing the soothing mixture to coat the skin. Gently pat skin dry afterwards, leaving a light film of oil on the skin for maximum relief. Can be used daily during flare-ups.",
+                    image: "https://static.independent.co.uk/2022/05/30/07/27125320-e348f9a0-e899-47e8-9e61-a6373617790f.jpg" // REPLACE THIS URL
                 },
                 sunburn: {
                     issueDesc: "Acute redness, pain, and heat resulting from overexposure to UV radiation. The skin is actively damaged and inflamed. Requires immediate cooling and repair.",
                     remedyName: "Aloe Vera & Cucumber Cooling Gel",
                     description: "A highly effective, cooling, and hydrating gel that provides immediate relief from the pain and heat of a sunburn while delivering reparative compounds to the skin.",
                     keyIngredients: ["2 tbsp Pure Aloe Vera Gel", "1/4 Shredded or Blended Cucumber", "Optional: 5 drops of Chamomile tea liquid (cooled)"],
-                    instructions: "Mix the Aloe Vera gel and shredded cucumber (straining any excess liquid). Apply a thick, cool layer over the sunburnt area. Leave on for 30 minutes before gently wiping off any residue. Reapply every 2-3 hours as needed for continued relief."
+                    instructions: "Mix the Aloe Vera gel and shredded cucumber (straining any excess liquid). Apply a thick, cool layer over the sunburnt area. Leave on for 30 minutes before gently wiping off any residue. Reapply every 2-3 hours as needed for continued relief.",
+                    image: "https://cdn.britannica.com/12/144412-004-91D92D64.jpg"
                 }
             };
             
             function showStaticRemedy() {
                 errorElement.classList.add('hidden');
-                remedyResults.classList.add('hidden');
                 
                 const selectedIssue = issueSelector.value;
                 if (selectedIssue === 'select') {
                     errorElement.textContent = "Please select a common issue from the list above.";
                     errorElement.classList.remove('hidden');
+                    remedyResults.classList.add('hidden');
                     return;
                 }
                 
@@ -461,8 +512,29 @@
                 
                 // Update the DOM with results
                 document.getElementById('result-name').textContent = remedy.remedyName;
-                document.getElementById('result-issue-description').textContent = remedy.issueDesc; // New element
+                document.getElementById('result-issue-description').textContent = remedy.issueDesc; 
                 document.getElementById('result-description').textContent = remedy.description;
+
+                // --- IMAGE LOGIC: Set source and include an error handler ---
+                resultImage.src = remedy.image;
+                resultImage.alt = `Visual representation of ${remedy.remedyName}`;
+                // Optional: reset image appearance if it was previously in an error state
+                resultImage.style.filter = '';
+                resultImage.style.backgroundColor = '';
+                resultImage.style.padding = '';
+                resultImage.style.textAlign = '';
+
+                resultImage.onerror = function() {
+                    // Fallback visual/text if the image URL fails to load
+                    this.src = "https://placehold.co/600x400/EEEEEE/888888?text=Visual+Failed+to+Load";
+                    this.alt = "Error loading visual aid. Check image URL.";
+                    this.style.filter = "grayscale(100%)";
+                    this.style.backgroundColor = '#fef2f2';
+                    this.style.padding = '1rem';
+                    this.style.textAlign = 'center';
+                };
+                // --- END IMAGE LOGIC ---
+
 
                 const ingredientsList = document.getElementById('result-ingredients');
                 ingredientsList.innerHTML = '';
@@ -478,8 +550,6 @@
             }
 
             showRemedyBtn.addEventListener('click', showStaticRemedy);
-
-            // Removed all non-functional Gemini API logic.
 
         });
     </script>
