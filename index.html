@@ -6,89 +6,64 @@
   <title>RemedySense — AI-powered Natural Remedy Recommender</title>
   <meta name="description" content="RemedySense recommends natural remedies for common skin issues using image analysis and a recommendation engine." />
   <link rel="icon" href="favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
   <style>
-    :root {
+    :root{
       --bg: #0f1724;
+      --card: #0b1220;
       --muted: #9aa4b2;
       --accent: #6ee7b7;
+      --glass: rgba(255,255,255,0.03);
       --maxw: 1100px;
       --radius: 14px;
       --gap: 20px;
     }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: Inter, system-ui, Segoe UI, Roboto, Arial;
-      background: linear-gradient(180deg, #071025 0%, #071126 60%);
-      color: #e6eef6;
-      padding: 40px 20px;
-      display: flex;
-      justify-content: center;
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;
+      background:linear-gradient(180deg,#071025 0%, #071126 60%);
+      color:#e6eef6;line-height:1.45;-webkit-font-smoothing:antialiased;
+      padding:40px 20px;
+      display:flex;align-items:flex-start;justify-content:center;
     }
-    .wrap { max-width: var(--maxw); width: 100%; }
+    .wrap{max-width:var(--maxw);width:100%;}
 
-    header {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 30px;
-    }
-    .brand { display: flex; gap: 12px; align-items: center; }
-    .logo {
-      width: 48px; height: 48px; background: rgba(255,255,255,0.05);
-      border-radius: 10px; display: grid; place-items: center; font-weight: 700;
-    }
-    nav a {
-      color: var(--muted); text-decoration: none; margin-left: 18px;
-      font-size: 15px;
-    }
-    nav a.cta {
-      background: linear-gradient(90deg, var(--accent), #3ee8c9);
-      color: #021018; padding: 8px 12px; border-radius: 10px; font-weight: 600;
-    }
+    header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:28px}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:48px;height:48px;background:var(--glass);border-radius:10px;display:grid;place-items:center;font-weight:700}
+    nav a{color:var(--muted);text-decoration:none;margin-left:18px;font-size:15px}
+    nav a.cta{background:linear-gradient(90deg,var(--accent),#3ee8c9);color:#021018;padding:8px 12px;border-radius:10px;font-weight:600}
 
-    .hero {
-      display: grid; grid-template-columns: 1fr 420px; gap: 28px;
-      align-items: center; margin-bottom: 28px;
-    }
-    .card {
-      background: rgba(255,255,255,0.03);
-      padding: 26px; border-radius: var(--radius);
-      box-shadow: 0 6px 32px rgba(2,6,23,0.6);
-    }
-    .title { font-size: 28px; margin: 0 0 8px; }
-    .subtitle { color: var(--muted); margin: 0 0 18px; }
-    .buttons { display: flex; gap: 12px; flex-wrap: wrap; }
-    .btn {
-      padding: 10px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.06);
-      color: inherit; text-decoration: none;
-    }
-    .btn.primary {
-      background: linear-gradient(90deg, var(--accent), #3ee8c9);
-      color: #021018; border: none;
-    }
+    .hero{display:grid;grid-template-columns:1fr 420px;gap:28px;align-items:center;margin-bottom:28px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:26px;border-radius:var(--radius);box-shadow:0 6px 32px rgba(2,6,23,0.6)}
+    .title{font-size:28px;margin:0 0 8px}
+    .subtitle{color:var(--muted);margin:0 0 18px}
+    .buttons{display:flex;gap:12px;flex-wrap:wrap}
+    .btn{padding:10px 14px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.06);color:inherit;text-decoration:none}
+    .btn.primary{background:linear-gradient(90deg,var(--accent),#3ee8c9);color:#021018;border:none}
 
-    .screenshot {
-      width: 100%; border-radius: 12px; overflow: hidden; background: #03111a;
-      height: 260px; display: grid; place-items: center;
-    }
-    .screenshot img { max-width: 100%; height: 100%; object-fit: cover; }
+    .screenshot{width:100%;border-radius:12px;overflow:hidden;background:#03111a;height:260px;display:grid;place-items:center}
+    .screenshot img{max-width:100%;height:100%;object-fit:cover}
 
-    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gap); margin-top: 18px; }
-    .feature { padding: 14px; border-radius: 12px; background: rgba(255,255,255,0.02); }
-    .feature h4 { margin: 0 0 8px; }
-    .muted { color: var(--muted); }
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap);margin-top:18px}
+    .feature{padding:14px;border-radius:12px;background:rgba(255,255,255,0.02)}
+    .feature h4{margin:0 0 8px}
+    .muted{color:var(--muted)}
 
-    .gallery { display: flex; gap: 12px; margin-top: 18px; }
-    .gallery img { height: 120px; object-fit: cover; border-radius: 10px; flex: 1; }
+    .gallery{display:flex;gap:12px;margin-top:18px}
+    .gallery img{height:120px;object-fit:cover;border-radius:10px;flex:1}
 
-    footer { margin-top: 28px; color: var(--muted); display: flex; justify-content: space-between; }
+    footer{margin-top:28px;color:var(--muted);display:flex;justify-content:space-between;align-items:center}
 
-    @media (max-width: 900px) {
-      .hero { grid-template-columns: 1fr; }
-      .screenshot { height: 200px; }
-      .grid { grid-template-columns: 1fr; }
-      nav { display: none; }
+    /* responsive */
+    @media (max-width:900px){
+      .hero{grid-template-columns:1fr;}
+      .screenshot{height:200px}
+      .grid{grid-template-columns:1fr}
+      nav{display:none}
     }
   </style>
 </head>
@@ -99,7 +74,7 @@
         <div class="logo">RS</div>
         <div>
           <div style="font-weight:700">RemedySense</div>
-          <div class="muted" style="font-size:13px">AI-powered natural remedy recommender</div>
+          <div class="muted" style="font-size:13px">AI-powered natural remedy recommender for common skin issues</div>
         </div>
       </div>
       <nav>
@@ -107,32 +82,32 @@
         <a href="#screens">Screens</a>
         <a href="#demo">Demo</a>
         <a href="#contact">Contact</a>
-        <a class="cta" href="YOUR_GITHUB_LINK">GitHub</a>
+        <a class="cta" href="YOUR_GITHUB_LINK">View on GitHub</a>
       </nav>
     </header>
 
     <section class="hero card">
       <div>
         <h1 class="title">RemedySense</h1>
-        <p class="subtitle">An AI system that analyzes skin issues and recommends safe, natural remedies with ingredient details and usage instructions.</p>
+        <p class="subtitle">An AI-driven system that analyzes skin issues and recommends safe, natural remedies with ingredient details and usage instructions.</p>
         <div class="buttons">
           <a class="btn primary" href="#demo">Try Demo</a>
-          <a class="btn" href="#report">Project Report</a>
-          <a class="btn" href="YOUR_GITHUB_LINK">GitHub Source</a>
+          <a class="btn" href="YOUR_GITHUB_LINK">Source (GitHub)</a>
+          <a class="btn" href="assets/RemedySense_Report.pdf" target="_blank">Project Report (PDF)</a>
         </div>
 
         <div class="grid" id="features" style="margin-top:20px">
           <div class="feature">
             <h4>Image Analyzer</h4>
-            <div class="muted">Detects skin issues using CNN-based models (VGG/ResNet).</div>
+            <div class="muted">Detects common skin issues using CNN-based models (VGG/ResNet variants).</div>
           </div>
           <div class="feature">
             <h4>Personalized Remedies</h4>
-            <div class="muted">Suggests natural treatments based on skin type and issue.</div>
+            <div class="muted">Recommends natural remedies based on skin type, age group, and detected issue.</div>
           </div>
           <div class="feature">
             <h4>Ingredient Details</h4>
-            <div class="muted">Provides benefits and preparation instructions for each remedy.</div>
+            <div class="muted">Each remedy lists ingredients, benefits, and preparation instructions.</div>
           </div>
         </div>
       </div>
@@ -141,54 +116,59 @@
         <div class="screenshot">
           <img src="images/screenshot-1.png" alt="Project screenshot" loading="lazy">
         </div>
-        <div class="gallery" id="screens">
-          <img src="images/screenshot-2.png" alt="screen2" loading="lazy">
-          <img src="images/screenshot-3.png" alt="screen3" loading="lazy">
+        <div class="gallery" id="screens" style="margin-top:12px">
+          <img src="images/screenshot-2.png" alt="Screen 2" loading="lazy">
+          <img src="images/screenshot-3.png" alt="Screen 3" loading="lazy">
         </div>
       </aside>
     </section>
 
-    <section class="card" id="demo">
-      <h3>Live Demo (Coming Soon)</h3>
-      <p class="muted">This section will display your live demo once it's ready. You can later embed a Flask app, link a Hugging Face Space, or a YouTube walkthrough here.</p>
+    <section class="card" style="margin-top:18px">
+      <h3>About the project</h3>
+      <p class="muted">RemedySense is a college project that uses deep learning for skin issue detection and a rule-based + collaborative filtering recommendation engine to suggest natural remedies. Tech stack: Python, TensorFlow/PyTorch, Flask, HTML/CSS/JS.</p>
+
+      <h4 style="margin-top:12px">How it works</h4>
+      <ol class="muted">
+        <li>Upload a skin image or enter details (age, skin type, issue).</li>
+        <li>The model classifies the problem (acne, dryness, pigmentation, etc.).</li>
+        <li>The recommender matches remedies from a curated knowledge base and personalizes suggestions.</li>
+      </ol>
     </section>
 
-    <section class="card" id="report">
-      <h3>Project Report</h3>
-      <p class="muted">Download your full report here: <a href="assets/RemedySense_Report.pdf" target="_blank">RemedySense_Report.pdf</a></p>
+    <section class="card" id="demo" style="margin-top:18px">
+      <h3>Live Demo (Placeholder)</h3>
+      <p class="muted">This is a placeholder for your interactive demo. Replace this section with your hosted demo link or embed code.</p>
     </section>
 
-    <section class="card" id="contact">
-      <h3>Contact</h3>
-      <p class="muted">Email: <a href="mailto:your.email@example.com">your.email@example.com</a></p>
-      <p class="muted">GitHub Repo: <a href="YOUR_GITHUB_LINK">YOUR_GITHUB_LINK</a></p>
+    <section class="card" id="contact" style="margin-top:18px">
+      <h3>Get in touch</h3>
+      <p class="muted">Questions or feedback? Email: <a href="mailto:your.email@example.com">your.email@example.com</a> — or open an issue on GitHub.</p>
+      <p class="muted">GitHub repo: <a href="YOUR_GITHUB_LINK">YOUR_GITHUB_LINK</a></p>
     </section>
 
     <footer>
-      <div>&copy; <span id="year"></span> RemedySense Project</div>
-      <div class="muted">Built for college showcase</div>
+      <div>&copy; <span id="year"></span> Your Name</div>
+      <div class="muted">Made with ♥ — host: GitHub Pages / Netlify</div>
     </footer>
   </div>
 
   <script>
-    (function() {
-      // Auto-update year
-      const y = document.getElementById('year');
-      if (y) y.textContent = new Date().getFullYear();
+    (function(){
+      var yearEl = document.getElementById('year');
+      if(yearEl) yearEl.textContent = new Date().getFullYear();
 
-      // Smooth scroll for valid internal links
-      document.querySelectorAll('a[href^="#"]').forEach(a => {
-        a.addEventListener('click', e => {
-          const href = a.getAttribute('href');
-          if (href && href.length > 1) {
-            const target = document.getElementById(href.slice(1));
-            if (target) {
+      document.querySelectorAll('a[href^="#"]').forEach(function(a){
+        a.addEventListener('click', function(e){
+          var href = a.getAttribute('href');
+          if(!href) return;
+          if(href.indexOf('#') === 0 && href.length > 1){
+            var id = href.slice(1);
+            var target = document.getElementById(id);
+            if(target){
               e.preventDefault();
-              target.scrollIntoView({ behavior: 'smooth' });
-            }
-          } else if (href === '#') {
-            e.preventDefault();
-          }
+              target.scrollIntoView({behavior:'smooth', block:'start'});
+            } else { e.preventDefault(); }
+          } else if(href === '#'){ e.preventDefault(); }
         });
       });
     })();
