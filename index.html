@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RemedySense - Interactive Project Showcase</title>
+    <!-- Chosen Palette: Natural Harmony -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -28,6 +29,11 @@
             opacity: 0;
             transform: scale(0.9);
             display: none;
+        }
+        .gradient-text {
+            background-image: linear-gradient(to right, #10b981, #059669);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
     </style>
     <script>
@@ -54,6 +60,7 @@
 </head>
 <body class="bg-brand-bg font-sans text-brand-text antialiased">
 
+    <!-- Header & Navigation -->
     <nav id="navbar" class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
@@ -64,6 +71,7 @@
                     <div class="ml-10 flex items-baseline space-x-4">
                         <a href="#about" class="nav-link text-gray-500 hover:text-brand-green px-3 py-2 rounded-md text-sm font-medium">About</a>
                         <a href="#dashboard" class="nav-link text-gray-500 hover:text-brand-green px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
+                        <a href="#gemini-creator" class="nav-link text-gray-500 hover:text-brand-green px-3 py-2 rounded-md text-sm font-medium">AI Creator</a>
                         <a href="#screenshots" class="nav-link text-gray-500 hover:text-brand-green px-3 py-2 rounded-md text-sm font-medium">Screenshots</a>
                         <a href="https://github.com/alainaasyed/RemedySense" target="_blank" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-full text-sm font-medium">View on GitHub</a>
                     </div>
@@ -73,6 +81,7 @@
     </nav>
 
     <main>
+        <!-- Hero Section -->
         <section class="text-center py-20 px-4 sm:px-6 lg:px-8">
             <div class="max-w-4xl mx-auto">
                 <h1 class="text-4xl md:text-6xl font-bold text-brand-green-dark tracking-tight">Personalized Natural Skincare, Powered by Data.</h1>
@@ -84,6 +93,7 @@
             </div>
         </section>
 
+        <!-- About Section -->
         <section id="about" class="py-16 bg-white">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-12">
@@ -98,8 +108,8 @@
                     </div>
                     <div class="p-6">
                          <div class="text-5xl mb-4"> PROCESS </div>
-                        <h3 class="text-xl font-semibold mb-2">2. Intelligent Analysis</h3>
-                        <p class="text-slate-500">Our system processes your inputs, cross-referencing them with a vast database of natural ingredients and their scientifically-backed properties, powered by a machine learning model.</p>
+                        <h3 class="text-xl font-semibold mb-2">2. Predictive Analysis with Decision Trees</h3>
+                        <p class="text-slate-500">The system uses a <strong>Decision Tree Classifier</strong> trained on clinical efficacy data. This model analyzes the user's skin profile to predict the most effective combination of anti-inflammatory and antioxidant properties needed for the specific concern.</p>
                     </div>
                     <div class="p-6">
                          <div class="text-5xl mb-4"> OUTPUT </div>
@@ -110,6 +120,7 @@
             </div>
         </section>
 
+        <!-- Interactive Dashboard -->
         <section id="dashboard" class="py-20 bg-brand-subtle">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-12">
@@ -117,6 +128,7 @@
                     <p class="mt-4 text-lg text-slate-500">Explore the data that powers RemedySense. See the common issues we address and filter through our database of powerful, natural ingredients.</p>
                 </div>
                 <div class="grid lg:grid-cols-5 gap-8">
+                    <!-- Chart -->
                     <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-md">
                         <h3 class="text-xl font-semibold text-center mb-4">Common Skin Concerns</h3>
                         <div class="chart-container">
@@ -124,6 +136,7 @@
                         </div>
                          <p class="text-xs text-slate-400 text-center mt-4">This chart shows a sample distribution of common skin issues reported by users, highlighting the areas where RemedySense provides the most guidance.</p>
                     </div>
+                    <!-- Ingredient Explorer -->
                     <div class="lg:col-span-3 bg-white p-6 rounded-lg shadow-md">
                         <h3 class="text-xl font-semibold text-center mb-4">Natural Ingredient Explorer</h3>
                         <div id="ingredient-filters" class="flex flex-wrap justify-center gap-2 mb-6">
@@ -133,13 +146,62 @@
                             <button data-filter="moisturizing" class="filter-btn bg-slate-200 text-slate-700 px-4 py-1.5 rounded-full text-sm">Moisturizing</button>
                         </div>
                         <div id="ingredient-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                            </div>
+                            <!-- JS will populate this -->
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="Pictures" class="py-20 bg-white">
+        <!-- Gemini AI Creator Section (New Feature) -->
+        <section id="gemini-creator" class="py-20 bg-white">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-brand-text gradient-text">✨ AI Remedy Creator</h2>
+                    <p class="mt-4 text-lg text-slate-500">Experience the generative power of AI. Describe a skin challenge, and Gemini will formulate a natural remedy for you, demonstrating the flexibility of a data-driven approach.</p>
+                </div>
+
+                <div class="bg-brand-subtle p-6 rounded-xl shadow-lg">
+                    <form id="remedy-form" class="space-y-4">
+                        <div>
+                            <label for="userIssue" class="block text-sm font-medium text-slate-700 mb-1">Your Specific Skin Challenge (e.g., Acne flare-up, post-sun redness):</label>
+                            <input type="text" id="userIssue" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-brand-green focus:border-brand-green" placeholder="e.g., I have extremely dry patches on my cheeks." required>
+                        </div>
+                        <div>
+                            <label for="userGoal" class="block text-sm font-medium text-slate-700 mb-1">Desired Outcome & Vibe (e.g., Quick fix, overnight treatment, gentle solution):</label>
+                            <input type="text" id="userGoal" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-brand-green focus:border-brand-green" placeholder="e.g., I need a quick fix that smells fresh." required>
+                        </div>
+                        <button type="submit" id="generate-btn" class="w-full bg-brand-green hover:bg-brand-green-dark text-white font-bold py-3 rounded-full transition duration-300 flex items-center justify-center">
+                            <span id="btn-text">✨ Generate Personalized Remedy</span>
+                            <div id="loading-spinner" class="hidden animate-spin rounded-full h-5 w-5 border-b-2 border-white ml-2"></div>
+                        </button>
+                    </form>
+
+                    <div id="remedy-results" class="mt-8 p-6 bg-white rounded-lg border border-slate-200 hidden">
+                        <h3 class="text-2xl font-bold mb-4 text-brand-green-dark" id="result-name"></h3>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <h4 class="font-semibold text-lg text-brand-text">Description:</h4>
+                                <p class="text-slate-600" id="result-description"></p>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-lg text-brand-text">Key Ingredients:</h4>
+                                <ul class="list-disc list-inside text-slate-600 ml-4" id="result-ingredients"></ul>
+                            </div>
+                             <div>
+                                <h4 class="font-semibold text-lg text-brand-text">Instructions:</h4>
+                                <p class="text-slate-600" id="result-instructions"></p>
+                            </div>
+                        </div>
+                    </div>
+                     <div id="error-message" class="mt-4 p-3 bg-red-100 text-red-700 rounded-lg hidden"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Screenshots Section -->
+        <section id="screenshots" class="py-20 bg-brand-subtle">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-12">
                     <h2 class="text-3xl font-bold text-brand-text">Application in Action</h2>
@@ -147,21 +209,24 @@
                 </div>
                 <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
                     <div class="bg-slate-100 rounded-lg shadow-md overflow-hidden">
-                        <img src="https://placehold.co/600x400/0f8a5f/ffffff?text=Input+Screen" alt="User Input Screen" class="w-full h-48 object-cover">
+                        <!-- Updated Placeholder 1: Input Screen -->
+                        <img src="https://placehold.co/600x400/D0F0C0/333333?text=1.+BUILD+YOUR+PROFILE" alt="User Input Screen" class="w-full h-48 object-cover">
                         <div class="p-6">
                             <h3 class="font-semibold">1. User Input Interface</h3>
                             <p class="text-sm text-slate-500 mt-2">Clean and simple forms allow users to quickly build their skin profile.</p>
                         </div>
                     </div>
                     <div class="bg-slate-100 rounded-lg shadow-md overflow-hidden">
-                        <img src="https://placehold.co/600x400/28a745/ffffff?text=Recommendation+Results" alt="Results Screen" class="w-full h-48 object-cover">
+                        <!-- Updated Placeholder 2: Results Screen -->
+                        <img src="https://placehold.co/600x400/A0D090/333333?text=2.+PERSONALIZED+REMEDIES" alt="Results Screen" class="w-full h-48 object-cover">
                         <div class="p-6">
                             <h3 class="font-semibold">2. Recommendation Results</h3>
                             <p class="text-sm text-slate-500 mt-2">A clear, ranked list of suggested remedies based on the user's profile.</p>
                         </div>
                     </div>
                     <div class="bg-slate-100 rounded-lg shadow-md overflow-hidden">
-                        <img src="https://placehold.co/600x400/5cb85c/ffffff?text=Remedy+Details" alt="Details Screen" class="w-full h-48 object-cover">
+                        <!-- Updated Placeholder 3: Details Screen -->
+                        <img src="https://placehold.co/600x400/80C070/333333?text=3.+REMEDY+INSTRUCTIONS" alt="Details Screen" class="w-full h-48 object-cover">
                         <div class="p-6">
                             <h3 class="font-semibold">3. Detailed Remedy Information</h3>
                             <p class="text-sm text-slate-500 mt-2">Each recommendation includes benefits, ingredients, and step-by-step instructions.</p>
@@ -173,6 +238,7 @@
 
     </main>
     
+    <!-- Footer -->
     <footer class="bg-slate-800 text-white">
         <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center">
             <p>&copy; 2025 RemedySense Project. All Rights Reserved.</p>
@@ -286,12 +352,145 @@
             });
 
             renderIngredients();
+
+
+            // --- Gemini API Logic for AI Remedy Creator ---
+            const remedyForm = document.getElementById('remedy-form');
+            const generateBtn = document.getElementById('generate-btn');
+            const btnText = document.getElementById('btn-text');
+            const loadingSpinner = document.getElementById('loading-spinner');
+            const remedyResults = document.getElementById('remedy-results');
+            const errorElement = document.getElementById('error-message');
+
+            const apiKey = ""; // API key is provided by the runtime environment
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+            // Define the structured output schema for the LLM
+            const responseSchema = {
+                type: "OBJECT",
+                properties: {
+                    "remedyName": { "type": "STRING", "description": "A creative, natural-sounding name for the remedy." },
+                    "description": { "type": "STRING", "description": "A short, engaging description of the remedy's benefits." },
+                    "keyIngredients": { 
+                        "type": "ARRAY", 
+                        "description": "2-3 natural ingredients needed for the remedy.",
+                        "items": { "type": "STRING" }
+                    },
+                    "instructions": { "type": "STRING", "description": "A brief, step-by-step instruction on how to prepare and apply the remedy." }
+                },
+                "propertyOrdering": ["remedyName", "description", "keyIngredients", "instructions"]
+            };
+
+            // Define the System Instruction to guide the model's persona
+            const systemPrompt = "You are a world-class Natural Skincare Formulation Expert. Your task is to invent a unique, natural home remedy based on the user's input. You must use common natural ingredients found in a typical home or garden. Respond ONLY with a JSON object that strictly adheres to the provided schema.";
+
+            const maxRetries = 5;
+            
+            async function fetchWithRetry(payload, retries = 0) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                         // Check for rate limit or other temporary errors
+                        if (response.status === 429 || response.status >= 500 && retries < maxRetries) {
+                            const delay = Math.pow(2, retries) * 1000;
+                            await new Promise(resolve => setTimeout(resolve, delay));
+                            return fetchWithRetry(payload, retries + 1);
+                        }
+                        throw new Error(`API request failed with status: ${response.status}`);
+                    }
+                    return response.json();
+                } catch (error) {
+                    if (retries < maxRetries) {
+                        const delay = Math.pow(2, retries) * 1000;
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        return fetchWithRetry(payload, retries + 1);
+                    }
+                    throw new Error(`Failed to fetch remedy after ${maxRetries} attempts: ${error.message}`);
+                }
+            }
+
+
+            async function generateRemedy(issue, goal) {
+                errorElement.classList.add('hidden');
+                remedyResults.classList.add('hidden');
+                
+                generateBtn.disabled = true;
+                btnText.textContent = 'Generating...';
+                loadingSpinner.classList.remove('hidden');
+
+                const userQuery = `My skin challenge is: "${issue}". My desired outcome/vibe is: "${goal}". Please invent a natural remedy for me.`;
+
+                const payload = {
+                    contents: [{ parts: [{ text: userQuery }] }],
+                    systemInstruction: { parts: [{ text: systemPrompt }] },
+                    generationConfig: {
+                        responseMimeType: "application/json",
+                        responseSchema: responseSchema
+                    }
+                };
+                
+                try {
+                    const result = await fetchWithRetry(payload);
+                    
+                    const candidate = result.candidates?.[0];
+                    if (!candidate || !candidate.content?.parts?.[0]?.text) {
+                        throw new Error("Received an invalid response from the AI model.");
+                    }
+
+                    const jsonString = candidate.content.parts[0].text;
+                    const remedyData = JSON.parse(jsonString);
+
+                    // Update the DOM with results
+                    document.getElementById('result-name').textContent = remedyData.remedyName || 'New Formulation';
+                    document.getElementById('result-description').textContent = remedyData.description || 'Description not available.';
+                    document.getElementById('result-instructions').textContent = remedyData.instructions || 'Instructions not available.';
+
+                    const ingredientsList = document.getElementById('result-ingredients');
+                    ingredientsList.innerHTML = '';
+                    if (Array.isArray(remedyData.keyIngredients)) {
+                         remedyData.keyIngredients.forEach(ing => {
+                            const li = document.createElement('li');
+                            li.textContent = ing;
+                            ingredientsList.appendChild(li);
+                        });
+                    } else {
+                        const li = document.createElement('li');
+                        li.textContent = 'Ingredients list is malformed.';
+                        ingredientsList.appendChild(li);
+                    }
+
+                    remedyResults.classList.remove('hidden');
+
+                } catch (e) {
+                    console.error("Gemini API Error:", e);
+                    errorElement.textContent = `Error: Could not generate remedy. Please try again. (${e.message})`;
+                    errorElement.classList.remove('hidden');
+
+                } finally {
+                    generateBtn.disabled = false;
+                    btnText.textContent = '✨ Generate Personalized Remedy';
+                    loadingSpinner.classList.add('hidden');
+                }
+            }
+
+            remedyForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const issue = document.getElementById('userIssue').value.trim();
+                const goal = document.getElementById('userGoal').value.trim();
+                if (issue && goal) {
+                    generateRemedy(issue, goal);
+                } else {
+                    errorElement.textContent = "Please fill out both the skin challenge and desired outcome.";
+                    errorElement.classList.remove('hidden');
+                }
+            });
+            // End of Gemini API Logic
         });
     </script>
 </body>
 </html>
-```eof
-
-### **Action:**
-
-You should use this code to **replace the entire content** of your existing `index.html` file in your GitHub repository. This single file contains everything needed for the interactive application.
