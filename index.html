@@ -24,6 +24,7 @@
         }
         .ingredient-card {
             transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+            min-height: 90px; /* Ensure cards have enough space for name and tags */
         }
         .ingredient-card.hidden {
             opacity: 0;
@@ -34,6 +35,27 @@
             background-image: linear-gradient(to right, #10b981, #059669);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+        }
+        /* Custom styles for the responsive flowchart cards */
+        .flow-step-card {
+            @apply p-6 rounded-xl shadow-lg border-t-4 border-brand-green transition duration-300 hover:shadow-xl text-center h-full; /* h-full ensures consistent height if needed */
+        }
+        .flow-arrow-mobile {
+            @apply flex justify-center py-4 text-brand-green-dark;
+        }
+        .flow-arrow-desktop {
+            @apply text-4xl text-brand-green-dark flex items-center justify-center;
+        }
+
+        /* Scroll-Reveal Animation Styles */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .fade-in-up.is-visible {
+            opacity: 1;
+            transform: translateY(0);
         }
     </style>
     <script>
@@ -72,7 +94,7 @@
                         <a href="#about" class="nav-link text-gray-500 hover:text-brand-green px-3 py-2 rounded-md text-sm font-medium">About</a>
                         <a href="#dashboard" class="nav-link text-gray-500 hover:text-brand-green px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
                         <a href="#featured-remedies" class="nav-link text-gray-500 hover:text-brand-green px-3 py-2 rounded-md text-sm font-medium">Featured Remedies</a>
-                        <a href="#screenshots" class="nav-link text-gray-500 hover:text-brand-green px-3 py-2 rounded-md text-sm font-medium">Screenshots</a>
+                        <a href="#screenshots" class="nav-link text-gray-500 hover:text-brand-green px-3 py-2 rounded-md text-sm font-medium">System Walkthrough</a>
                         <a href="https://github.com/alainaasyed/RemedySense" target="_blank" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-full text-sm font-medium">View on GitHub</a>
                     </div>
                 </div>
@@ -81,47 +103,95 @@
     </nav>
 
     <main>
-        <!-- Hero Section -->
-        <section class="text-center py-20 px-4 sm:px-6 lg:px-8">
+        <!-- Hero Section - Immediate visibility, no fade-in-up class applied -->
+        <section id="hero-section" class="text-center py-20 px-4 sm:px-6 lg:px-8">
             <div class="max-w-4xl mx-auto">
-                <h1 class="text-4xl md:text-6xl font-bold text-brand-green-dark tracking-tight">Personalized Natural Skincare, Powered by Data.</h1>
+                <h1 class="text-4xl md:text-6xl font-bold text-brand-green-dark tracking-tight">Powered by RemedySense.</h1>
                 <p class="mt-6 text-lg md:text-xl text-slate-600 max-w-3xl mx-auto">RemedySense is a smart recommender system that moves beyond generic advice, offering natural, effective remedies tailored to your unique skin profile.</p>
                 <div class="mt-8 flex justify-center gap-4">
-                    <a href="RemedySense_Report.pdf" target="_blank" class="bg-brand-green hover:bg-brand-green-dark text-white font-bold py-3 px-8 rounded-full transition duration-300 shadow-lg">Download Full Report</a>
+                    <!-- Note: Linked to the existing report file for context -->
+                    <a href="RemedySense_report.html" target="_blank" class="bg-brand-green hover:bg-brand-green-dark text-white font-bold py-3 px-8 rounded-full transition duration-300 shadow-lg">View Full Report</a>
                     <a href="#dashboard" class="bg-white hover:bg-slate-100 text-brand-green-dark font-bold py-3 px-8 rounded-full transition duration-300 shadow-lg border border-slate-200">Explore Dashboard</a>
                 </div>
             </div>
         </section>
 
-        <!-- About Section -->
-        <section id="about" class="py-16 bg-white">
+        <!-- About Section (Scroll-Reveal Target) -->
+        <section id="about" class="py-16 bg-white fade-in-up">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-12">
-                    <h2 class="text-3xl font-bold text-brand-text">The Future of Personalized Skincare</h2>
-                    <p class="mt-4 text-lg text-slate-500">RemedySense addresses the challenge of finding effective, natural skincare by providing data-driven, personalized recommendations.</p>
+                    <h2 class="text-3xl font-bold text-brand-text">The Personalized Recommendation Flow</h2>
+                    <p class="mt-4 text-lg text-slate-500">How RemedySense analyzes your skin profile and recommends the most effective natural remedies.</p>
                 </div>
-                <div class="grid md:grid-cols-3 gap-10 text-center">
-                    <div class="p-6">
-                        <div class="text-5xl mb-4"> INPUT </div>
-                        <h3 class="text-xl font-semibold mb-2">1. Define Your Profile</h3>
-                        <p class="text-slate-500">Start by providing key information about your skin, including type (e.g., oily, dry), age group, and specific concerns you're facing, such as acne, redness, or dark spots.</p>
+                
+                <!-- Desktop Flowchart -->
+                <div class="hidden md:grid md:grid-cols-[1fr_50px_1fr_50px_1fr] items-stretch gap-4 max-w-5xl mx-auto">
+                    
+                    <!-- Step 1: Input -->
+                    <div class="flow-step-card bg-brand-subtle">
+                        <div class="text-4xl mb-3 font-extrabold text-brand-green-dark">1</div>
+                        <h3 class="text-xl font-semibold mb-2 text-brand-text">INPUT: Define Profile</h3>
+                        <p class="text-slate-600 text-sm">The user submits their Skin Type, Age, and Specific Concern to the system.</p>
                     </div>
-                    <div class="p-6">
-                         <div class="text-5xl mb-4"> PROCESS </div>
-                        <h3 class="text-xl font-semibold mb-2">2. Predictive Analysis with Decision Trees</h3>
-                        <p class="text-slate-500">The system uses a <strong>Decision Tree Classifier</strong> trained on clinical efficacy data. This model analyzes the user's skin profile to predict the most effective combination of anti-inflammatory and antioxidant properties needed for the specific concern.</p>
+
+                    <!-- Arrow 1 -->
+                    <div class="flow-arrow-desktop">→</div>
+
+                    <!-- Step 2: Process -->
+                    <div class="flow-step-card bg-white">
+                        <div class="text-4xl mb-3 font-extrabold text-brand-green-dark">2</div>
+                        <h3 class="text-xl font-semibold mb-2 text-brand-text">PROCESS: Predict Properties</h3>
+                        <p class="text-slate-600 text-sm">A Decision Tree Model analyzes the data and predicts the required therapeutic properties: Anti-inflammatory and Antioxidant levels.</p>
                     </div>
-                    <div class="p-6">
-                         <div class="text-5xl mb-4"> OUTPUT </div>
-                        <h3 class="text-xl font-semibold mb-2">3. Receive Your Remedy</h3>
-                        <p class="text-slate-500">Get a ranked list of natural remedies tailored specifically to you, complete with instructions on preparation and application for optimal results.</p>
+
+                    <!-- Arrow 2 -->
+                    <div class="flow-arrow-desktop">→</div>
+
+                    
+                    <!-- Step 3: Output -->
+                    <div class="flow-step-card bg-brand-subtle">
+                        <div class="text-4xl mb-3 font-extrabold text-brand-green-dark">3</div>
+                        <h3 class="text-xl font-semibold mb-2 text-brand-text">OUTPUT: Generate Remedy</h3>
+                        <p class="text-slate-600 text-sm">The system matches the required properties to its ingredient database and delivers a Tailored Remedy with full instructions.</p>
                     </div>
                 </div>
+                
+                <!-- Mobile Flowchart -->
+                <div class="md:hidden space-y-4 max-w-sm mx-auto">
+                    
+                    <!-- Step 1 (Mobile) -->
+                    <div class="flow-step-card bg-brand-subtle">
+                        <div class="text-4xl mb-3 font-extrabold text-brand-green-dark">1</div>
+                        <h3 class="text-xl font-semibold mb-2 text-brand-text">INPUT: Define Profile</h3>
+                        <p class="text-slate-600 text-sm">The user submits their Skin Type, Age, and Specific Concern to the system.</p>
+                    </div>
+                    
+                    <!-- Arrow 1 (Mobile) -->
+                    <div class="flow-arrow-mobile text-4xl">↓</div>
+
+                    <!-- Step 2 (Mobile) -->
+                    <div class="flow-step-card bg-white">
+                        <div class="text-4xl mb-3 font-extrabold text-brand-green-dark">2</div>
+                        <h3 class="text-xl font-semibold mb-2 text-brand-text">PROCESS: Predict Properties</h3>
+                        <p class="text-slate-600 text-sm">A Decision Tree Model analyzes the data and predicts the required therapeutic properties: Anti-inflammatory and Antioxidant levels.</p>
+                    </div>
+
+                    <!-- Arrow 2 (Mobile) -->
+                    <div class="flow-arrow-mobile text-4xl">↓</div>
+
+                    <!-- Step 3 (Mobile) -->
+                    <div class="flow-step-card bg-brand-subtle">
+                        <div class="text-4xl mb-3 font-extrabold text-brand-green-dark">3</div>
+                        <h3 class="text-xl font-semibold mb-2 text-brand-text">OUTPUT: Generate Remedy</h3>
+                        <p class="text-slate-600 text-sm">The system matches the required properties to its ingredient database and delivers a Tailored Remedy with full instructions.</p>
+                    </div>
+                </div>
+                <!-- End Flowchart Diagram -->
             </div>
         </section>
 
-        <!-- Interactive Dashboard -->
-        <section id="dashboard" class="py-20 bg-brand-subtle">
+        <!-- Interactive Dashboard (Scroll-Reveal Target) -->
+        <section id="dashboard" class="py-20 bg-brand-subtle fade-in-up">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-12">
                     <h2 class="text-3xl font-bold text-brand-text">Interactive Dashboard</h2>
@@ -153,8 +223,8 @@
             </div>
         </section>
 
-        <!-- Static Featured Remedies Section (Replaces Gemini AI Creator) -->
-        <section id="featured-remedies" class="py-20 bg-white">
+        <!-- Static Featured Remedies Section (Scroll-Reveal Target) -->
+        <section id="featured-remedies" class="py-20 bg-white fade-in-up">
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-12">
                     <h2 class="text-3xl font-bold text-brand-text gradient-text">🌿 Featured Remedies for Common Issues</h2>
@@ -167,14 +237,14 @@
                         <div class="mb-6 p-4 bg-white rounded-lg border border-slate-200">
                             <h4 class="font-bold text-lg mb-2 text-brand-green-dark">Quick Issue Identifier (8 Common Issues):</h4>
                             <ul class="text-sm text-slate-600 space-y-1 list-disc list-inside ml-4 grid sm:grid-cols-2">
-                                <li>**Acne & Blemishes:** Clogged pores, inflammation, breakouts.</li>
-                                <li>**Dryness & Dehydration:** Tightness, flakiness, rough texture.</li>
-                                <li>**Redness & Irritation:** Visible flushing, irritation, sensitivity.</li>
-                                <li>**Oily Skin & Pores:** Shiny T-zone, excess oil, enlarged pores.</li>
-                                <li>**Dark Spots:** Patches of darkened skin, post-acne marks, sun spots.</li>
-                                <li>**Fine Lines & Wrinkles:** Creases, loss of firmness, dullness.</li>
-                                <li>**Eczema & Itch:** Extremely dry, scaly, intensely itchy patches.</li>
-                                <li>**Sunburn Relief:** Acute redness, pain, and heat from sun exposure.</li>
+                                <li>Acne & Blemishes: Clogged pores, inflammation, breakouts.</li>
+                                <li>Dryness & Dehydration: Tightness, flakiness, rough texture.</li>
+                                <li>Redness & Irritation: Visible flushing, irritation, sensitivity.</li>
+                                <li>Oily Skin & Pores: Shiny T-zone, excess oil, enlarged pores.</li>
+                                <li>Dark Spots: Patches of darkened skin, post-acne marks, sun spots.</li>
+                                <li>Fine Lines & Wrinkles: Creases, loss of firmness, dullness.</li>
+                                <li>Eczema & Itch: Extremely dry, scaly, intensely itchy patches.</li>
+                                <li>Sunburn Relief: Acute redness, pain, and heat from sun exposure.</li>
                             </ul>
                         </div>
                         
@@ -237,8 +307,8 @@
             </div>
         </section>
 
-        <!-- Screenshots Section -->
-        <section id="screenshots" class="py-20 bg-brand-subtle">
+        <!-- Screenshots Section (Scroll-Reveal Target) -->
+        <section id="screenshots" class="py-20 bg-brand-subtle fade-in-up">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-12">
                     <h2 class="text-3xl font-bold text-brand-text">Application in Action</h2>
@@ -246,24 +316,24 @@
                 </div>
                 <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
                     <div class="bg-slate-100 rounded-lg shadow-md overflow-hidden">
-                        <!-- Updated Placeholder 1: Input Screen -->
-                        <img src="https://placehold.co/600x400/D0F0C0/333333?text=1.+BUILD+YOUR+PROFILE" alt="User Input Screen" class="w-full h-48 object-cover">
+                        <!-- Placeholder 1: Input Screen -->
+                        <img src="https://placehold.co/600x400/10b981/FFFFFF?text=1.+INPUT+SKIN+PROFILE%0A%0A%E2%9D%96+Type+%7C+Age+%7C+Concern" alt="User Input Screen" class="w-full h-48 object-cover">
                         <div class="p-6">
                             <h3 class="font-semibold">1. User Input Interface</h3>
                             <p class="text-sm text-slate-500 mt-2">Clean and simple forms allow users to quickly build their skin profile.</p>
                         </div>
                     </div>
                     <div class="bg-slate-100 rounded-lg shadow-md overflow-hidden">
-                        <!-- Updated Placeholder 2: Results Screen -->
-                        <img src="https://placehold.co/600x400/A0D090/333333?text=2.+PERSONALIZED+REMEDIES" alt="Results Screen" class="w-full h-48 object-cover">
+                        <!-- Placeholder 2: Results Screen -->
+                        <img src="https://placehold.co/600x400/059669/FFFFFF?text=2.+MODEL+PREDICTS%0A%0A%E2%9D%96+Properties+%26+Top+Ingredients" alt="Results Screen" class="w-full h-48 object-cover">
                         <div class="p-6">
                             <h3 class="font-semibold">2. Recommendation Results</h3>
                             <p class="text-sm text-slate-500 mt-2">A clear, ranked list of suggested remedies based on the user's profile.</p>
                         </div>
                     </div>
                     <div class="bg-slate-100 rounded-lg shadow-md overflow-hidden">
-                        <!-- Updated Placeholder 3: Details Screen -->
-                        <img src="https://placehold.co/600x400/80C070/333333?text=3.+REMEDY+INSTRUCTIONS" alt="Details Screen" class="w-full h-48 object-cover">
+                        <!-- Placeholder 3: Details Screen -->
+                        <img src="https://placehold.co/600x400/34d399/FFFFFF?text=3.+REMEDY+DELIVERED%0A%0A%E2%9D%96+Instructions+%26+Benefits" alt="Details Screen" class="w-full h-48 object-cover">
                         <div class="p-6">
                             <h3 class="font-semibold">3. Detailed Remedy Information</h3>
                             <p class="text-sm text-slate-500 mt-2">Each recommendation includes benefits, ingredients, and step-by-step instructions.</p>
@@ -279,7 +349,6 @@
     <footer class="bg-slate-800 text-white">
         <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center">
             <p>&copy; 2025 RemedySense Project. All Rights Reserved.</p>
-            <p class="text-sm text-slate-400 mt-2">A conceptual project by Alaina Syed.</p>
         </div>
     </footer>
 
@@ -385,8 +454,35 @@
                 
                 filteredIngredients.forEach(ing => {
                     const card = document.createElement('div');
-                    card.className = `ingredient-card p-4 rounded-lg text-center ${ing.color} ${ing.textColor} shadow-sm hover:shadow-md transition duration-200`;
-                    card.innerHTML = `<span class="font-semibold text-sm">${ing.name}</span>`;
+                    // Added flex properties to stack name and tags
+                    card.className = `ingredient-card p-4 rounded-lg text-left ${ing.color} shadow-sm hover:shadow-md transition duration-200 flex flex-col justify-between`;
+                    
+                    // Generate tags HTML
+                    let tagsHtml = ing.tags.map(tag => {
+                        // Determine tag styling based on property
+                        let tagColor;
+                        let tagBg;
+                        if (tag === 'anti-inflammatory') {
+                            tagColor = 'text-red-700';
+                            tagBg = 'bg-red-200';
+                        } else if (tag === 'antioxidant') {
+                            tagColor = 'text-blue-700';
+                            tagBg = 'bg-blue-200';
+                        } else if (tag === 'moisturizing') {
+                            tagColor = 'text-green-700';
+                            tagBg = 'bg-green-200';
+                        }
+                        // Format tag name: capitalize first letter and replace hyphen with space
+                        const formattedTag = tag.charAt(0).toUpperCase() + tag.slice(1).replace('-', ' ');
+                        return `<span class="px-2 py-0.5 rounded-full text-xs font-medium ${tagBg} ${tagColor} whitespace-nowrap">${formattedTag}</span>`;
+                    }).join('');
+
+                    card.innerHTML = `
+                        <div class="font-bold text-base text-brand-text mb-2">${ing.name}</div>
+                        <div class="flex flex-wrap gap-1 mt-auto">
+                            ${tagsHtml}
+                        </div>
+                    `;
                     grid.appendChild(card);
                 });
             }
@@ -420,14 +516,7 @@
 
             /*
                 ===================================================================
-                INSTRUCTIONS FOR ADDING IMAGES:
-                
-                Replace the URL placeholder string (e.g., "https://placehold.co/...") 
-                for each issue below with your actual image URL.
-                
-                IMPORTANT: Ensure your URL is wrapped in double quotes ("") and that 
-                each remedy block is separated by a comma (,). Do NOT delete the 
-                comma after the URL string (except for the very last item, 'sunburn').
+                PLACEHOLDER IMAGE URLS: Stylized with icons and colors
                 ===================================================================
             */
             const commonRemedies = {
@@ -437,15 +526,15 @@
                     description: "A potent anti-inflammatory and antibacterial treatment that calms active breakouts, reduces redness, and promotes clear skin.",
                     keyIngredients: ["1 tsp Turmeric powder", "1 tbsp Raw Honey", "1/2 tsp Plain Yogurt (optional, for binding)"],
                     instructions: "Mix ingredients into a paste. Apply a thin layer to clean skin, focusing on troubled areas. Leave on for 10-15 minutes, then rinse thoroughly with cool water. Use 2-3 times per week.",
-                    image: "https://as1.ftcdn.net/v2/jpg/04/62/24/16/1000_F_462241699_MdCfRcKXjsvYtNaGnWa0Fr7gwbyrzk5y.jpg" // REPLACE THIS URL
+                    image: "https://placehold.co/600x400/FF5733/FFFFFF?text=%E2%9A%A0%EF%B8%8F+Turmeric+%26+Honey" // Red/Orange for inflammation/turmeric
                 },
                 dryness: {
-                    issueDesc: "Symptoms include flaking, tightness, rough texture, and potential itching, often caused by a compromised skin barrier and lack of moisture/oils. Needs deep hydration and barrier repair.",
+                    issueDesc: "Symptoms include flaking, tightness, rough texture, and potential itching, often caused by a compromised skin barrier and lack of moisture/ols. Needs deep hydration and barrier repair.",
                     remedyName: "Avocado & Rosehip Deep Moisture Balm",
                     description: "A rich, emollient treatment packed with essential fatty acids and vitamins to replenish moisture, soothe dry patches, and strengthen the skin's barrier.",
                     keyIngredients: ["1/4 mashed ripe Avocado", "1 tsp Rosehip Oil", "1/2 tsp Aloe Vera gel"],
                     instructions: "Combine the mashed avocado, rosehip oil, and aloe vera gel. Apply a thick layer to dry areas like a mask. Leave on for 20 minutes, then gently wipe off the excess with a soft cloth. Use nightly until dryness subsides.",
-                    image: "https://i.ytimg.com/vi/2iOthk7SDlY/maxresdefault.jpg" // REPLACE THIS URL
+                    image: "https://placehold.co/600x400/81B622/FFFFFF?text=%F0%9F%A5%91+Avocado+%26+Rosehip" // Green/Avocado for moisture
                 },
                 redness: {
                     issueDesc: "Involves persistent flushing, visible capillaries, and sensitivity, often triggered by irritation, weather, or underlying sensitivity conditions. Requires cooling and soothing ingredients.",
@@ -453,7 +542,7 @@
                     description: "A gentle, anti-irritation compress utilizing the powerful antioxidants of green tea and the calming properties of chamomile to quickly reduce visible redness and soothe heat.",
                     keyIngredients: ["1 Green Tea Bag (brewed and cooled)", "1 Chamomile Tea Bag (brewed and cooled)", "Small, soft facial cloth"],
                     instructions: "Brew both tea bags and let the liquid cool completely (or chill in the fridge). Soak the facial cloth in the chilled liquid. Gently press and lay the compress over the red or irritated areas for 5-10 minutes. Do not rinse. Apply a simple moisturizer afterwards. Use daily.",
-                    image: "https://ciaobellaaesthetics.co.uk/wp-content/uploads/2020/09/redness-on-face-2-696x409-1.jpg" // REPLACE THIS URL
+                    image: "https://placehold.co/600x400/98FB98/006400?text=%E2%9C%A8+Green+Tea+%26+Chamomile" // Light Green for calming
                 },
                 oily: {
                     issueDesc: "Characterized by a persistent shiny appearance, excess sebum production, and often accompanied by enlarged pores. Requires gentle astringency and balancing.",
@@ -461,15 +550,15 @@
                     description: "A refreshing toner that utilizes the natural astringency of witch hazel to tighten pores and reduce oiliness, while mint provides a cool, clarifying sensation.",
                     keyIngredients: ["1/4 cup Witch Hazel (liquid)", "1 tsp Fresh Mint Juice (or 5 drops peppermint essential oil, if available)", "1/2 tsp Lemon Juice (optional, for extra brightening)"],
                     instructions: "Mix ingredients in a clean spray bottle or container. After cleansing, apply to the face with a cotton pad, avoiding the eye area. Use once daily. Shake well before use. Store in the fridge for extra cooling.",
-                    image: "https://tse3.mm.bing.net/th/id/OIP.Vx8Ld2Q0lPnQWngOY1ixOgHaHa?pid=Api&P=0&h=180" // REPLACE THIS URL
+                    image: "https://placehold.co/600x400/1E90FF/FFFFFF?text=%F0%9F%8C%8A+Witch+Hazel+%26+Mint" // Blue for clarifying/water
                 },
                 darkspots: {
                     issueDesc: "Patches of darkened skin, including sun spots, age spots, and post-inflammatory hyperpigmentation (PIH) from acne. Requires gentle exfoliation and brightening.",
                     remedyName: "Potato & Lemon Brightening Spot Treatment",
                     description: "Uses the mild bleaching power of lemon and the catecholase enzyme in potatoes to gently fade dark spots and even out skin tone over time.",
                     keyIngredients: ["1 tbsp Grated Potato (raw)", "1/4 tsp Lemon Juice", "Pinch of Turmeric (optional, for anti-inflammatory boost)"],
-                    instructions: "Combine ingredients into a paste. Apply directly onto the dark spots using a cotton swab. Leave on for 10 minutes maximum (do not exceed, especially with lemon). Rinse thoroughly. **Use only at night** as lemon makes skin sun-sensitive.",
-                    image: "https://skincancer-specialists.com/wp-content/uploads/2023/05/woman-with-dark-spot-on-face.jpg" // REPLACE THIS URL
+                    instructions: "Combine ingredients into a paste. Apply directly onto the dark spots using a cotton swab. Leave on for 10 minutes maximum (do not exceed, especially with lemon). Rinse thoroughly. Use only at night as lemon makes skin sun-sensitive.",
+                    image: "https://placehold.co/600x400/FFD700/800080?text=%E2%9C%A8+Potato+%26+Lemon" // Gold/Purple for brightening/vitamin C
                 },
                 lines: {
                     issueDesc: "Fine lines, wrinkles, and loss of skin elasticity/firmness, primarily related to reduced collagen and environmental damage. Needs antioxidant protection and hydration.",
@@ -477,7 +566,7 @@
                     description: "A deeply hydrating and antioxidant-rich mask. Flaxseeds provide omega-3s, and banana offers vitamins to plump the skin and reduce the appearance of fine lines.",
                     keyIngredients: ["1 tbsp Ground Flaxseed", "1/4 Mashed Ripe Banana", "2 tbsp Hot Water"],
                     instructions: "Mix flaxseed and hot water; let sit for 5 minutes until gel forms. Stir in mashed banana. Apply a thick layer to the face and neck. Relax for 15-20 minutes, then rinse gently with lukewarm water. Use 2-3 times per week.",
-                    image: "https://tse3.mm.bing.net/th/id/OIP.Ov021PRqKLV-o_zAqJyaCwHaEK?pid=Api&P=0&h=180" // REPLACE THIS URL
+                    image: "https://placehold.co/600x400/F0E68C/808000?text=%F0%9F%8D%8C+Flaxseed+%26+Banana" // Yellow/Brown for banana/flax
                 },
                 eczema: {
                     issueDesc: "Extremely dry, scaly, and intensely itchy patches of skin (dermatitis). The skin barrier is severely compromised. Needs intense calming, moisture, and protection.",
@@ -485,7 +574,7 @@
                     description: "An ancient remedy using the powerful anti-itch and anti-inflammatory properties of oatmeal combined with the barrier-repairing moisture of coconut oil.",
                     keyIngredients: ["1 cup Colloidal Oatmeal (finely ground)", "2 tbsp Coconut Oil (melted)", "Warm Bath Water"],
                     instructions: "Pour the oatmeal and melted coconut oil into a warm bath. Soak in the tub for 15-20 minutes, allowing the soothing mixture to coat the skin. Gently pat skin dry afterwards, leaving a light film of oil on the skin for maximum relief. Can be used daily during flare-ups.",
-                    image: "https://static.independent.co.uk/2022/05/30/07/27125320-e348f9a0-e899-47e8-9e61-a6373617790f.jpg" // REPLACE THIS URL
+                    image: "https://placehold.co/600x400/CD853F/FFFFFF?text=%F0%9F%8D%BF+Oatmeal+%26+Coconut+Oil" // Tan/Brown for oats
                 },
                 sunburn: {
                     issueDesc: "Acute redness, pain, and heat resulting from overexposure to UV radiation. The skin is actively damaged and inflamed. Requires immediate cooling and repair.",
@@ -493,7 +582,7 @@
                     description: "A highly effective, cooling, and hydrating gel that provides immediate relief from the pain and heat of a sunburn while delivering reparative compounds to the skin.",
                     keyIngredients: ["2 tbsp Pure Aloe Vera Gel", "1/4 Shredded or Blended Cucumber", "Optional: 5 drops of Chamomile tea liquid (cooled)"],
                     instructions: "Mix the Aloe Vera gel and shredded cucumber (straining any excess liquid). Apply a thick, cool layer over the sunburnt area. Leave on for 30 minutes before gently wiping off any residue. Reapply every 2-3 hours as needed for continued relief.",
-                    image: "https://cdn.britannica.com/12/144412-004-91D92D64.jpg"
+                    image: "https://placehold.co/600x400/00FF7F/000000?text=%F0%9F%8C%B1+Aloe+%26+Cucumber+Cooling" // Bright Green for cooling
                 }
             };
             
@@ -550,6 +639,32 @@
             }
 
             showRemedyBtn.addEventListener('click', showStaticRemedy);
+
+            // --- Scroll-Reveal Animation Logic (fade-in-up) ---
+            const sections = document.querySelectorAll('section');
+
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1 // Triggers when 10% of the element is visible
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target); // Stop observing once visible
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => {
+                // Skip the Hero section as it should be visible immediately
+                if (section.id !== 'hero-section') {
+                    section.classList.add('fade-in-up');
+                    observer.observe(section);
+                }
+            });
 
         });
     </script>
