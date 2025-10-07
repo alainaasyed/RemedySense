@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="app-title">RemedySense Interactive Project Showcase (Aesthetic Brown Theme)</title>
-    <!-- Chosen Palette: Aesthetic Brown & Cream -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -135,7 +134,6 @@
 </head>
 <body class="bg-brand-bg font-sans text-brand-text antialiased">
 
-    <!-- Header & Navigation -->
     <nav id="navbar" class="bg-brand-bg/90 backdrop-blur-sm sticky top-0 z-50 shadow-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
@@ -143,7 +141,6 @@
                     <span class="font-bold text-2xl text-brand-primary-dark transition duration-300 hover:scale-105">✨ RemedySense</span>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <!-- Language Selector Dropdown -->
                     <div class="relative">
                         <select id="language-selector" class="bg-brand-card-bg text-brand-primary-dark border border-brand-primary-accent/50 rounded-full text-sm font-medium py-2 pl-3 pr-10 appearance-none cursor-pointer focus:ring-2 focus:ring-brand-primary-accent focus:outline-none">
                             <option value="en">English (EN)</option>
@@ -167,7 +164,6 @@
     </nav>
 
     <main>
-        <!-- Hero Section -->
         <section id="hero-section" class="text-center py-24 px-4 sm:px-6 lg:px-8 bg-brand-bg">
             <div class="max-w-4xl mx-auto">
                 <h1 id="hero-title" class="text-4xl md:text-6xl font-extrabold text-brand-primary-dark tracking-tighter" data-translate="hero_title">Your Blend for Better Skin.</h1>
@@ -179,7 +175,6 @@
             </div>
         </section>
 
-        <!-- About Section (Scroll-Reveal Target) -->
         <section id="about" class="py-20 bg-white fade-in-up">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-16">
@@ -187,31 +182,25 @@
                     <p id="about-subtitle" class="mt-4 text-lg text-brand-subtle-text" data-translate="about_subtitle">How RemedySense analyzes your skin profile and recommends the most effective natural remedies.</p>
                 </div>
                 
-                <!-- Desktop Flowchart -->
                 <div class="hidden md:grid md:grid-cols-[1fr_50px_1fr_50px_1fr] items-stretch gap-4 max-w-5xl mx-auto">
                     
-                    <!-- Step 1: Input -->
                     <div class="flow-step-card bg-brand-card-bg card-lift">
                         <div class="text-4xl mb-3 font-extrabold text-brand-primary-accent">1</div>
                         <h3 class="text-xl font-semibold mb-2 text-brand-text" data-translate="flow_step_1_title">INPUT: Image Capture</h3>
                         <p class="text-brand-subtle-text text-sm" data-translate="flow_step_1_desc">The user captures a high-resolution image of the affected skin area (or selects from the dashboard).</p>
                     </div>
 
-                    <!-- Arrow 1 -->
                     <div class="flow-arrow-desktop">→</div>
 
-                    <!-- Step 2: Process -->
                     <div class="flow-step-card bg-white card-lift">
                         <div class="text-4xl mb-3 font-extrabold text-brand-primary-accent">2</div>
                         <h3 class="text-xl font-semibold mb-2 text-brand-text" data-translate="flow_step_2_title">PROCESS: Predict Properties</h3>
                         <p class="text-brand-subtle-text text-sm" data-translate="flow_step_2_desc">A Decision Tree Model analyzes the image data to predict the required therapeutic properties: Anti-inflammatory and Antioxidant levels.</p>
                     </div>
 
-                    <!-- Arrow 2 -->
                     <div class="flow-arrow-desktop">→</div>
 
                     
-                    <!-- Step 3: Output -->
                     <div class="flow-step-card bg-brand-card-bg card-lift">
                         <div class="text-4xl mb-3 font-extrabold text-brand-primary-accent">3</div>
                         <h3 class="text-xl font-semibold mb-2 text-brand-text" data-translate="flow_step_3_title">OUTPUT: Generate Remedy</h3>
@@ -219,7 +208,6 @@
                     </div>
                 </div>
                 
-                <!-- Mobile Flowchart -->
                 <div class="md:hidden space-y-4 max-w-sm mx-auto">
                     <div class="flow-step-card bg-brand-card-bg">
                         <div class="text-4xl mb-3 font-extrabold text-brand-primary-accent">1</div>
@@ -242,7 +230,6 @@
             </div>
         </section>
 
-        <!-- Interactive Dashboard (Scroll-Reveal Target) -->
         <section id="dashboard" class="py-20 bg-brand-card-bg fade-in-up">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-12">
@@ -250,7 +237,6 @@
                     <p id="dashboard-subtitle" class="mt-4 text-lg text-brand-subtle-text" data-translate="dashboard_subtitle">Explore the data that powers RemedySense. Filter through our database of powerful, natural ingredients.</p>
                 </div>
                 <div class="grid lg:grid-cols-5 gap-8">
-                    <!-- Chart -->
                     <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-xl card-lift">
                         <h3 id="chart-title" class="text-xl font-semibold text-center mb-4 text-brand-primary-dark" data-translate="chart_title">Common Skin Concerns</h3>
                         <div class="chart-container">
@@ -258,21 +244,17 @@
                         </div>
                          <p id="chart-caption" class="text-xs text-gray-400 text-center mt-4" data-translate="chart_caption">This chart shows a sample distribution of common skin issues reported by users, highlighting the areas where RemedySense provides the most guidance.</p>
                     </div>
-                    <!-- Ingredient Explorer -->
                     <div class="lg:col-span-3 bg-white p-6 rounded-xl shadow-xl card-lift">
                         <h3 id="explorer-title" class="text-xl font-semibold text-center mb-4 text-brand-primary-dark" data-translate="explorer_title">Natural Ingredient Explorer</h3>
                         <div id="ingredient-filters" class="flex flex-wrap justify-center gap-2 mb-6">
-                            <!-- Filter buttons populated by JS using translations -->
-                        </div>
+                            </div>
                         <div id="ingredient-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                            <!-- JS will populate this -->
-                        </div>
+                            </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Issue Identifier & Remedy Center (Main Feature) -->
         <section id="remedy-center" class="py-20 bg-brand-bg fade-in-up">
             <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-12">
@@ -282,15 +264,12 @@
 
                 <div class="bg-white p-6 rounded-2xl shadow-2xl border-2 border-brand-primary-accent/20">
 
-                    <!-- 1. Issue Identifier Section (Main Feature) -->
                     <div class="mb-8 p-4 bg-brand-card-bg rounded-xl shadow-inner border border-brand-primary-accent/30">
                         <p id="issue-selector-heading" class="text-lg font-bold text-brand-primary-dark mb-4 text-center" data-translate="issue_selector_heading">1. Select Your Issue (8 Common Identifiers)</p>
                         <div id="issue-selector" class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                            <!-- Issue Buttons will be populated here by JS -->
-                        </div>
+                            </div>
                     </div>
                     
-                    <!-- 2. Optional: Live Camera Analysis (Collapsible) -->
                     <div class="mt-6 border-t pt-4 border-brand-subtle-text/30">
                         <div id="camera-header" class="camera-header flex justify-between items-center p-2 rounded-lg bg-brand-primary-accent/10 hover:bg-brand-primary-accent/20 transition duration-200">
                             <p id="camera-heading" class="text-lg font-semibold text-brand-primary-dark" data-translate="camera_heading">2. Optional: Simulate Live Camera Analysis (Demo)</p>
@@ -299,16 +278,13 @@
 
                         <div id="camera-content" class="camera-content hidden p-4">
                             
-                            <!-- Updated status colors (Content updated via JS) -->
                             <p id="webcam-status" class="text-sm text-amber-700 bg-amber-100 p-2 rounded-lg transition duration-300 text-center mb-4"></p>
 
-                            <!-- Video Feed and Captured Image -->
                             <div class="flex flex-col md:flex-row justify-center items-start gap-8">
                                 <div class="flex-1 w-full flex flex-col items-center">
                                     <h4 id="live-feed-heading" class="font-bold text-md mb-2 text-brand-primary-dark" data-translate="live_feed_heading">Live Feed (Selfie View)</h4>
                                     <video id="video-feed" autoplay playsinline></video>
-                                    <canvas id="captureCanvas" class="hidden"></canvas> <!-- Hidden canvas -->
-                                </div>
+                                    <canvas id="captureCanvas" class="hidden"></canvas> </div>
                                 
                                 <div class="flex-1 w-full flex flex-col items-center">
                                     <h4 id="capture-heading" class="font-bold text-md mb-2 text-brand-primary-dark" style="display: none;" data-translate="capture_frame_heading">Captured Frame</h4>
@@ -316,7 +292,6 @@
                                 </div>
                             </div>
 
-                            <!-- Control Buttons -->
                             <div class="flex flex-col sm:flex-row gap-4 justify-center mt-6">
                                 <button id="startButton" class="w-full sm:w-auto px-6 py-3 bg-brand-primary-accent text-white font-bold rounded-full transition duration-300 shadow-xl transform hover:scale-[1.02] active:scale-95" data-translate="start_button">
                                     Start Camera
@@ -328,34 +303,24 @@
                         </div>
                     </div>
                     
-                    <!-- Remedy Results Section (Dual Display) -->
                     <div id="remedy-results" class="mt-8 p-6 bg-brand-card-bg rounded-2xl shadow-2xl border-t-4 border-brand-primary-accent hidden">
-                        <!-- Common Issue Description -->
                         <div class="mb-6 pb-4 border-b border-brand-primary-dark/20">
                             <h3 class="text-2xl font-bold mb-2 text-brand-primary-dark" id="result-issue-title"></h3>
                             <p class="text-brand-subtle-text" id="result-issue-description"></p>
                         </div>
 
-                        <!-- Two Remedy Containers - Side-by-side on desktop, stacked on mobile -->
                         <div class="grid lg:grid-cols-2 gap-8">
-                            <!-- Remedy 1 Container -->
                             <div id="remedy-1-container" class="p-5 border border-brand-primary-accent/30 rounded-xl shadow-inner bg-white">
-                                <!-- Content will be populated here by JS -->
-                            </div>
-                            <!-- Remedy 2 Container -->
+                                </div>
                             <div id="remedy-2-container" class="p-5 border border-brand-primary-accent/30 rounded-xl shadow-inner bg-white">
-                                 <!-- Content will be populated here by JS -->
-                            </div>
+                                 </div>
                         </div>
                     </div>
-                    <!-- End Remedy Results Section -->
-                    
                     <div id="error-message" class="mt-4 p-3 bg-red-100 text-red-700 rounded-lg hidden"></div>
                 </div>
             </div>
         </section>
 
-        <!-- Screenshots Section (Scroll-Reveal Target) -->
         <section id="screenshots" class="py-20 bg-brand-card-bg fade-in-up">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-12">
@@ -363,7 +328,6 @@
                     <p id="screenshots-subtitle" class="mt-4 text-lg text-brand-subtle-text" data-translate="screenshots_subtitle">A visual walkthrough of the RemedySense user experience, from input to recommendation.</p>
                 </div>
                 <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <!-- Screenshot 1: Input Screen -->
                     <div class="bg-white rounded-xl shadow-xl overflow-hidden card-lift">
                         <img src="https://placehold.co/600x400/8B5C30/FCF6F0?text=1.+ISSUE+IDENTIFIER%0A%0A%E2%9C%85+Select+from+8+Common+Issues" alt="User Input Screen" class="w-full h-48 object-cover">
                         <div class="p-6">
@@ -371,7 +335,6 @@
                             <p class="text-sm text-brand-subtle-text mt-2" data-translate="screenshot_1_desc">Users can quickly select their primary skin concern from a set of common conditions.</p>
                         </div>
                     </div>
-                    <!-- Screenshot 2: Results Screen -->
                     <div class="bg-white rounded-xl shadow-xl overflow-hidden card-lift">
                         <img src="https://placehold.co/600x400/A16A42/3C3224?text=2.+MODEL+PREDICTS%0A%0A%E2%9C%85+Properties+%26+Top+Ingredients" alt="Results Screen" class="w-full h-48 object-cover">
                         <div class="p-6">
@@ -379,7 +342,6 @@
                             <p class="text-sm text-brand-subtle-text mt-2" data-translate="screenshot_2_desc">A clear, ranked list of suggested remedies based on the user's profile or selected issue.</p>
                         </div>
                     </div>
-                    <!-- Screenshot 3: Details Screen -->
                     <div class="bg-white rounded-xl shadow-xl overflow-hidden card-lift">
                         <img src="https://placehold.co/600x400/8B5C30/FCF6F0?text=3.+REMEDY+DELIVERED%0A%0A%E2%9C%85+Instructions+%26+Benefits" alt="Details Screen" class="w-full h-48 object-cover">
                         <div class="p-6">
@@ -393,7 +355,6 @@
 
     </main>
     
-    <!-- Footer -->
     <footer class="bg-brand-primary-dark text-brand-card-bg">
         <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center">
             <p id="footer-text" data-translate="footer_text">&copy; 2025 RemedySense Project. Aesthetic Brown Theme Applied.</p>
@@ -1173,6 +1134,11 @@
             window.addEventListener('scroll', checkScroll);
             window.addEventListener('resize', checkScroll);
             checkScroll(); // Check on load
+            
+            // FIX: Ensure page starts at the very top on initial load (without hash)
+            if (window.location.hash === '') {
+                window.scrollTo(0, 0); 
+            }
         });
     </script>
 </body>
