@@ -52,12 +52,16 @@
             @apply flex justify-center py-4 text-[#38761D] font-bold;
         }
 
-        /* Scroll-Reveal Animation Styles */
+        /* Scroll-Reveal Animation Styles (FIXED FOR GITHUB PAGES) 
+           The elements are set to be visible immediately (opacity: 1) to prevent 
+           them from being permanently hidden if JS fails to run. 
+        */
         .fade-in-up {
-            opacity: 0;
-            transform: translateY(30px);
+            opacity: 1; /* FIXED: Ensure visibility */
+            transform: translateY(0); /* FIXED: Ensure visibility */
             transition: opacity 1s ease-out, transform 0.8s ease-out;
         }
+        /* The .is-visible class is now redundant but kept for cleanliness */
         .fade-in-up.is-visible {
             opacity: 1;
             transform: translateY(0);
@@ -86,12 +90,6 @@
             object-fit: cover;
             margin: 0 auto;
             display: none;
-            /* Sample images don't need to be flipped, but the webcam capture does. 
-               We'll handle flip logic inside JS for captured image, and keep it off 
-               for sample images (which are not generated via flip). For placehold, 
-               no flip is needed. For consistency, let's remove the scaleX(-1) 
-               from captured-image style and only apply to video-feed.
-            */
         }
 
         /* Custom Styles for Filter Buttons (Ingredient Explorer) */
@@ -434,8 +432,8 @@
                 remedy_center_title: "🌿 Find Your Tailored Remedy",
                 remedy_center_subtitle: "Select your skin concern below (Issue Identifier) to receive a customized, natural remedy instantly.",
                 issue_selector_heading: "1. Select Your Issue (9 Common Identifiers)",
-                camera_heading_visible: "2. Simulate Skin Analysis (Live or Sample)", // UPDATED
-                sample_image_heading: "OR: Select a Sample Image for Analysis", // NEW
+                camera_heading_visible: "2. Simulate Skin Analysis (Live or Sample)", 
+                sample_image_heading: "OR: Select a Sample Image for Analysis", 
                 live_feed_heading: "Live Feed (Selfie View)",
                 capture_frame_heading: "Captured Frame",
                 start_button: "Start Camera",
@@ -477,8 +475,8 @@
                 // Property Keys
                 prop_anti_inflammatory: "Anti-inflammatory",
                 prop_antioxidant: "Antioxidant",
-                prop_moisturizing: "Moisturizing", // Added for ingredient explorer
-                prop_antibacterial: "Antibacterial", // Added for ingredient explorer
+                prop_moisturizing: "Moisturizing", 
+                prop_antibacterial: "Antibacterial", 
 
                 // Ingredient Names & Descriptions
                 ing_aloe_vera: "Aloe Vera",
@@ -494,7 +492,6 @@
                 ing_rose_water: "Rose Water",
                 
                 // Descriptions and Remedies (Truncated for brevity, assuming existing long content is there)
-                // ... (existing translations for all remedies) ...
                 desc_acne: "Acne is characterized by inflamed or non-inflamed lesions (pimples, blackheads) caused by excess oil and bacteria. Requires strong anti-inflammatory and oil-balancing properties.",
                 remedy_acne_1_name: "Tea Tree Oil Spot Treatment",
                 remedy_acne_1_desc: "A potent, natural antiseptic and anti-inflammatory blend to target active breakouts and reduce redness.",
@@ -534,8 +531,8 @@
                 remedy_center_title: "🌿 உங்கள் தனிப்பயனாக்கப்பட்ட சிகிச்சையைக் கண்டறியவும்",
                 remedy_center_subtitle: "உடனடியாக தனிப்பயனாக்கப்பட்ட, இயற்கையான சிகிச்சையைப் பெற கீழே உங்கள் தோல் கவலையைத் தேர்ந்தெடுக்கவும் (சிக்கல் அடையாளங்காட்டி).",
                 issue_selector_heading: "1. உங்கள் சிக்கலைத் தேர்ந்தெடுக்கவும் (9 பொதுவான அடையாளங்காட்டிகள்)",
-                camera_heading_visible: "2. நேரடி அல்லது மாதிரித் தோல் பகுப்பாய்வை உருவகப்படுத்தவும்", // UPDATED
-                sample_image_heading: "அல்லது: பகுப்பாய்வுக்கு ஒரு மாதிரிப் படத்தைத் தேர்ந்தெடுக்கவும்", // NEW
+                camera_heading_visible: "2. நேரடி அல்லது மாதிரித் தோல் பகுப்பாய்வை உருவகப்படுத்தவும்", 
+                sample_image_heading: "அல்லது: பகுப்பாய்வுக்கு ஒரு மாதிரிப் படத்தைத் தேர்ந்தெடுக்கவும்", 
                 live_feed_heading: "நேரடி ஊட்டல் (செல்ஃபி பார்வை)",
                 capture_frame_heading: "பிடிக்கப்பட்ட சட்டகம்",
                 start_button: "கேமராவைத் தொடங்கு",
@@ -611,15 +608,11 @@
         
         // --- NEW: SAMPLE IMAGE DATA ---
         const sampleImages = {
-            issue_acne: { src: 'https://skininspire.co.uk/wp-content/uploads/2023/07/acne-treatments.webp' },
-            issue_redness: { src: 'https://tse3.mm.bing.net/th/id/OIP.C3juCBn4zDjwOfXisBQvzwHaEJ?pid=Api&P=0&h=180' },
-            issue_dryness: { src: 'https://i.ytimg.com/vi/2iOthk7SDlY/maxresdefault.jpg' },
-            issue_darkspots: { src: 'https://www.kosmoderma.com/wp-content/uploads/2025/08/closeup-asian-woman-with-dark-spots-freckles-problems-scaled.jpg' },
-            issue_sunburn: { src: 'https://tse2.mm.bing.net/th/id/OIP.6WyfaKJt8K_D9Df1-rOKuwHaFy?pid=Api&P=0&h=180' },
-            issue_oily&pores: {src: 'https://tse1.mm.bing.net/th/id/OIP.oQSVL3Jip6p0kmy9u99tSgHaEz?pid=Api&P=0&h=180' },
-            issue_cloggedpores: {src: 'http://getmademan.com/cdn/shop/articles/clogged_ports.jpg?v=1639506814' },
-            issue_wrinkles: {src: 'https://www.womensalphabet.com/wp-content/uploads/2020/10/forehead-wrinkles.jpg' },
-            issue_eczema: {src: 'https://media-pierre-fabre.wedia-group.com/api/wedia/dam/transform/u5wa3z31qn5se9mger5maqqna6kwhzxeoyjydge/Woman%20with%20eczema%20on%20the%20face?t=crop&width=1.000&height=1.000' },
+            issue_acne: { src: 'https://placehold.co/100x70/6AA84F/fff?text=ACNE' },
+            issue_redness: { src: 'https://placehold.co/100x70/C28B38/fff?text=REDNESS' },
+            issue_dryness: { src: 'https://placehold.co/100x70/38761D/fff?text=DRYNESS' },
+            issue_darkspots: { src: 'https://placehold.co/100x70/60735E/fff?text=SPOTS' },
+            issue_sunburn: { src: 'https://placehold.co/100x70/A4C639/fff?text=SUNBURN' },
         };
         // NOTE: In a real deployment, replace placehold.co links with your own hosted, small sample images.
 
@@ -1080,7 +1073,7 @@
             // 2. Re-render dynamic elements
             renderIssueSelection(currentLang);
             renderIngredientFilters(currentLang);
-            renderSampleImages(currentLang); // NEW: Re-render sample images
+            renderSampleImages(currentLang); 
             
             // Re-render remedy results if they are visible
             const resultsDiv = document.getElementById('remedy-results');
@@ -1183,7 +1176,6 @@
             updateLanguage(currentLang);
             renderChart(currentLang);
             updateStatus(translations[currentLang].status_initial, 'text-brand-primary-dark bg-brand-card-bg');
-            // renderSampleImages(currentLang); // Called inside updateLanguage
 
             // Language Selector Change Listener
             document.getElementById('language-selector').addEventListener('change', (e) => {
@@ -1196,21 +1188,9 @@
             captureButton.addEventListener('click', captureFrame);
 
             // --- Scroll Reveal Logic ---
-            const elements = document.querySelectorAll('.fade-in-up');
+            // Removed this section for better stability on GitHub Pages
+            // The CSS fix above ensures all sections are visible immediately.
             
-            function checkScroll() {
-                const windowHeight = window.innerHeight;
-                elements.forEach(el => {
-                    const elTop = el.getBoundingClientRect().top;
-                    if (elTop < windowHeight * 0.85) {
-                        el.classList.add('is-visible');
-                    }
-                });
-            }
-
-            window.addEventListener('scroll', checkScroll);
-            window.addEventListener('resize', checkScroll);
-            checkScroll(); // Check on load
         });
     </script>
 </body>
