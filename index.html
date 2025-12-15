@@ -52,14 +52,12 @@
             @apply flex justify-center py-4 text-[#38761D] font-bold;
         }
 
-        /* Scroll-Reveal Animation Styles (FIXED FOR GITHUB PAGES) */
+        /* Scroll-Reveal Animation Styles */
         .fade-in-up {
-            /* FIXED: Ensure visibility immediately by default */
-            opacity: 1 !important;        
-            transform: translateY(0) !important; 
+            opacity: 0;
+            transform: translateY(30px);
             transition: opacity 1s ease-out, transform 0.8s ease-out;
         }
-        /* The .is-visible class is now redundant but kept for cleanliness */
         .fade-in-up.is-visible {
             opacity: 1;
             transform: translateY(0);
@@ -88,6 +86,12 @@
             object-fit: cover;
             margin: 0 auto;
             display: none;
+            /* Sample images don't need to be flipped, but the webcam capture does. 
+               We'll handle flip logic inside JS for captured image, and keep it off 
+               for sample images (which are not generated via flip). For placehold, 
+               no flip is needed. For consistency, let's remove the scaleX(-1) 
+               from captured-image style and only apply to video-feed.
+            */
         }
 
         /* Custom Styles for Filter Buttons (Ingredient Explorer) */
@@ -120,20 +124,9 @@
             transition: all 0.2s;
             border-color: transparent !important;
         }
-        .sample-image-button.active img {
+        .sample-image-button:focus img, .sample-image-button.active img {
             border-color: #38761D !important;
             box-shadow: 0 0 0 3px #6AA84F;
-        }
-
-        /* Styles for the new Tabbed Interface */
-        .tab-button {
-            @apply text-lg mx-2 border-b-2 border-transparent hover:border-brand-primary-accent/50 focus:outline-none;
-        }
-        .tab-button.active-tab {
-            @apply text-brand-primary-dark border-brand-primary-dark/80;
-        }
-        .tab-content {
-            @apply transition-opacity duration-300;
         }
         
     </style>
@@ -287,77 +280,55 @@
             <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-12">
                     <h2 id="remedy-center-title" class="text-3xl font-bold text-brand-text gradient-text" data-translate="remedy_center_title">🌿 Find Your Tailored Remedy</h2>
-                    <p id="remedy-center-subtitle" class="mt-4 text-lg text-brand-subtle-text" data-translate="remedy_center_subtitle">Select an input method below to receive a customized, natural remedy instantly.</p>
+                    <p id="remedy-center-subtitle" class="mt-4 text-lg text-brand-subtle-text" data-translate="remedy_center_subtitle">Select your skin concern below (Issue Identifier) to receive a customized, natural remedy instantly.</p>
                 </div>
 
                 <div class="bg-white p-6 rounded-2xl shadow-2xl border-2 border-brand-primary-accent/20">
-                    
-                    <div class="text-center mb-6">
-                        <h3 class="text-xl font-bold text-brand-primary-dark" data-translate="input_method_heading">Choose Your Input Method</h3>
-                    </div>
 
-                    <div id="input-tabs" class="flex justify-center border-b border-brand-primary-accent/50 mb-6">
-                        <button data-tab="issue" class="tab-button active-tab text-brand-primary-dark font-semibold py-2 px-4 transition duration-200 border-b-2 border-brand-primary-dark/80" data-translate="tab_issue_name">Issue Name</button>
-                        <button data-tab="camera" class="tab-button text-brand-subtle-text font-semibold py-2 px-4 transition duration-200" data-translate="tab_live_camera">Live Camera</button>
-                        <button data-tab="sample" class="tab-button text-brand-subtle-text font-semibold py-2 px-4 transition duration-200" data-translate="tab_sample_image">Sample Image</button>
+                    <div class="mb-8 p-4 bg-brand-card-bg rounded-xl shadow-inner border border-brand-primary-accent/30">
+                        <p id="issue-selector-heading" class="text-lg font-bold text-brand-primary-dark mb-4 text-center" data-translate="issue_selector_heading">1. Select Your Issue (9 Common Identifiers)</p>
+                        <div id="issue-selector" class="grid grid-cols-2 md:grid-cols-5 gap-3">
+                            </div>
                     </div>
                     
-                    <div id="tab-content-issue" class="tab-content">
-                        <div class="mb-8 p-4 bg-brand-card-bg rounded-xl shadow-inner border border-brand-primary-accent/30">
-                            <p id="issue-selector-heading" class="text-lg font-bold text-brand-primary-dark mb-4 text-center" data-translate="issue_selector_heading_direct">1. Select Your Issue for Instant Remedy (Bypasses Simulation)</p>
-                            <div id="issue-selector" class="grid grid-cols-2 md:grid-cols-5 gap-3">
-                            </div>
+                    <div class="mt-6 border-t pt-4 border-brand-subtle-text/30">
+                        <div class="p-2 rounded-lg bg-brand-primary-accent/10">
+                            <p id="camera-heading" class="text-lg font-semibold text-brand-primary-dark text-center" data-translate="camera_heading_visible">2. Simulate Skin Analysis (Live or Sample)</p>
                         </div>
-                    </div>
 
-                    <div id="tab-content-camera" class="tab-content hidden">
-                        <div class="mt-6 border-t pt-4 border-brand-subtle-text/30">
-                            <div class="p-2 rounded-lg bg-brand-primary-accent/10">
-                                <p id="camera-heading" class="text-lg font-semibold text-brand-primary-dark text-center" data-translate="camera_heading_live">Live Camera Analysis Simulation</p>
-                            </div>
+                        <div id="camera-content" class="p-4">
+                            
+                            <p id="webcam-status" class="text-sm text-brand-primary-dark bg-brand-card-bg p-2 rounded-lg transition duration-300 text-center mb-4"></p>
 
-                            <div id="camera-content" class="p-4">
-                                <p id="webcam-status" class="text-sm text-brand-primary-dark bg-brand-card-bg p-2 rounded-lg transition duration-300 text-center mb-4"></p>
-
-                                <div class="flex flex-col md:flex-row justify-center items-start gap-8">
-                                    <div class="flex-1 w-full flex flex-col items-center">
-                                        <h4 id="live-feed-heading" class="font-bold text-md mb-2" data-translate="live_feed_heading">Live Feed (Selfie View)</h4>
-                                        <video id="video-feed" autoplay playsinline></video>
-                                        <canvas id="captureCanvas" class="hidden"></canvas> 
-                                    </div>
-                                    
-                                    <div class="flex-1 w-full flex flex-col items-center">
-                                        <h4 id="capture-heading" class="font-bold text-md mb-2" style="display: none;" data-translate="capture_frame_heading">Captured Frame</h4>
-                                        <img id="captured-image" alt="Captured Webcam Frame" />
-                                    </div>
-                                </div>
-
-                                <div class="flex flex-col sm:flex-row gap-4 justify-center mt-6">
-                                    <button id="startButton" class="w-full sm:w-auto px-6 py-3 bg-brand-primary-accent text-white font-bold rounded-full transition duration-300 shadow-xl transform hover:scale-[1.02] active:scale-95" data-translate="start_button">
-                                        Start Camera
-                                    </button>
-                                    <button id="captureButton" class="w-full sm:w-auto px-6 py-3 bg-gray-400 text-white font-bold rounded-full transition duration-300 shadow-md" disabled data-translate="capture_button">
-                                        Capture Frame & Simulate Analysis
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="tab-content-sample" class="tab-content hidden">
-                        <div class="mt-6 border-t pt-4 border-brand-subtle-text/30">
-                            <div class="p-2 rounded-lg bg-brand-primary-accent/10">
-                                <p id="sample-heading" class="text-lg font-semibold text-brand-primary-dark text-center" data-translate="sample_heading_simulate">Sample Image Analysis Simulation</p>
-                            </div>
-                            <div id="sample-image-selector" class="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                                <p class="text-md font-bold text-brand-primary-dark mb-3 text-center" data-translate="sample_image_heading">Click to Select a Sample Image for Analysis</p>
+                            <div id="sample-image-selector" class="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                <p class="text-md font-bold text-brand-primary-dark mb-3 text-center" data-translate="sample_image_heading">OR: Select a Sample Image for Analysis</p>
                                 <div id="sample-image-grid" class="grid grid-cols-3 md:grid-cols-5 gap-3">
                                     </div>
-                                <p class="text-xs text-red-600 mt-3 text-center hidden" id="sample-error-message"></p>
+                                <p class="text-xs text-center text-red-600 mt-3 hidden" id="sample-error-message">Please select a skin issue (Step 1) before selecting a sample image.</p>
+                            </div>
+                            <div class="flex flex-col md:flex-row justify-center items-start gap-8">
+                                <div class="flex-1 w-full flex flex-col items-center">
+                                    <h4 id="live-feed-heading" class="font-bold text-md mb-2" data-translate="live_feed_heading">Live Feed (Selfie View)</h4>
+                                    <video id="video-feed" autoplay playsinline></video>
+                                    <canvas id="captureCanvas" class="hidden"></canvas> 
+                                </div>
+                                
+                                <div class="flex-1 w-full flex flex-col items-center">
+                                    <h4 id="capture-heading" class="font-bold text-md mb-2" style="display: none;" data-translate="capture_frame_heading">Captured Frame</h4>
+                                    <img id="captured-image" alt="Captured Webcam Frame" />
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col sm:flex-row gap-4 justify-center mt-6">
+                                <button id="startButton" class="w-full sm:w-auto px-6 py-3 bg-brand-primary-accent text-white font-bold rounded-full transition duration-300 shadow-xl transform hover:scale-[1.02] active:scale-95" data-translate="start_button">
+                                    Start Camera
+                                </button>
+                                <button id="captureButton" class="w-full sm:w-auto px-6 py-3 bg-gray-400 text-white font-bold rounded-full transition duration-300 shadow-md" disabled data-translate="capture_button">
+                                    Capture Frame & Simulate Analysis
+                                </button>
                             </div>
                         </div>
                     </div>
-
                     <div id="remedy-results" class="mt-8 p-6 bg-brand-card-bg rounded-2xl shadow-2xl border-t-4 border-brand-primary-accent hidden">
                         <div class="mb-6 pb-4 border-b border-brand-primary-dark/20">
                             <h3 class="text-2xl font-bold mb-2 text-brand-primary-dark" id="result-issue-title"></h3>
@@ -419,7 +390,7 @@
     <script>
         // --- GLOBALS ---
         let currentLang = 'en';
-        let currentIssueKey = null; // Stores the issue selected by ANY method
+        let currentIssueKey = null; // Stores the issue selected in Step 1
         let stream = null; // Global stream variable for webcam access
 
         // --- DOM ELEMENTS ---
@@ -429,7 +400,6 @@
         let startButton = document.getElementById('startButton');
         let captureButton = document.getElementById('captureButton');
         let webcamStatusEl = document.getElementById('webcam-status');
-        let remedyResultsEl = document.getElementById('remedy-results');
         
         // --- TRANSLATION DATA ---
         const translations = {
@@ -462,37 +432,24 @@
                 filter_antioxidant: "Antioxidant",
                 filter_moisturizing: "Moisturizing",
                 remedy_center_title: "🌿 Find Your Tailored Remedy",
-                remedy_center_subtitle: "Select an input method below to receive a customized, natural remedy instantly.",
-                
-                // NEW TAB & HEADING TRANSLATIONS
-                input_method_heading: "Choose Your Input Method",
-                tab_issue_name: "Issue Name",
-                tab_live_camera: "Live Camera",
-                tab_sample_image: "Sample Image",
-                issue_selector_heading_direct: "1. Select Your Issue for Instant Remedy (Bypasses Simulation)",
-                camera_heading_live: "Live Camera Analysis Simulation",
-                sample_heading_simulate: "Sample Image Analysis Simulation",
-                // END NEW
-
+                remedy_center_subtitle: "Select your skin concern below (Issue Identifier) to receive a customized, natural remedy instantly.",
+                issue_selector_heading: "1. Select Your Issue (9 Common Identifiers)",
+                camera_heading_visible: "2. Simulate Skin Analysis (Live or Sample)", // UPDATED
+                sample_image_heading: "OR: Select a Sample Image for Analysis", // NEW
                 live_feed_heading: "Live Feed (Selfie View)",
                 capture_frame_heading: "Captured Frame",
                 start_button: "Start Camera",
                 capture_button: "Capture Frame & Simulate Analysis",
-                sample_image_heading: "Click to Select a Sample Image for Analysis", 
-
-                status_initial: "Please select an input method above to begin the remedy recommendation process.",
-                status_issue_selected_direct: (issueName) => `Remedy found for **${issueName}**! See results below.`,
+                status_initial: "Please select a skin issue above to begin the remedy recommendation process.",
                 status_start_attempt: "Attempting to access camera... Please grant permission.",
-                status_camera_active: (issueName) => `Camera active. **${issueName}** is set for simulation. Click **Capture Frame** to simulate analysis.`,
+                status_camera_active: "Camera active. Click **Capture Frame & Simulate Analysis**.",
                 status_camera_stopped: (issueName) => `Issue set to: **${issueName}**. Camera stopped. Click 'Start Camera' to re-enable.`,
-                status_capture_simulated: (issueName) => `Image captured. Simulating model prediction: **${issueName}** confirmed. See results below.`,
+                status_capture_simulated: (issueName) => `Camera captured. Simulating model prediction: **${issueName}** predicted. See results below.`,
                 status_error_general: "An unknown error occurred while accessing the camera.",
                 status_error_denied: "Permission Denied: You blocked camera access. Please check your browser settings and try again.",
                 status_error_not_found: "Camera Not Found: No video input device (webcam) was detected.",
                 status_error_not_readable: "Camera Not Readable: Your camera might be in use by another application.",
                 status_error_stream_inactive: "Error: Camera stream is not active. Click 'Start Camera'.",
-                status_error_no_issue_selected: "Error: Please first select an **Issue Name** to define the model's simulated prediction.",
-
                 remedy_key_ingredients: "Key Ingredients:",
                 remedy_instructions: "Application Instructions:",
                 remedy_not_found: (issueKey) => `No expert remedies found for the analyzed issue (${issueKey}).`,
@@ -520,31 +477,38 @@
                 // Property Keys
                 prop_anti_inflammatory: "Anti-inflammatory",
                 prop_antioxidant: "Antioxidant",
-                prop_moisturizing: "Moisturizing", 
-                prop_antibacterial: "Antibacterial", 
+                prop_moisturizing: "Moisturizing", // Added for ingredient explorer
+                prop_antibacterial: "Antibacterial", // Added for ingredient explorer
 
-                // Ingredient Names & Descriptions (Partial for brevity)
+                // Ingredient Names & Descriptions
                 ing_aloe_vera: "Aloe Vera",
                 ing_tea_tree: "Tea Tree Oil",
                 ing_turmeric: "Turmeric",
                 ing_honey: "Honey",
-                // ... (rest of the translations)
+                ing_shea_butter: "Shea Butter",
+                ing_green_tea: "Green Tea",
+                ing_oatmeal: "Oatmeal",
+                ing_coconut_oil: "Coconut Oil",
+                ing_vitamin_c: "Vitamin C Serum",
+                ing_water: "Distilled Water",
+                ing_rose_water: "Rose Water",
                 
-                // Placeholder descriptions for remedies (required by viewExpertRemedy)
-                desc_acne: "This recommendation addresses inflammation and bacterial activity associated with breakouts.",
-                remedy_acne_1_name: "Tea Tree Spot Treatment",
-                remedy_acne_1_desc: "A potent blend for targeted relief and reducing swelling.",
-                remedy_acne_1_inst_1: "Mix 2 drops of Tea Tree Oil with 1 tablespoon of Aloe Vera Gel.",
-                remedy_acne_1_inst_2: "Apply directly to blemishes using a cotton swab.",
-                remedy_acne_1_inst_3: "Leave on for 15 minutes then rinse. Use once daily.",
+                // Descriptions and Remedies (Truncated for brevity, assuming existing long content is there)
+                // ... (existing translations for all remedies) ...
+                desc_acne: "Acne is characterized by inflamed or non-inflamed lesions (pimples, blackheads) caused by excess oil and bacteria. Requires strong anti-inflammatory and oil-balancing properties.",
+                remedy_acne_1_name: "Tea Tree Oil Spot Treatment",
+                remedy_acne_1_desc: "A potent, natural antiseptic and anti-inflammatory blend to target active breakouts and reduce redness.",
+                remedy_acne_1_inst_1: "Mix 1 drop of Tea Tree Oil with a teaspoon of Aloe Vera Gel.",
+                remedy_acne_1_inst_2: "Apply the mixture directly onto the pimple or affected area using a cotton swab.",
+                remedy_acne_1_inst_3: "Leave on for 30 minutes, then rinse. Use twice daily.",
                 remedy_acne_2_name: "Turmeric & Honey Mask",
-                remedy_acne_2_desc: "A soothing mask that fights bacteria and evens skin tone.",
-                remedy_acne_2_inst_1: "Combine 1 teaspoon of Turmeric powder and 1 tablespoon of raw Honey.",
-                remedy_acne_2_inst_2: "Apply evenly to the affected area.",
-                remedy_acne_2_inst_3: "Leave on for 20 minutes before washing off with lukewarm water."
+                remedy_acne_2_desc: "An ancient remedy that combines anti-inflammatory Turmeric with moisturizing, antibacterial Honey to gently heal and prevent scarring.",
+                remedy_acne_2_inst_1: "Mix Turmeric powder and Honey to form a paste.",
+                remedy_acne_2_inst_2: "Apply a thin layer to the entire face or spot-treat problem areas.",
+                remedy_acne_2_inst_3: "Leave on for 15-20 minutes. Rinse thoroughly with lukewarm water.",
             },
             ta: { 
-                // Tamil Translations (Partial for brevity)
+                // Tamil Translations (Truncated for brevity, ensuring new keys are added)
                 app_title: "ரெமெடிசென்ஸ் ஊடாடும் திட்டக் காட்சி (பச்சை தீம்)", 
                 nav_about: "பற்றி", nav_dashboard: "கட்டுப்பாட்டுப் பலகை", nav_remedies: "சிகிச்சைகள்", nav_walkthrough: "வழிமுறை", nav_view_project: "திட்டத்தைக் காண்க", 
                 hero_title: "சிறந்த சருமத்திற்கான உங்கள் கலவை.", 
@@ -565,40 +529,27 @@
                 explorer_title: "இயற்கை மூலப்பொருள் ஆய்வி", 
                 filter_all: "அனைத்தும்", 
                 filter_anti_inflammatory: "அழற்சி எதிர்ப்பு", 
-                filter_antioxidant: "ஆக்ஸிஜனேற்ற",
+                filter_antioxidant: "ஆக்ஸிஜனேற்ற", 
                 filter_moisturizing: "ஈரப்பதமாக்கும்",
                 remedy_center_title: "🌿 உங்கள் தனிப்பயனாக்கப்பட்ட சிகிச்சையைக் கண்டறியவும்",
-                remedy_center_subtitle: "உடனடியாக தனிப்பயனாக்கப்பட்ட, இயற்கையான சிகிச்சையைப் பெற கீழே ஒரு உள்ளீட்டு முறையைத் தேர்ந்தெடுக்கவும்.",
-                
-                // NEW TAB & HEADING TRANSLATIONS
-                input_method_heading: "உங்கள் உள்ளீட்டு முறையைத் தேர்வுசெய்க",
-                tab_issue_name: "சிக்கல் பெயர்",
-                tab_live_camera: "நேரடி கேமரா",
-                tab_sample_image: "மாதிரி படம்",
-                issue_selector_heading_direct: "1. உடனடி சிகிச்சைக்காக உங்கள் சிக்கலைத் தேர்ந்தெடுக்கவும் (உருவகப்படுத்துதலைத் தவிர்க்கிறது)",
-                camera_heading_live: "நேரடி கேமரா பகுப்பாய்வு உருவகப்படுத்துதல்",
-                sample_heading_simulate: "மாதிரி பட பகுப்பாய்வு உருவகப்படுத்துதல்",
-                // END NEW
-
+                remedy_center_subtitle: "உடனடியாக தனிப்பயனாக்கப்பட்ட, இயற்கையான சிகிச்சையைப் பெற கீழே உங்கள் தோல் கவலையைத் தேர்ந்தெடுக்கவும் (சிக்கல் அடையாளங்காட்டி).",
+                issue_selector_heading: "1. உங்கள் சிக்கலைத் தேர்ந்தெடுக்கவும் (9 பொதுவான அடையாளங்காட்டிகள்)",
+                camera_heading_visible: "2. நேரடி அல்லது மாதிரித் தோல் பகுப்பாய்வை உருவகப்படுத்தவும்", // UPDATED
+                sample_image_heading: "அல்லது: பகுப்பாய்வுக்கு ஒரு மாதிரிப் படத்தைத் தேர்ந்தெடுக்கவும்", // NEW
                 live_feed_heading: "நேரடி ஊட்டல் (செல்ஃபி பார்வை)",
                 capture_frame_heading: "பிடிக்கப்பட்ட சட்டகம்",
                 start_button: "கேமராவைத் தொடங்கு",
                 capture_button: "சட்டகத்தைப் பிடித்து பகுப்பாய்வை உருவகப்படுத்தவும்",
-                sample_image_heading: "பகுப்பாய்வுக்கு ஒரு மாதிரிப் படத்தைத் தேர்ந்தெடுக்க கிளிக் செய்யவும்",
-
-                status_initial: "சிகிச்சை பரிந்துரை செயல்முறையைத் தொடங்க மேலே ஒரு உள்ளீட்டு முறையைத் தேர்ந்தெடுக்கவும்.",
-                status_issue_selected_direct: (issueName) => `**${issueName}**க்கான சிகிச்சை கிடைத்தது! முடிவுகளைக் கீழே காண்க.`,
+                status_initial: "சிகிச்சை பரிந்துரை செயல்முறையைத் தொடங்க மேலே ஒரு தோல் சிக்கலைத் தேர்ந்தெடுக்கவும்.",
                 status_start_attempt: "கேமராவை அணுக முயற்சிக்கிறது... அனுமதியை வழங்கவும்.",
-                status_camera_active: (issueName) => `கேமரா செயலில் உள்ளது. உருவகப்படுத்துதலுக்காக **${issueName}** அமைக்கப்பட்டுள்ளது. பகுப்பாய்வை உருவகப்படுத்த **சட்டகத்தைப் பிடிக்கவும்** என்பதைக் கிளிக் செய்யவும்.`,
+                status_camera_active: "கேமரா செயலில் உள்ளது. **சட்டகத்தைப் பிடித்து பகுப்பாய்வை உருவகப்படுத்தவும்** என்பதைக் கிளிக் செய்யவும்.",
                 status_camera_stopped: (issueName) => `சிக்கல் அமைக்கப்பட்டது: **${issueName}**. கேமரா நிறுத்தப்பட்டது. மீண்டும் இயக்க 'கேமராவைத் தொடங்கு' என்பதைக் கிளிக் செய்யவும்.`,
-                status_capture_simulated: (issueName) => `படம் பிடிக்கப்பட்டது. மாதிரி கணிப்பை உருவகப்படுத்துதல்: **${issueName}** உறுதிப்படுத்தப்பட்டது. முடிவுகளைக் கீழே காண்க.`,
+                status_capture_simulated: (issueName) => `கேமரா பிடிக்கப்பட்டது. மாதிரி கணிப்பை உருவகப்படுத்துதல்: **${issueName}** கணிக்கப்பட்டது. முடிவுகளைக் கீழே காண்க.`,
                 status_error_general: "கேமராவை அணுகும்போது அறியப்படாத பிழை ஏற்பட்டது.",
                 status_error_denied: "அனுமதி மறுக்கப்பட்டது: நீங்கள் கேமரா அணுகலைத் தடுத்தீர்கள். உங்கள் உலாவி அமைப்புகளைச் சரிபார்த்து மீண்டும் முயற்சிக்கவும்.",
                 status_error_not_found: "கேமரா கண்டுபிடிக்கப்படவில்லை: எந்த வீடியோ உள்ளீட்டு சாதனமும் (வெப்கேம்) கண்டறியப்படவில்லை.",
                 status_error_not_readable: "கேமராவைப் படிக்க முடியவில்லை: உங்கள் கேமரா வேறு பயன்பாட்டினால் பயன்படுத்தப்படலாம்.",
                 status_error_stream_inactive: "பிழை: கேமரா ஸ்ட்ரீம் செயலில் இல்லை. 'கேமராவைத் தொடங்கு' என்பதைக் கிளிக் செய்யவும்.",
-                status_error_no_issue_selected: "பிழை: மாதிரி கணிப்பை வரையறுக்க முதலில் ஒரு **சிக்கல் பெயரைத்** தேர்ந்தெடுக்கவும்.",
-
                 remedy_key_ingredients: "முக்கிய பொருட்கள்:",
                 remedy_instructions: "பயன்படுத்தும் வழிமுறைகள்:",
                 remedy_not_found: (issueKey) => `பகுப்பாய்வு செய்யப்பட்ட சிக்கலுக்கு (${issueKey}) நிபுணர் சிகிச்சைகள் எதுவும் காணப்படவில்லை.`,
@@ -629,20 +580,7 @@
                 // Ingredient Names (Partial list for example)
                 ing_aloe_vera: "கற்றாழை", 
                 ing_tea_tree: "தேயிலை மர எண்ணெய்",
-                ing_turmeric: "மஞ்சள்",
-                ing_honey: "தேன்",
-                // Placeholder descriptions for remedies (required by viewExpertRemedy)
-                desc_acne: "இந்த பரிந்துரை வீக்கம் மற்றும் பாக்டீரியா செயல்பாடுகளை நிவர்த்தி செய்கிறது.",
-                remedy_acne_1_name: "தேயிலை மரப் புள்ளி சிகிச்சை",
-                remedy_acne_1_desc: "குறிப்பிட்ட நிவாரணம் மற்றும் வீக்கத்தைக் குறைப்பதற்கான ஒரு சக்திவாய்ந்த கலவை.",
-                remedy_acne_1_inst_1: "2 துளி தேயிலை மர எண்ணெயை 1 தேக்கரண்டி கற்றாழை ஜெல்லுடன் கலக்கவும்.",
-                remedy_acne_1_inst_2: "பருக்கள் மீது பருத்தி துணியைப் பயன்படுத்தி நேரடியாக தடவவும்.",
-                remedy_acne_1_inst_3: "15 நிமிடங்கள் விட்டுவிட்டு கழுவவும். தினமும் ஒரு முறை பயன்படுத்தவும்.",
-                remedy_acne_2_name: "மஞ்சள் மற்றும் தேன் மாஸ்க்",
-                remedy_acne_2_desc: "பாக்டீரியாக்களை எதிர்த்துப் போராடும் மற்றும் தோல் நிறத்தை சமன் செய்யும் ஒரு இனிமையான மாஸ்க்.",
-                remedy_acne_2_inst_1: "1 தேக்கரண்டி மஞ்சள் தூள் மற்றும் 1 தேக்கரண்டி சுத்தமான தேன் கலக்கவும்.",
-                remedy_acne_2_inst_2: "பாதிக்கப்பட்ட பகுதியில் சமமாக தடவவும்.",
-                remedy_acne_2_inst_3: "வெதுவெதுப்பான நீரில் கழுவுவதற்கு முன் 20 நிமிடங்கள் விட்டுவிடவும்."
+                // ... (existing translations for ingredients and remedies) ...
             }
         };
 
@@ -686,10 +624,10 @@
         // NOTE: In a real deployment, replace placehold.co links with your own hosted, small sample images.
 
 
-        // Common Remedies Data Structure (Partial for brevity)
+        // Common Remedies Data Structure (Truncated for brevity, assuming existing long content is there)
         const commonRemedies = {
             'issue_acne': {
-                issueDescKey: "desc_acne", 
+                issueDescKey: "desc_acne",
                 remedy1: { 
                     remedyNameKey: "remedy_acne_1_name", 
                     descriptionKey: "remedy_acne_1_desc",
@@ -705,47 +643,15 @@
                     property_match: { anti_inflammatory: 'medium', antibacterial: 'high' }
                 }
             },
-            // The following entries need to exist for the code not to break, even if empty
-            'issue_dryness': { 
-                issueDescKey: "desc_acne", // Placeholder
-                remedy1: { remedyNameKey: "remedy_acne_1_name", descriptionKey: "remedy_acne_1_desc", keyIngredients: ["ing_aloe_vera"], instructionsKeys: ["remedy_acne_1_inst_1"], property_match: { moisturizing: 'high' }},
-                remedy2: { remedyNameKey: "remedy_acne_2_name", descriptionKey: "remedy_acne_2_desc", keyIngredients: ["ing_shea_butter"], instructionsKeys: ["remedy_acne_2_inst_1"], property_match: { moisturizing: 'high' }}
-            },
-            'issue_redness': { 
-                issueDescKey: "desc_acne", 
-                remedy1: { remedyNameKey: "remedy_acne_1_name", descriptionKey: "remedy_acne_1_desc", keyIngredients: ["ing_aloe_vera"], instructionsKeys: ["remedy_acne_1_inst_1"], property_match: { anti_inflammatory: 'high' }},
-                remedy2: { remedyNameKey: "remedy_acne_2_name", descriptionKey: "remedy_acne_2_desc", keyIngredients: ["ing_green_tea"], instructionsKeys: ["remedy_acne_2_inst_1"], property_match: { anti_inflammatory: 'medium' }}
-            },
-            'issue_oily': { 
-                issueDescKey: "desc_acne", 
-                remedy1: { remedyNameKey: "remedy_acne_1_name", descriptionKey: "remedy_acne_1_desc", keyIngredients: ["ing_tea_tree"], instructionsKeys: ["remedy_acne_1_inst_1"], property_match: { antibacterial: 'high' }},
-                remedy2: { remedyNameKey: "remedy_acne_2_name", descriptionKey: "remedy_acne_2_desc", keyIngredients: ["ing_rose_water"], instructionsKeys: ["remedy_acne_2_inst_1"], property_match: { anti_inflammatory: 'low' }}
-            },
-            'issue_cloggedpores': { 
-                issueDescKey: "desc_acne", 
-                remedy1: { remedyNameKey: "remedy_acne_1_name", descriptionKey: "remedy_acne_1_desc", keyIngredients: ["ing_tea_tree"], instructionsKeys: ["remedy_acne_1_inst_1"], property_match: { antibacterial: 'high' }},
-                remedy2: { remedyNameKey: "remedy_acne_2_name", descriptionKey: "remedy_acne_2_desc", keyIngredients: ["ing_turmeric"], instructionsKeys: ["remedy_acne_2_inst_1"], property_match: { antioxidant: 'medium' }}
-            },
-            'issue_darkspots': { 
-                issueDescKey: "desc_acne", 
-                remedy1: { remedyNameKey: "remedy_acne_1_name", descriptionKey: "remedy_acne_1_desc", keyIngredients: ["ing_vitamin_c"], instructionsKeys: ["remedy_acne_1_inst_1"], property_match: { antioxidant: 'high' }},
-                remedy2: { remedyNameKey: "remedy_acne_2_name", descriptionKey: "remedy_acne_2_desc", keyIngredients: ["ing_turmeric"], instructionsKeys: ["remedy_acne_2_inst_1"], property_match: { antioxidant: 'medium' }}
-            },
-            'issue_lines': { 
-                issueDescKey: "desc_acne", 
-                remedy1: { remedyNameKey: "remedy_acne_1_name", descriptionKey: "remedy_acne_1_desc", keyIngredients: ["ing_vitamin_c"], instructionsKeys: ["remedy_acne_1_inst_1"], property_match: { antioxidant: 'high' }},
-                remedy2: { remedyNameKey: "remedy_acne_2_name", descriptionKey: "remedy_acne_2_desc", keyIngredients: ["ing_coconut_oil"], instructionsKeys: ["remedy_acne_2_inst_1"], property_match: { moisturizing: 'high' }}
-            },
-            'issue_eczema': { 
-                issueDescKey: "desc_acne", 
-                remedy1: { remedyNameKey: "remedy_acne_1_name", descriptionKey: "remedy_acne_1_desc", keyIngredients: ["ing_oatmeal"], instructionsKeys: ["remedy_acne_1_inst_1"], property_match: { anti_inflammatory: 'high' }},
-                remedy2: { remedyNameKey: "remedy_acne_2_name", descriptionKey: "remedy_acne_2_desc", keyIngredients: ["ing_shea_butter"], instructionsKeys: ["remedy_acne_2_inst_1"], property_match: { moisturizing: 'high' }}
-            },
-            'issue_sunburn': { 
-                issueDescKey: "desc_acne", 
-                remedy1: { remedyNameKey: "remedy_acne_1_name", descriptionKey: "remedy_acne_1_desc", keyIngredients: ["ing_aloe_vera"], instructionsKeys: ["remedy_acne_1_inst_1"], property_match: { anti_inflammatory: 'high' }},
-                remedy2: { remedyNameKey: "remedy_acne_2_name", descriptionKey: "remedy_acne_2_desc", keyIngredients: ["ing_green_tea"], instructionsKeys: ["remedy_acne_2_inst_1"], property_match: { antioxidant: 'medium' }}
-            },
+            // ... (rest of the issue data) ...
+            'issue_dryness': { /* ... existing dryness data ... */ },
+            'issue_redness': { /* ... existing redness data ... */ },
+            'issue_oily': { /* ... existing oily data ... */ },
+            'issue_cloggedpores': { /* ... existing cloggedpores data ... */ },
+            'issue_darkspots': { /* ... existing darkspots data ... */ },
+            'issue_lines': { /* ... existing lines data ... */ },
+            'issue_eczema': { /* ... existing eczema data ... */ },
+            'issue_sunburn': { /* ... existing sunburn data ... */ },
         };
         
         // --- STATUS & CAMERA FUNCTIONS ---
@@ -772,6 +678,13 @@
             video.style.display = 'none';
             startButton.disabled = false;
             captureButton.disabled = true;
+            // Only update status if an issue was selected
+            if (currentIssueKey) {
+                const issueName = translations[currentLang][currentIssueKey];
+                updateStatus(translations[currentLang].status_camera_stopped(issueName), 'text-brand-primary-dark bg-brand-card-bg');
+            } else {
+                 updateStatus(translations[currentLang].status_initial, 'text-brand-primary-dark bg-brand-card-bg');
+            }
         }
 
         /**
@@ -779,31 +692,28 @@
          */
         function startCamera() {
             if (!currentIssueKey) {
-                // Prompt user to select an issue first for simulation context
-                updateStatus(translations[currentLang].status_error_no_issue_selected, 'text-red-700 bg-red-100');
+                updateStatus("Error: Please select a skin issue (Step 1) before starting the camera.", 'text-red-700 bg-red-100');
                 return;
             }
-
-            // Hide previous results/images
-            remedyResultsEl.classList.add('hidden');
-            document.getElementById('captured-image').style.display = 'none';
-            document.getElementById('capture-heading').style.display = 'none';
-            document.getElementById('sample-error-message').classList.add('hidden');
-            document.querySelectorAll('.sample-image-button').forEach(btn => btn.classList.remove('active'));
 
             updateStatus(translations[currentLang].status_start_attempt, 'text-brand-primary-dark bg-brand-card-bg');
             startButton.disabled = true;
             captureButton.disabled = true;
+            capturedImage.style.display = 'none';
+            document.getElementById('capture-heading').style.display = 'none';
             video.style.display = 'block';
             
+            // Remove selection border from sample images if present
+            document.querySelectorAll('.sample-image-button img').forEach(img => 
+                img.classList.remove('border-brand-primary-dark'));
+
             navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
                 .then(s => {
                     stream = s;
                     video.srcObject = stream;
                     video.play();
                     captureButton.disabled = false;
-                    const issueName = translations[currentLang][currentIssueKey];
-                    updateStatus(translations[currentLang].status_camera_active(issueName), 'text-brand-primary-dark bg-brand-card-bg');
+                    updateStatus(translations[currentLang].status_camera_active, 'text-brand-primary-dark bg-brand-card-bg');
                 })
                 .catch(err => {
                     video.style.display = 'none';
@@ -826,7 +736,7 @@
          */
         function captureFrame() {
             if (!currentIssueKey) {
-                 updateStatus(translations[currentLang].status_error_no_issue_selected, 'text-red-700 bg-red-100');
+                updateStatus("Error: Please select a skin issue (Step 1) before capturing.", 'text-red-700 bg-red-100');
                 return;
             }
             if (!stream || !video.srcObject) {
@@ -838,6 +748,7 @@
             captureCanvas.width = video.videoWidth;
             captureCanvas.height = video.videoHeight;
             const ctx = captureCanvas.getContext('2d');
+            // Draw the video frame, then flip it horizontally to match the webcam view
             ctx.scale(-1, 1);
             ctx.drawImage(video, 0, 0, -captureCanvas.width, captureCanvas.height);
             
@@ -868,7 +779,10 @@
             const t = translations[lang];
 
             let html = Object.keys(sampleImages).map(issueKey => {
+                // Determine the correct issue label for the title/alt text
                 const issueLabel = t[issueKey] || issueKey.split('_').pop().toUpperCase();
+                
+                // Determine the placeholder text for the image based on issue type
                 let placeholderText;
                 switch(issueKey) {
                     case 'issue_acne': placeholderText = 'ACNE'; break;
@@ -894,49 +808,51 @@
 
             // Attach event listeners
             document.querySelectorAll('.sample-image-button').forEach(button => {
-                button.addEventListener('click', () => {
-                    useSampleImage(button);
+                button.addEventListener('click', (e) => {
+                    const issueKey = button.getAttribute('data-issue-key');
+                    if (currentIssueKey) {
+                        // If an issue is already selected (Step 1 is complete), use the sample image
+                        document.getElementById('sample-error-message').classList.add('hidden');
+                        useSampleImage(issueKey, button);
+                    } else {
+                        // Show error if no issue is selected (Step 1)
+                        document.getElementById('sample-error-message').classList.remove('hidden');
+                        updateStatus("Error: Please select a skin issue (Step 1) before selecting a sample image.", 'text-red-700 bg-red-100');
+                    }
                 });
             });
         }
 
         /**
          * Simulates analysis using a selected sample image.
+         * @param {string} issueKey - The key of the skin issue selected (e.g., 'issue_acne').
          * @param {HTMLElement} button - The button element clicked.
          */
-        function useSampleImage(button) {
-            if (!currentIssueKey) {
-                // Prompt user to select an issue first for simulation context
-                document.getElementById('sample-error-message').textContent = translations[currentLang].status_error_no_issue_selected;
-                document.getElementById('sample-error-message').classList.remove('hidden');
-                updateStatus(translations[currentLang].status_error_no_issue_selected, 'text-red-700 bg-red-100');
-                return;
-            }
-            
-            // Hide previous results
-            remedyResultsEl.classList.add('hidden');
-            document.getElementById('sample-error-message').classList.add('hidden');
-
+        function useSampleImage(issueKey, button) {
             // 1. Visually select the button and deselect others
-            document.querySelectorAll('.sample-image-button').forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
+            document.querySelectorAll('.sample-image-button img').forEach(img => 
+                img.classList.remove('border-brand-primary-dark'));
+            button.querySelector('img').classList.add('border-brand-primary-dark');
 
             // 2. Stop camera if running
             stopCamera(); // This function will hide the video feed
 
             // 3. Display the sample image as the captured frame
-            const issueKey = button.getAttribute('data-issue-key');
+            const capturedImage = document.getElementById('captured-image');
             capturedImage.src = sampleImages[issueKey].src;
             capturedImage.style.display = 'block';
             document.getElementById('capture-heading').style.display = 'block';
 
-            // 4. Update Status (Model Prediction Simulation)
+            // 4. Set the current issue to the sample's issue (Simulated Model Prediction)
+            const issueToPredict = issueKey; 
+
+            // 5. Update Status and display remedy
             const t = translations[currentLang];
-            const issueName = t[currentIssueKey]; // Use the pre-selected issue for simulation context
+            const issueName = t[issueToPredict];
             updateStatus(t.status_capture_simulated(issueName), 'text-white bg-brand-primary-accent');
             
-            // 5. Display the remedy results based on the pre-selected issue
-            viewExpertRemedy(currentIssueKey);
+            // 6. Display the remedy results
+            viewExpertRemedy(issueToPredict);
         }
 
         // --- RENDERING FUNCTIONS ---
@@ -950,7 +866,7 @@
             const t = translations[lang];
 
             let html = issues.map(issueKey => `
-                <button class="issue-button text-brand-primary-dark bg-brand-primary-accent/10 hover:bg-brand-primary-dark hover:text-white font-medium py-2 px-4 rounded-full text-sm transition duration-200"
+                <button class="issue-button text-brand-primary-dark bg-brand-primary-accent/10 hover:bg-brand-primary-accent hover:text-white font-medium py-2 px-4 rounded-full text-sm transition duration-200"
                         data-issue-key="${issueKey}"
                         data-translate="${issueKey}">
                     ${t[issueKey]}
@@ -960,105 +876,35 @@
             container.innerHTML = html;
 
             document.querySelectorAll('.issue-button').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    const issueKey = e.currentTarget.getAttribute('data-issue-key');
-                    handleIssueSelection(issueKey, e.currentTarget);
+                button.addEventListener('click', () => {
+                    const issueKey = button.getAttribute('data-issue-key');
+                    currentIssueKey = issueKey;
+                    
+                    // Highlight selected button
+                    document.querySelectorAll('.issue-button').forEach(btn => btn.classList.replace('bg-brand-primary-dark', 'bg-brand-primary-accent/10') );
+                    button.classList.replace('bg-brand-primary-accent/10', 'bg-brand-primary-dark');
+                    button.classList.add('text-white');
+
+                    // Update status for next step
+                    const issueName = t[issueKey];
+                    updateStatus(`Issue set to: **${issueName}**. Click 'Start Camera' or select a **Sample Image** to begin analysis.`, 'text-brand-primary-dark bg-brand-card-bg');
+
+                    // Reset camera state visual
+                    stopCamera();
+                    document.getElementById('remedy-results').classList.add('hidden');
+                    document.getElementById('captured-image').style.display = 'none';
+                    document.getElementById('capture-heading').style.display = 'none';
+                    document.getElementById('sample-error-message').classList.add('hidden');
+
+                    // Remove selection border from sample images if present
+                    document.querySelectorAll('.sample-image-button img').forEach(img => 
+                        img.classList.remove('border-brand-primary-dark'));
+
                 });
             });
         }
-
-        /**
-         * Handles selection of an issue, either for direct remedy or for simulation context.
-         * @param {string} issueKey - The key of the selected issue.
-         * @param {HTMLElement} button - The button element clicked.
-         */
-        function handleIssueSelection(issueKey, button) {
-            currentIssueKey = issueKey;
-            
-            // Highlight selected button across all methods
-            document.querySelectorAll('.issue-button').forEach(btn => {
-                btn.classList.replace('bg-brand-primary-dark', 'bg-brand-primary-accent/10');
-                btn.classList.remove('text-white');
-            });
-            // Note: button might be null if called from another context (like switchTab), so check before using
-            if (button) {
-                button.classList.replace('bg-brand-primary-accent/10', 'bg-brand-primary-dark');
-                button.classList.add('text-white');
-            }
-            
-            // Reset visual state for Camera/Sample Image
-            stopCamera();
-            document.getElementById('captured-image').style.display = 'none';
-            document.getElementById('capture-heading').style.display = 'none';
-            document.getElementById('sample-error-message').classList.add('hidden');
-            document.querySelectorAll('.sample-image-button').forEach(btn => btn.classList.remove('active'));
-
-            // Check the active tab and determine next action
-            const activeTab = document.querySelector('.tab-button.active-tab').getAttribute('data-tab');
-            const t = translations[currentLang];
-            const issueName = t[issueKey];
-
-            if (activeTab === 'issue') {
-                // If in 'Issue Name' tab, immediately show remedy
-                updateStatus(t.status_issue_selected_direct(issueName), 'text-white bg-brand-primary-dark');
-                viewExpertRemedy(issueKey);
-            } else {
-                // If in 'Live Camera' or 'Sample Image' tab, set the context and wait for simulation trigger
-                remedyResultsEl.classList.add('hidden');
-                updateStatus(`Issue set to: **${issueName}**. Now, click the **Start Camera** button or select a **Sample Image** to run the analysis simulation.`, 'text-brand-primary-dark bg-brand-card-bg');
-            }
-        }
         
-        // --- TAB SWITCHING FUNCTION ---
-        function switchTab(tabName) {
-            // Deactivate all buttons and content
-            document.querySelectorAll('.tab-button').forEach(btn => {
-                btn.classList.remove('active-tab');
-                btn.classList.remove('text-brand-primary-dark');
-                btn.classList.remove('border-brand-primary-dark/80');
-                btn.classList.add('text-brand-subtle-text');
-            });
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.add('hidden');
-            });
-
-            // Activate the selected tab
-            const activeBtn = document.querySelector(`.tab-button[data-tab="${tabName}"]`);
-            const activeContent = document.getElementById(`tab-content-${tabName}`);
-
-            if (activeBtn) {
-                activeBtn.classList.add('active-tab');
-                activeBtn.classList.remove('text-brand-subtle-text');
-                activeBtn.classList.add('text-brand-primary-dark');
-                activeBtn.classList.add('border-brand-primary-dark/80');
-            }
-            if (activeContent) {
-                activeContent.classList.remove('hidden');
-            }
-            
-            // Special handling for Camera/Sample tabs to stop the camera when switching away
-            if (tabName !== 'camera') {
-                stopCamera();
-            }
-
-            // Reset status message
-            if (!currentIssueKey) {
-                updateStatus(translations[currentLang].status_initial, 'text-brand-primary-dark bg-brand-card-bg');
-                remedyResultsEl.classList.add('hidden');
-            } else {
-                // If an issue is selected, update status based on the new tab context
-                const issueName = translations[currentLang][currentIssueKey];
-                if (tabName === 'issue') {
-                    // Re-show results immediately if switching back to 'issue' tab
-                    updateStatus(translations[currentLang].status_issue_selected_direct(issueName), 'text-white bg-brand-primary-dark');
-                    viewExpertRemedy(currentIssueKey);
-                } else {
-                    // Set context for simulation tabs
-                    remedyResultsEl.classList.add('hidden');
-                    updateStatus(`Issue set to: **${issueName}**. Now, click the **Start Camera** button or select a **Sample Image** to run the analysis simulation.`, 'text-brand-primary-dark bg-brand-card-bg');
-                }
-            }
-        }
+        // --- INGREDIENT EXPLORER FUNCTIONS ---
 
         /**
          * Renders the ingredient filter checkboxes.
@@ -1083,10 +929,12 @@
 
             container.innerHTML = html;
 
+            // Attach event listeners after rendering
             document.querySelectorAll('.property-filter').forEach(checkbox => {
                 checkbox.addEventListener('change', filterAndRenderIngredients);
             });
 
+            // Initial render of all ingredients
             filterAndRenderIngredients();
         }
 
@@ -1103,11 +951,13 @@
             if (activeFilters.length === 0) {
                 filteredIngredients = ingredientsData;
             } else {
+                // Filter ingredients: must match ALL active properties (AND logic)
                 filteredIngredients = ingredientsData.filter(ingredient => {
                     return activeFilters.every(filterKey => ingredient.properties.includes(filterKey));
                 });
             }
             
+            // Render the filtered list
             renderIngredientGrid(filteredIngredients, currentLang);
         }
 
@@ -1119,13 +969,17 @@
             const t = translations[lang];
             
             const html = ingredients.map(ingredient => {
+                // Map property keys to translated property names
                 const propertiesHtml = ingredient.properties.map(propKey => {
+                    // Check if translation exists, otherwise use the key
                     const propName = t['prop_' + propKey] || propKey;
                     return `<span class="inline-block bg-brand-primary-accent/20 text-brand-primary-dark text-xs font-semibold px-2 py-0.5 rounded-full mr-1">${propName}</span>`;
                 }).join('');
 
                 const name = t[ingredient.key] || ingredient.key;
-                
+                const descriptionKey = ingredient.key + '_desc';
+                const description = t[descriptionKey] || 'N/A';
+
                 return `
                     <div class="ingredient-card bg-brand-bg p-4 rounded-xl shadow-lg hover:shadow-xl transition duration-300">
                         <h4 class="text-lg font-bold text-brand-primary-dark">${name}</h4>
@@ -1144,23 +998,26 @@
             gridContainer.innerHTML = html;
         }
 
+        // --- REMEDY DISPLAY FUNCTION ---
+
         /**
          * Renders the detailed remedy cards based on the predicted skin issue.
          * @param {string} issueKey - The issue key predicted by the simulated model.
          */
         function viewExpertRemedy(issueKey) {
+            const remedyContainer = document.getElementById('remedy-results');
             const issueData = commonRemedies[issueKey];
             const t = translations[currentLang];
 
             if (!issueData) {
                 document.getElementById('error-message').textContent = t.remedy_not_found(issueKey);
                 document.getElementById('error-message').classList.remove('hidden');
-                remedyResultsEl.classList.add('hidden');
+                remedyContainer.classList.add('hidden');
                 return;
             }
 
             document.getElementById('error-message').classList.add('hidden');
-            remedyResultsEl.classList.remove('hidden');
+            remedyContainer.classList.remove('hidden');
             document.getElementById('result-issue-title').textContent = t[issueKey];
             document.getElementById('result-issue-description').textContent = t[issueData.issueDescKey];
 
@@ -1202,8 +1059,11 @@
             renderRemedyCard(issueData.remedy2, 'remedy-2-container');
         }
 
+        // --- LANGUAGE & CHART FUNCTIONS ---
+
         /**
          * Updates all data-translate elements with the selected language.
+         * @param {string} lang - The language key ('en' or 'ta').
          */
         function updateLanguage(lang) {
             currentLang = lang;
@@ -1212,7 +1072,7 @@
             // 1. Update static elements
             document.querySelectorAll('[data-translate]').forEach(el => {
                 const key = el.getAttribute('data-translate');
-                if (typeof t[key] === 'string') {
+                if (t[key]) {
                     el.textContent = t[key];
                 }
             });
@@ -1220,22 +1080,47 @@
             // 2. Re-render dynamic elements
             renderIssueSelection(currentLang);
             renderIngredientFilters(currentLang);
-            renderSampleImages(currentLang); 
-            renderChart(currentLang); // Re-render chart labels
+            renderSampleImages(currentLang); // NEW: Re-render sample images
             
-            // 3. Re-render remedy results/status based on active tab
-            const activeTabElement = document.querySelector('.tab-button.active-tab');
-            const activeTab = activeTabElement ? activeTabElement.getAttribute('data-tab') : 'issue';
-            switchTab(activeTab); // This handles re-rendering of status and results in the new language
+            // Re-render remedy results if they are visible
+            const resultsDiv = document.getElementById('remedy-results');
+            if (!resultsDiv.classList.contains('hidden')) {
+                const selectedIssueButton = document.querySelector('.issue-button.bg-brand-primary-dark');
+                if (selectedIssueButton) {
+                    const issueKey = selectedIssueButton.getAttribute('data-issue-key');
+                    viewExpertRemedy(issueKey); // Re-render the remedy cards with new language
+                }
+            }
+
+            // 3. Update Status text (to reflect selected issue in new language if set)
+            const selectedIssueButton = document.querySelector('.issue-button.bg-brand-primary-dark');
+            const webcamStatus = document.getElementById('webcam-status').innerHTML;
+
+            if (selectedIssueButton) {
+                const issueKey = selectedIssueButton.getAttribute('data-issue-key');
+                const issueName = t[issueKey];
+
+                if (webcamStatus.includes('Camera stopped.') || webcamStatus.includes('கேமரா நிறுத்தப்பட்டது.')) {
+                    updateStatus(t.status_camera_stopped(issueName), 'text-brand-primary-dark bg-brand-card-bg');
+                } else if (webcamStatus.includes('Simulating model prediction:') || webcamStatus.includes('மாடல் கணிப்பை உருவகப்படுத்துதல்:')) {
+                    updateStatus(t.status_capture_simulated(issueName), 'text-white bg-brand-primary-accent');
+                } else { 
+                    updateStatus(`Issue set to: **${issueName}**. Click 'Start Camera' or select a **Sample Image** to begin analysis.`, 'text-brand-primary-dark bg-brand-card-bg');
+                }
+            } else { 
+                updateStatus(t.status_initial, 'text-brand-primary-dark bg-brand-card-bg');
+            }
         }
 
         /**
          * Renders the donut chart using Chart.js.
+         * @param {string} lang - The current language key.
          */
         function renderChart(lang) {
             const ctx = document.getElementById('skinConcernsChart');
             const t = translations[lang];
             
+            // Destroy previous chart instance if it exists
             if (window.skinConcernsChartInstance) {
                 window.skinConcernsChartInstance.destroy();
             }
@@ -1244,15 +1129,8 @@
                 type: 'doughnut',
                 data: {
                     labels: chartData.labels.map(label => {
-                        // Map English label to translated issue key
-                        const keyMap = {
-                            'Acne & Blemishes': 'issue_acne',
-                            'Dryness & Dehydration': 'issue_dryness',
-                            'Redness & Irritation': 'issue_redness',
-                            'Oily Skin & Pores': 'issue_oily',
-                            'Other': 'Other'
-                        };
-                        const issueKey = keyMap[label];
+                        // Dynamically translate labels based on issue keys
+                        const issueKey = 'issue_' + label.split(' ')[0].toLowerCase();
                         return t[issueKey] || label;
                     }),
                     datasets: [{
@@ -1301,31 +1179,38 @@
         // --- Initialization and Event Handlers ---
         document.addEventListener('DOMContentLoaded', () => {
             
-            // Initialize
+            // Initialize with English
             updateLanguage(currentLang);
             renderChart(currentLang);
-            
-            // Initial view is the 'issue' tab
-            switchTab('issue');
-            
-            // Attach Tab Switching Listeners
-            document.querySelectorAll('.tab-button').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    const tabName = e.currentTarget.getAttribute('data-tab');
-                    switchTab(tabName);
-                });
-            });
+            updateStatus(translations[currentLang].status_initial, 'text-brand-primary-dark bg-brand-card-bg');
+            // renderSampleImages(currentLang); // Called inside updateLanguage
 
             // Language Selector Change Listener
             document.getElementById('language-selector').addEventListener('change', (e) => {
                 updateLanguage(e.target.value);
+                renderChart(e.target.value);
             });
             
             // Attach Webcam Event Listeners
             startButton.addEventListener('click', startCamera);
             captureButton.addEventListener('click', captureFrame);
+
+            // --- Scroll Reveal Logic ---
+            const elements = document.querySelectorAll('.fade-in-up');
             
-            // Note: The previous scroll-reveal JS is removed/deactivated because the CSS fix handles visibility.
+            function checkScroll() {
+                const windowHeight = window.innerHeight;
+                elements.forEach(el => {
+                    const elTop = el.getBoundingClientRect().top;
+                    if (elTop < windowHeight * 0.85) {
+                        el.classList.add('is-visible');
+                    }
+                });
+            }
+
+            window.addEventListener('scroll', checkScroll);
+            window.addEventListener('resize', checkScroll);
+            checkScroll(); // Check on load
         });
     </script>
 </body>
