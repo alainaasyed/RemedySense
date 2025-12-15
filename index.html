@@ -52,16 +52,18 @@
             @apply flex justify-center py-4 text-[#38761D] font-bold;
         }
 
-        /* Scroll-Reveal Animation Styles */
-        .fade-in-up {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 1s ease-out, transform 0.8s ease-out;
-        }
-        .fade-in-up.is-visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        /* Scroll-Reveal Animation Styles (FIXED FOR GITHUB PAGES) */
+.fade-in-up {
+    /* FIXED: Ensure visibility immediately by default */
+    opacity: 1 !important;        /* <-- THIS LINE IS ESSENTIAL */
+    transform: translateY(0) !important; /* <-- THIS LINE IS ESSENTIAL */
+    transition: opacity 1s ease-out, transform 0.8s ease-out;
+}
+/* The .is-visible class is now redundant but kept for cleanliness */
+.fade-in-up.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
 
         /* Webcam Specific Styles */
         #video-feed {
@@ -1214,4 +1216,5 @@
         });
     </script>
 </body>
+
 </html>
