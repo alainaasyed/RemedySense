@@ -528,7 +528,6 @@
                 ing_tea_tree: "Tea Tree Oil",
                 ing_turmeric: "Turmeric",
                 ing_honey: "Honey",
-                // ... (rest of the translations)
                 
                 // Placeholder descriptions for remedies (required by viewExpertRemedy)
                 desc_acne: "This recommendation addresses inflammation and bacterial activity associated with breakouts.",
@@ -671,85 +670,7 @@
             { key: 'ing_rose_water', properties: ['anti_inflammatory'] },
         ];
         
-        // --- NEW: SAMPLE IMAGE DATA ---
-        const sampleImages = {
-            issue_acne: { src: 'https://skininspire.co.uk/wp-content/uploads/2023/07/acne-treatments.webp' },
-            issue_redness: { src: 'https://tse3.mm.bing.net/th/id/OIP.C3juCBn4zDjwOfXisBQvzwHaEJ?pid=Api&P=0&h=180' },
-            issue_dryness: { src: 'https://i.ytimg.com/vi/2iOthk7SDlY/maxresdefault.jpg' },
-            issue_darkspots: { src: 'https://www.kosmoderma.com/wp-content/uploads/2025/08/closeup-asian-woman-with-dark-spots-freckles-problems-scaled.jpg' },
-            issue_sunburn: { src: 'https://tse2.mm.bing.net/th/id/OIP.6WyfaKJt8K_D9Df1-rOKuwHaFy?pid=Api&P=0&h=180' },
-            issue_oily&pores: {src: 'https://tse1.mm.bing.net/th/id/OIP.oQSVL3Jip6p0kmy9u99tSgHaEz?pid=Api&P=0&h=180' },
-            issue_cloggedpores: {src: 'http://getmademan.com/cdn/shop/articles/clogged_ports.jpg?v=1639506814' },
-            issue_wrinkles: {src: 'https://www.womensalphabet.com/wp-content/uploads/2020/10/forehead-wrinkles.jpg' },
-            issue_eczema: {src: 'https://media-pierre-fabre.wedia-group.com/api/wedia/dam/transform/u5wa3z31qn5se9mger5maqqna6kwhzxeoyjydge/Woman%20with%20eczema%20on%20the%20face?t=crop&width=1.000&height=1.000' },
-        };
-            
-        // NOTE: In a real deployment, replace placehold.co links with your own hosted, small sample images.
-
-
-        // Common Remedies Data Structure (Partial for brevity)
-        const commonRemedies = {
-            'issue_acne': {
-                issueDescKey: "desc_acne", 
-                remedy1: { 
-                    remedyNameKey: "remedy_acne_1_name", 
-                    descriptionKey: "remedy_acne_1_desc",
-                    keyIngredients: ["ing_tea_tree", "ing_aloe_vera"],
-                    instructionsKeys: ["remedy_acne_1_inst_1", "remedy_acne_1_inst_2", "remedy_acne_1_inst_3"],
-                    property_match: { anti_inflammatory: 'high', antibacterial: 'high' }
-                },
-                remedy2: { 
-                    remedyNameKey: "remedy_acne_2_name", 
-                    descriptionKey: "remedy_acne_2_desc",
-                    keyIngredients: ["ing_turmeric", "ing_honey"],
-                    instructionsKeys: ["remedy_acne_2_inst_1", "remedy_acne_2_inst_2", "remedy_acne_2_inst_3"],
-                    property_match: { anti_inflammatory: 'medium', antibacterial: 'high' }
-                }
-            },
-            // The following entries need to exist for the code not to break, even if empty
-            'issue_dryness': { 
-                issueDescKey: "desc_acne", // Placeholder
-                remedy1: { remedyNameKey: "remedy_acne_1_name", descriptionKey: "remedy_acne_1_desc", keyIngredients: ["ing_aloe_vera"], instructionsKeys: ["remedy_acne_1_inst_1"], property_match: { moisturizing: 'high' }},
-                remedy2: { remedyNameKey: "remedy_acne_2_name", descriptionKey: "remedy_acne_2_desc", keyIngredients: ["ing_shea_butter"], instructionsKeys: ["remedy_acne_2_inst_1"], property_match: { moisturizing: 'high' }}
-            },
-            'issue_redness': { 
-                issueDescKey: "desc_acne", 
-                remedy1: { remedyNameKey: "remedy_acne_1_name", descriptionKey: "remedy_acne_1_desc", keyIngredients: ["ing_aloe_vera"], instructionsKeys: ["remedy_acne_1_inst_1"], property_match: { anti_inflammatory: 'high' }},
-                remedy2: { remedyNameKey: "remedy_acne_2_name", descriptionKey: "remedy_acne_2_desc", keyIngredients: ["ing_green_tea"], instructionsKeys: ["remedy_acne_2_inst_1"], property_match: { anti_inflammatory: 'medium' }}
-            },
-            'issue_oily': { 
-                issueDescKey: "desc_acne", 
-                remedy1: { remedyNameKey: "remedy_acne_1_name", descriptionKey: "remedy_acne_1_desc", keyIngredients: ["ing_tea_tree"], instructionsKeys: ["remedy_acne_1_inst_1"], property_match: { antibacterial: 'high' }},
-                remedy2: { remedyNameKey: "remedy_acne_2_name", descriptionKey: "remedy_acne_2_desc", keyIngredients: ["ing_rose_water"], instructionsKeys: ["remedy_acne_2_inst_1"], property_match: { anti_inflammatory: 'low' }}
-            },
-            'issue_cloggedpores': { 
-                issueDescKey: "desc_acne", 
-                remedy1: { remedyNameKey: "remedy_acne_1_name", descriptionKey: "remedy_acne_1_desc", keyIngredients: ["ing_tea_tree"], instructionsKeys: ["remedy_acne_1_inst_1"], property_match: { antibacterial: 'high' }},
-                remedy2: { remedyNameKey: "remedy_acne_2_name", descriptionKey: "remedy_acne_2_desc", keyIngredients: ["ing_turmeric"], instructionsKeys: ["remedy_acne_2_inst_1"], property_match: { antioxidant: 'medium' }}
-            },
-            'issue_darkspots': { 
-                issueDescKey: "desc_acne", 
-                remedy1: { remedyNameKey: "remedy_acne_1_name", descriptionKey: "remedy_acne_1_desc", keyIngredients: ["ing_vitamin_c"], instructionsKeys: ["remedy_acne_1_inst_1"], property_match: { antioxidant: 'high' }},
-                remedy2: { remedyNameKey: "remedy_acne_2_name", descriptionKey: "remedy_acne_2_desc", keyIngredients: ["ing_turmeric"], instructionsKeys: ["remedy_acne_2_inst_1"], property_match: { antioxidant: 'medium' }}
-            },
-            'issue_lines': { 
-                issueDescKey: "desc_acne", 
-                remedy1: { remedyNameKey: "remedy_acne_1_name", descriptionKey: "remedy_acne_1_desc", keyIngredients: ["ing_vitamin_c"], instructionsKeys: ["remedy_acne_1_inst_1"], property_match: { antioxidant: 'high' }},
-                remedy2: { remedyNameKey: "remedy_acne_2_name", descriptionKey: "remedy_acne_2_desc", keyIngredients: ["ing_coconut_oil"], instructionsKeys: ["remedy_acne_2_inst_1"], property_match: { moisturizing: 'high' }}
-            },
-            'issue_eczema': { 
-                issueDescKey: "desc_acne", 
-                remedy1: { remedyNameKey: "remedy_acne_1_name", descriptionKey: "remedy_acne_1_desc", keyIngredients: ["ing_oatmeal"], instructionsKeys: ["remedy_acne_1_inst_1"], property_match: { anti_inflammatory: 'high' }},
-                remedy2: { remedyNameKey: "remedy_acne_2_name", descriptionKey: "remedy_acne_2_desc", keyIngredients: ["ing_shea_butter"], instructionsKeys: ["remedy_acne_2_inst_1"], property_match: { moisturizing: 'high' }}
-            },
-            'issue_sunburn': { 
-                issueDescKey: "desc_acne", 
-                remedy1: { remedyNameKey: "remedy_acne_1_name", descriptionKey: "remedy_acne_1_desc", keyIngredients: ["ing_aloe_vera"], instructionsKeys: ["remedy_acne_1_inst_1"], property_match: { anti_inflammatory: 'high' }},
-                remedy2: { remedyNameKey: "remedy_acne_2_name", descriptionKey: "remedy_acne_2_desc", keyIngredients: ["ing_green_tea"], instructionsKeys: ["remedy_acne_2_inst_1"], property_match: { antioxidant: 'medium' }}
-            },
-        };
-        
-        // --- NEW: SAMPLE IMAGE DATA ---
+        // --- SAMPLE IMAGE DATA ---
         const sampleImages = {
             issue_acne: { src: 'https://placehold.co/100x70/6AA84F/fff?text=ACNE' },
             issue_redness: { src: 'https://placehold.co/100x70/C28B38/fff?text=REDNESS' },
@@ -758,7 +679,6 @@
             issue_sunburn: { src: 'https://placehold.co/100x70/A4C639/fff?text=SUNBURN' },
         };
         // NOTE: In a real deployment, replace placehold.co links with your own hosted, small sample images.
-
 
         // Common Remedies Data Structure (Partial for brevity)
         const commonRemedies = {
@@ -1297,8 +1217,22 @@
             renderSampleImages(currentLang); 
             renderChart(currentLang); // Re-render chart labels
             
-            // 3. Re-render remedy results/status based on active tab
-            // This is handled by switchTab() call below
+            // 3. Update remedy results if they are currently displayed
+            if (currentIssueKey && !remedyResultsEl.classList.contains('hidden')) {
+                viewExpertRemedy(currentIssueKey);
+            }
+            
+            // 4. Update tab status based on current tab
+            const activeTab = document.querySelector('.tab-button.active-tab').getAttribute('data-tab');
+            if (activeTab === 'issue' && currentIssueKey) {
+                const issueName = t[currentIssueKey];
+                updateStatus(t.status_issue_selected_direct(issueName), 'text-white bg-brand-primary-dark');
+            } else if (currentIssueKey) {
+                const issueName = t[currentIssueKey];
+                updateStatus(`Issue set to: **${issueName}**. Now, click the **Start Camera** button or select a **Sample Image** to run the analysis simulation.`, 'text-brand-primary-dark bg-brand-card-bg');
+            } else {
+                updateStatus(t.status_initial, 'text-brand-primary-dark bg-brand-card-bg');
+            }
         }
 
         /**
@@ -1374,11 +1308,9 @@
         document.addEventListener('DOMContentLoaded', () => {
             
             // 1. Core Initialization
-            // This calls all the necessary render functions (renderIssueSelection, renderIngredientFilters, renderChart).
             updateLanguage(currentLang);
             
-            // 2. Initial Tab View (CRITICAL FIX)
-            // This call sets up the interactive tabs and renders the issue selection buttons.
+            // 2. Initial Tab View
             switchTab('issue');
             
             // 3. Attach Tab Switching Listeners
@@ -1398,7 +1330,8 @@
             startButton.addEventListener('click', startCamera);
             captureButton.addEventListener('click', captureFrame);
             
-            // NOTE: The previous unreliable scroll-reveal JS is removed/deactivated because the CSS fix handles visibility, and the content initialization is now handled reliably by the code above.
+            // 6. Initialize status message
+            updateStatus(translations[currentLang].status_initial, 'text-brand-primary-dark bg-brand-card-bg');
         });
     </script>
 </body>
