@@ -7,6 +7,33 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        /* Add this inside your <style> tag */
+.tab-content {
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.tab-content.hidden {
+    display: none;
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+.tab-content:not(.hidden) {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+    animation: softFadeIn 0.5s ease-out;
+}
+
+@keyframes softFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Glassmorphism for the camera status message */
+#webcam-status {
+    transition: all 0.3s ease;
+}
         /* Custom Keyframes and Classes for Earthy Green Theme */
         .chart-container {
             position: relative;
@@ -1336,3 +1363,4 @@
     </script>
 </body>
 </html>
+
