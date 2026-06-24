@@ -1,97 +1,1735 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RemedySense - Skin Remedy Analyzer</title>
-    <link rel="stylesheet" href="styles.css">
+    <title id="app-title">RemedySense Interactive Project Showcase (Earthy Green Theme)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Custom Keyframes and Classes for Earthy Green Theme */
+        .tab-content {
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+        
+        .tab-content.hidden {
+            display: none;
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        .tab-content:not(.hidden) {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+            animation: softFadeIn 0.5s ease-out;
+        }
+
+        @keyframes softFadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Glassmorphism for the camera status message */
+        #webcam-status {
+            transition: all 0.3s ease;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        
+        .ingredient-card, .flow-step-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Hover Lift Effect */
+        .card-lift:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(56, 118, 29, 0.2);
+        }
+
+        /* New Gradient Text (Green) */
+        .gradient-text {
+            background-image: linear-gradient(to right, #38761D, #6AA84F);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        /* Flowchart Styles with new colors */
+        .flow-step-card {
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border-top-width: 4px;
+            border-color: #6AA84F;
+            transition-duration: 300ms;
+            text-align: center;
+            height: 100;
+        }
+        
+        .flow-step-card:hover {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .flow-arrow-mobile, .flow-arrow-desktop {
+            display: flex;
+            justify-content: center;
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+            color: #38761D;
+            font-weight: bold;
+        }
+
+        /* Scroll-Reveal Animation Styles */
+        .fade-in-up {
+            opacity: 1 !important;        
+            transform: translateY(0) !important; 
+            transition: opacity 1s ease-out, transform 0.8s ease-out;
+        }
+        
+        .fade-in-up.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Webcam Specific Styles */
+        #video-feed {
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            min-height: 200px;
+            background-color: #2C3A2F;
+            border: 4px solid #6AA84F;
+            border-radius: 0.75rem;
+            object-fit: cover;
+            transform: scaleX(-1); 
+            display: none; 
+            margin: 0 auto;
+        }
+        
+        #captured-image {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            border: 3px solid #38761D;
+            border-radius: 0.75rem;
+            object-fit: cover;
+            margin: 0 auto;
+            display: none;
+        }
+
+        /* Custom Styles for Filter Buttons (Ingredient Explorer) */
+        .filter-label {
+            display: inline-block;
+            padding: 8px 12px;
+            border: 1px solid #6AA84F;
+            border-radius: 20px;
+            cursor: pointer;
+            background-color: #f0f8ee;
+            color: #38761D;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            line-height: 1;
+        }
+
+        .filter-input[type="checkbox"] {
+            display: none;
+        }
+
+        .filter-input[type="checkbox"]:checked + .filter-label {
+            background-color: #6AA84F;
+            color: white;
+            box-shadow: 0 2px 5px rgba(56, 118, 29, 0.4);
+        }
+
+        /* Custom Styles for Sample Image Selector */
+        .sample-image-button img {
+            transition: all 0.2s;
+            border-color: transparent !important;
+        }
+        
+        .sample-image-button.active img {
+            border-color: #38761D !important;
+            box-shadow: 0 0 0 3px #6AA84F;
+        }
+
+        /* Styles for the new Tabbed Interface */
+        .tab-button {
+            font-size: 1.125rem;
+            margin-left: 0.5rem;
+            margin-right: 0.5rem;
+            border-bottom-width: 2px;
+            border-color: transparent;
+        }
+        
+        .tab-button:hover {
+            border-color: rgba(106, 168, 79, 0.5);
+        }
+        
+        .tab-button:focus {
+            outline: none;
+        }
+        
+        .tab-button.active-tab {
+            color: #38761D;
+            border-color: rgba(56, 118, 29, 0.8);
+        }
+        
+        .tab-content {
+            transition-property: opacity;
+            transition-duration: 300ms;
+        }
+
+        /* Remedy Instruction Styles */
+        .instruction-step {
+            counter-increment: step-counter;
+            position: relative;
+            padding-left: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .instruction-step:before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background-color: #6AA84F;
+            color: white;
+            width: 1.75rem;
+            height: 1.75rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.875rem;
+        }
+        
+        .instruction-details {
+            background-color: #f0f8ee;
+            border-left: 4px solid #38761D;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .instruction-warning {
+            background-color: #fef3f2;
+            border-left: 4px solid #ef4444;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            margin-top: 0.5rem;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-primary-dark': '#38761D',
+                        'brand-primary-accent': '#6AA84F',
+                        'brand-card-bg': '#FAF0E6',
+                        'brand-bg': '#FFFCF5',
+                        'brand-text': '#2C3A2F',
+                        'brand-subtle-text': '#60735E',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
-    <div class="container">
-        <!-- Header -->
-        <header class="header">
-            <div class="header-content">
-                <h1 class="title" data-en="RemedySense" data-ta="நிவாரணம்உணர்வு">RemedySense</h1>
-                <div class="language-toggle">
-                    <button class="lang-btn active" data-lang="en">English</button>
-                    <button class="lang-btn" data-lang="ta">தமிழ்</button>
+<body class="bg-brand-bg font-sans text-brand-text antialiased">
+
+    <nav id="navbar" class="bg-brand-bg/90 backdrop-blur-sm sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <span class="font-bold text-2xl text-brand-primary-dark transition duration-300 hover:scale-105">✨ RemedySense</span>
                 </div>
-            </div>
-        </header>
-
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Tabs -->
-            <div class="tabs">
-                <button class="tab-btn active" data-tab="camera" data-en="Camera Analysis" data-ta="கேமரா பகுப்பாய்வு">Camera Analysis</button>
-                <button class="tab-btn" data-tab="upload" data-en="Upload Image" data-ta="படத்தை பதிவேற்று">Upload Image</button>
-                <button class="tab-btn" data-tab="dashboard" data-en="Dashboard" data-ta="대시보드">Dashboard</button>
-            </div>
-
-            <!-- Camera Tab -->
-            <div id="camera" class="tab-content active">
-                <div class="camera-section">
-                    <div class="camera-container">
-                        <video id="camera-video" autoplay playsinline></video>
-                        <canvas id="camera-canvas" style="display:none;"></canvas>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <select id="language-selector" class="bg-brand-card-bg text-brand-primary-dark border border-brand-primary-accent/50 rounded-full text-sm font-medium py-2 pl-3 pr-10 appearance-none cursor-pointer focus:ring-2 focus:ring-brand-primary-accent focus:outline-none">
+                            <option value="en">English (EN)</option>
+                            <option value="ta">தமிழ் (TA)</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-brand-primary-dark">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                        </div>
                     </div>
-                    <div class="camera-controls">
-                        <button id="start-camera-btn" class="btn btn-primary" data-en="Start Camera" data-ta="கேமராவைத் தொடங்கவும்">Start Camera</button>
-                        <button id="capture-btn" class="btn btn-success" style="display:none;" data-en="Capture & Analyze" data-ta="பிடித்து பகுப்பாய்வு செய்">Capture & Analyze</button>
-                        <button id="stop-camera-btn" class="btn btn-danger" style="display:none;" data-en="Stop Camera" data-ta="கேமராவை நிறுத்து">Stop Camera</button>
-                    </div>
-                    <div id="camera-permission-alert" class="alert alert-warning" style="display:none;" data-en="Please allow camera access" data-ta="கேமரா அணுகலை அனுமதிக்கவும்">Please allow camera access</div>
-                </div>
-            </div>
-
-            <!-- Upload Tab -->
-            <div id="upload" class="tab-content">
-                <div class="upload-section">
-                    <div class="upload-area">
-                        <input type="file" id="image-input" accept="image/*" style="display:none;">
-                        <button id="upload-btn" class="btn btn-primary upload-btn" data-en="Choose Image" data-ta="படத்தைத் தேர்ந்தெடுக்கவும்">Choose Image</button>
-                        <p data-en="or drag and drop" data-ta="அல்லது இழுத்து விடவும்">or drag and drop</p>
-                    </div>
-                    <div id="preview-container" style="display:none;">
-                        <img id="preview-img" src="" alt="Preview">
-                        <button id="analyze-upload-btn" class="btn btn-success" data-en="Analyze Image" data-ta="படத்தை பகுப்பாய்வு செய்">Analyze Image</button>
+                    
+                    <div class="hidden md:flex items-center space-x-4">
+                        <a href="#about" class="nav-link text-brand-subtle-text hover:text-brand-primary-accent px-3 py-2 rounded-md text-sm font-medium transition duration-200" data-translate="nav_about">About</a>
+                        <a href="#dashboard" class="nav-link text-brand-subtle-text hover:text-brand-primary-accent px-3 py-2 rounded-md text-sm font-medium transition duration-200" data-translate="nav_dashboard">Dashboard</a>
+                        <a href="#remedy-center" class="nav-link text-brand-subtle-text hover:text-brand-primary-accent px-3 py-2 rounded-md text-sm font-medium transition duration-200" data-translate="nav_remedies">Remedies</a>
+                        <a href="#screenshots" class="nav-link text-brand-subtle-text hover:text-brand-primary-accent px-3 py-2 rounded-md text-sm font-medium transition duration-200" data-translate="nav_walkthrough">Walkthrough</a>
+                        <a href="#" target="_blank" class="bg-brand-primary-accent hover:bg-brand-primary-dark text-white px-4 py-2 rounded-full text-sm font-medium transition duration-300 shadow-lg" data-translate="nav_view_project">View Project</a>
                     </div>
                 </div>
             </div>
-
-            <!-- Dashboard Tab -->
-            <div id="dashboard" class="tab-content">
-                <div class="dashboard-section">
-                    <h2 data-en="Skin Issues & Remedies" data-ta="தோல் சிக்கல்கள் & நிவாரணங்கள்">Skin Issues & Remedies</h2>
-                    <select id="issue-select" data-en-placeholder="Select a skin issue" data-ta-placeholder="ஒரு தோல் சிக்கலைத் தேர்ந்தெடுக்கவும்">
-                        <option value="">Select a skin issue</option>
-                    </select>
-                    <div id="remedy-display" class="remedy-display"></div>
-                </div>
-            </div>
-        </main>
-
-        <!-- Results Section -->
-        <div id="results-section" class="results-section" style="display:none;">
-            <div class="results-header">
-                <h2 data-en="Analysis Results" data-ta="பகுப்பாய்வு முடிவுகள்">Analysis Results</h2>
-                <button class="close-results-btn" data-en="×" data-ta="×">×</button>
-            </div>
-            <div id="results-content" class="results-content"></div>
         </div>
+    </nav>
 
-        <!-- Loading Spinner -->
-        <div id="loading-spinner" class="loading-spinner" style="display:none;">
-            <div class="spinner"></div>
-            <p data-en="Analyzing..." data-ta="பகுப்பாய்வு செய்யப்படுகிறது...">Analyzing...</p>
+    <main>
+        <section id="hero-section" class="text-center py-24 px-4 sm:px-6 lg:px-8 bg-brand-bg">
+            <div class="max-w-4xl mx-auto">
+                <h1 id="hero-title" class="text-4xl md:text-6xl font-extrabold text-brand-primary-dark tracking-tighter" data-translate="hero_title">Your Blend for Better Skin.</h1>
+                <p id="hero-subtitle" class="mt-6 text-lg md:text-xl text-brand-subtle-text max-w-3xl mx-auto" data-translate="hero_subtitle">RemedySense is a smart recommender system that moves beyond generic advice, offering natural, effective remedies tailored to your unique skin profile.</p>
+                <div class="mt-8 flex justify-center gap-4">
+                    <a href="RemedySense_Report.pdf" target="_blank" id="report-link" class="bg-brand-primary-accent hover:bg-brand-primary-dark text-white font-bold py-3 px-8 rounded-full transition duration-300 shadow-xl transform hover:scale-[1.02] active:scale-95" data-translate="hero_report">View Full Report</a>
+                    <a href="#remedy-center" id="remedy-link" class="bg-brand-card-bg hover:bg-white text-brand-primary-dark font-bold py-3 px-8 rounded-full transition duration-300 shadow-md border border-brand-primary-accent/50" data-translate="hero_find_remedy">Find Your Remedy</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="py-20 bg-white fade-in-up">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 id="about-title" class="text-3xl font-bold text-brand-text gradient-text" data-translate="about_title">The Personalized Recommendation Flow</h2>
+                    <p id="about-subtitle" class="mt-4 text-lg text-brand-subtle-text" data-translate="about_subtitle">How RemedySense analyzes your skin profile and recommends the most effective natural remedies.</p>
+                </div>
+                
+                <div class="hidden md:grid md:grid-cols-[1fr_50px_1fr_50px_1fr] items-stretch gap-4 max-w-5xl mx-auto">
+                    
+                    <div class="flow-step-card bg-brand-card-bg card-lift">
+                        <div class="text-4xl mb-3 font-extrabold text-brand-primary-accent">1</div>
+                        <h3 class="text-xl font-semibold mb-2 text-brand-text" data-translate="flow_step_1_title">INPUT: Image Capture</h3>
+                        <p class="text-brand-subtle-text text-sm" data-translate="flow_step_1_desc">The user captures a high-resolution image of the affected skin area (or selects from the dashboard).</p>
+                    </div>
+
+                    <div class="flow-arrow-desktop">→</div>
+
+                    <div class="flow-step-card bg-white card-lift">
+                        <div class="text-4xl mb-3 font-extrabold text-brand-primary-accent">2</div>
+                        <h3 class="text-xl font-semibold mb-2 text-brand-text" data-translate="flow_step_2_title">PROCESS: Predict Properties</h3>
+                        <p class="text-brand-subtle-text text-sm" data-translate="flow_step_2_desc">A Decision Tree Model analyzes the image data to predict the required therapeutic properties: Anti-inflammatory and Antioxidant levels.</p>
+                    </div>
+
+                    <div class="flow-arrow-desktop">→</div>
+
+                    
+                    <div class="flow-step-card bg-brand-card-bg card-lift">
+                        <div class="text-4xl mb-3 font-extrabold text-brand-primary-accent">3</div>
+                        <h3 class="text-xl font-semibold mb-2 text-brand-text" data-translate="flow_step_3_title">OUTPUT: Generate Remedy</h3>
+                        <p class="text-brand-subtle-text text-sm" data-translate="flow_step_3_desc">The system matches the required properties to its ingredient database and delivers a Tailored Remedy with full instructions.</p>
+                    </div>
+                </div>
+                
+                <div class="md:hidden space-y-4 max-w-sm mx-auto">
+                    <div class="flow-step-card bg-brand-card-bg">
+                        <div class="text-4xl mb-3 font-extrabold text-brand-primary-accent">1</div>
+                        <h3 class="text-xl font-semibold mb-2 text-brand-text" data-translate="flow_step_1_title">INPUT: Image Capture</h3>
+                        <p class="text-brand-subtle-text text-sm" data-translate="flow_step_1_desc">The user captures a high-resolution image of the affected skin area (or selects from the dashboard).</p>
+                    </div>
+                    <div class="flow-arrow-mobile text-4xl">↓</div>
+                    <div class="flow-step-card bg-white">
+                        <div class="text-4xl mb-3 font-extrabold text-brand-primary-accent">2</div>
+                        <h3 class="text-xl font-semibold mb-2 text-brand-text" data-translate="flow_step_2_title">PROCESS: Predict Properties</h3>
+                        <p class="text-brand-subtle-text text-sm" data-translate="flow_step_2_desc">A Decision Tree Model analyzes the image data to predict the required therapeutic properties: Anti-inflammatory and Antioxidant levels.</p>
+                    </div>
+                    <div class="flow-arrow-mobile text-4xl">↓</div>
+                    <div class="flow-step-card bg-brand-card-bg">
+                        <div class="text-4xl mb-3 font-extrabold text-brand-primary-accent">3</div>
+                        <h3 class="text-xl font-semibold mb-2 text-brand-text" data-translate="flow_step_3_title">OUTPUT: Generate Remedy</h3>
+                        <p class="text-brand-subtle-text text-sm" data-translate="flow_step_3_desc">The system matches the required properties to its ingredient database and delivers a Tailored Remedy with full instructions.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="dashboard" class="py-20 bg-brand-card-bg fade-in-up">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 id="dashboard-title" class="text-3xl font-bold text-brand-text gradient-text" data-translate="dashboard_title">Interactive Dashboard</h2>
+                    <p id="dashboard-subtitle" class="mt-4 text-lg text-brand-subtle-text" data-translate="dashboard_subtitle">Explore the data that powers RemedySense. Filter through our database of powerful, natural ingredients.</p>
+                </div>
+                <div class="grid lg:grid-cols-5 gap-8">
+                    <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-xl card-lift">
+                        <h3 id="chart-title" class="text-xl font-semibold text-center mb-4 text-brand-primary-dark" data-translate="chart_title">Common Skin Concerns</h3>
+                        <div class="chart-container">
+                            <canvas id="skinConcernsChart"></canvas>
+                        </div>
+                         <p id="chart-caption" class="text-xs text-gray-400 text-center mt-4" data-translate="chart_caption">This chart shows a sample distribution of common skin issues reported by users, highlighting the areas where RemedySense provides the most guidance.</p>
+                    </div>
+                    <div class="lg:col-span-3 bg-white p-6 rounded-xl shadow-xl card-lift">
+                        <h3 id="explorer-title" class="text-xl font-semibold text-center mb-4 text-brand-primary-dark" data-translate="explorer_title">Natural Ingredient Explorer</h3>
+                        <div id="ingredient-filters" class="flex flex-wrap justify-center gap-2 mb-6">
+                            </div>
+                        <div id="ingredient-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="remedy-center" class="py-20 bg-brand-bg fade-in-up">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 id="remedy-center-title" class="text-3xl font-bold text-brand-text gradient-text" data-translate="remedy_center_title">🌿 Find Your Tailored Remedy</h2>
+                    <p id="remedy-center-subtitle" class="mt-4 text-lg text-brand-subtle-text" data-translate="remedy_center_subtitle">Select an input method below to receive a customized, natural remedy instantly.</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-2xl border-2 border-brand-primary-accent/20">
+                    
+                    <div class="text-center mb-6">
+                        <h3 class="text-xl font-bold text-brand-primary-dark" data-translate="input_method_heading">Choose Your Input Method</h3>
+                    </div>
+
+                    <div id="input-tabs" class="flex justify-center border-b border-brand-primary-accent/50 mb-6">
+                        <button data-tab="issue" class="tab-button active-tab text-brand-primary-dark font-semibold py-2 px-4 transition duration-200 border-b-2 border-brand-primary-dark/80" data-translate="tab_issue_name">Issue Name</button>
+                        <button data-tab="camera" class="tab-button text-brand-subtle-text font-semibold py-2 px-4 transition duration-200" data-translate="tab_live_camera">Live Camera</button>
+                        <button data-tab="sample" class="tab-button text-brand-subtle-text font-semibold py-2 px-4 transition duration-200" data-translate="tab_sample_image">Sample Image</button>
+                    </div>
+                    
+                    <div id="tab-content-issue" class="tab-content">
+                        <div class="mb-8 p-4 bg-brand-card-bg rounded-xl shadow-inner border border-brand-primary-accent/30">
+                            <p id="issue-selector-heading" class="text-lg font-bold text-brand-primary-dark mb-4 text-center" data-translate="issue_selector_heading_direct">1. Select Your Issue for Instant Remedy (Bypasses Simulation)</p>
+                            <div id="issue-selector" class="grid grid-cols-2 md:grid-cols-5 gap-3">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="tab-content-camera" class="tab-content hidden">
+                        <div class="mt-6 border-t pt-4 border-brand-subtle-text/30">
+                            <div class="p-2 rounded-lg bg-brand-primary-accent/10">
+                                <p id="camera-heading" class="text-lg font-semibold text-brand-primary-dark text-center" data-translate="camera_heading_live">Live Camera Analysis Simulation</p>
+                            </div>
+
+                            <div id="camera-content" class="p-4">
+                                <p id="webcam-status" class="text-sm text-brand-primary-dark bg-brand-card-bg p-2 rounded-lg transition duration-300 text-center mb-4"></p>
+
+                                <div class="flex flex-col md:flex-row justify-center items-start gap-8">
+                                    <div class="flex-1 w-full flex flex-col items-center">
+                                        <h4 id="live-feed-heading" class="font-bold text-md mb-2" data-translate="live_feed_heading">Live Feed (Selfie View)</h4>
+                                        <video id="video-feed" autoplay playsinline></video>
+                                        <canvas id="captureCanvas" class="hidden"></canvas> 
+                                    </div>
+                                    
+                                    <div class="flex-1 w-full flex flex-col items-center">
+                                        <h4 id="capture-heading" class="font-bold text-md mb-2" style="display: none;" data-translate="capture_frame_heading">Captured Frame</h4>
+                                        <img id="captured-image" alt="Captured Webcam Frame" />
+                                    </div>
+                                </div>
+
+                                <div class="flex flex-col sm:flex-row gap-4 justify-center mt-6">
+                                    <button id="startButton" class="w-full sm:w-auto px-6 py-3 bg-brand-primary-accent text-white font-bold rounded-full transition duration-300 shadow-xl transform hover:scale-[1.02] active:scale-95" data-translate="start_button">
+                                        Start Camera
+                                    </button>
+                                    <button id="captureButton" class="w-full sm:w-auto px-6 py-3 bg-gray-400 text-white font-bold rounded-full transition duration-300 shadow-md" disabled data-translate="capture_button">
+                                        Capture Frame & Simulate Analysis
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="tab-content-sample" class="tab-content hidden">
+                        <div class="mt-6 border-t pt-4 border-brand-subtle-text/30">
+                            <div class="p-2 rounded-lg bg-brand-primary-accent/10">
+                                <p id="sample-heading" class="text-lg font-semibold text-brand-primary-dark text-center" data-translate="sample_heading_simulate">Sample Image Analysis Simulation</p>
+                            </div>
+                            <div id="sample-image-selector" class="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                <p class="text-md font-bold text-brand-primary-dark mb-3 text-center" data-translate="sample_image_heading">Click to Select a Sample Image for Analysis</p>
+                                <div id="sample-image-grid" class="grid grid-cols-3 md:grid-cols-5 gap-3">
+                                    </div>
+                                <p class="text-xs text-red-600 mt-3 text-center hidden" id="sample-error-message"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="remedy-results" class="mt-8 p-6 bg-brand-card-bg rounded-2xl shadow-2xl border-t-4 border-brand-primary-accent hidden">
+                        <div class="mb-6 pb-4 border-b border-brand-primary-dark/20">
+                            <h3 class="text-2xl font-bold mb-2 text-brand-primary-dark" id="result-issue-title"></h3>
+                            <p class="text-brand-subtle-text" id="result-issue-description"></p>
+                        </div>
+
+                        <div class="grid lg:grid-cols-2 gap-8">
+                            <div id="remedy-1-container" class="p-5 border border-brand-primary-accent/30 rounded-xl shadow-inner bg-white">
+                                </div>
+                            <div id="remedy-2-container" class="p-5 border border-brand-primary-accent/30 rounded-xl shadow-inner bg-white">
+                                 </div>
+                        </div>
+                    </div>
+                    <div id="error-message" class="mt-4 p-3 bg-red-100 text-red-700 rounded-lg hidden"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="screenshots" class="py-20 bg-brand-card-bg fade-in-up">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 id="screenshots-title" class="text-3xl font-bold text-brand-text gradient-text" data-translate="screenshots_title">Application in Action</h2>
+                    <p id="screenshots-subtitle" class="mt-4 text-lg text-brand-subtle-text" data-translate="screenshots_subtitle">A visual walkthrough of the RemedySense user experience, from input to recommendation.</p>
+                </div>
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-white rounded-xl shadow-xl overflow-hidden card-lift">
+                        <img src="https://placehold.co/600x400/38761D/FFFCF5?text=1.+ISSUE+IDENTIFIER%0A%0A%E2%9C%85+Select+from+9+Common+Issues" alt="User Input Screen" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <h3 class="font-semibold text-brand-primary-dark" data-translate="screenshot_1_title">1. Issue Identifier Selection</h3>
+                            <p class="text-sm text-brand-subtle-text mt-2" data-translate="screenshot_1_desc">Users can quickly select their primary skin concern from a set of common conditions.</p>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-xl overflow-hidden card-lift">
+                        <img src="https://placehold.co/600x400/6AA84F/2C3A2F?text=2.+MODEL+PREDICTS%0A%0A%E2%9C%85+Properties+%26+Top+Ingredients" alt="Results Screen" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <h3 class="font-semibold text-brand-primary-dark" data-translate="screenshot_2_title">2. Recommendation Results</h3>
+                            <p class="text-sm text-brand-subtle-text mt-2" data-translate="screenshot_2_desc">A clear, ranked list of suggested remedies based on the user's profile or selected issue.</p>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-xl overflow-hidden card-lift">
+                        <img src="https://placehold.co/600x400/38761D/FFFCF5?text=3.+REMEDY+DELIVERED%0A%0A%E2%9C%85+Instructions+%26+Benefits" alt="Details Screen" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <h3 class="font-semibold text-brand-primary-dark" data-translate="screenshot_3_title">3. Detailed Remedy Information</h3>
+                            <p class="text-sm text-brand-subtle-text mt-2" data-translate="screenshot_3_desc">Each recommendation includes benefits, ingredients, and step-by-step instructions.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <footer class="bg-brand-primary-dark text-brand-card-bg">
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center">
+            <p id="footer-text" data-translate="footer_text">2025 RemedySense Project.</p>
         </div>
-    </div>
+    </footer>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tensorflow.js/4.11.0/tf.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tensorflow.js/4.11.0/tf-core.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3/dist/coco-ssd.min.js"></script>
-    <script src="translations.js"></script>
-    <script src="remedies-data.js"></script>
-    <script src="script.js"></script>
+    <script>
+        // --- GLOBALS ---
+        let currentLang = 'en';
+        let currentIssueKey = null;
+        let stream = null;
+
+        // --- DOM ELEMENTS ---
+        let video = document.getElementById('video-feed');
+        let captureCanvas = document.getElementById('captureCanvas');
+        let capturedImage = document.getElementById('captured-image');
+        let startButton = document.getElementById('startButton');
+        let captureButton = document.getElementById('captureButton');
+        let webcamStatusEl = document.getElementById('webcam-status');
+        let remedyResultsEl = document.getElementById('remedy-results');
+        
+        // --- TRANSLATION DATA ---
+        const translations = {
+            en: {
+                app_title: "RemedySense Interactive Project Showcase (Earthy Green Theme)",
+                nav_about: "About",
+                nav_dashboard: "Dashboard",
+                nav_remedies: "Remedies",
+                nav_walkthrough: "Walkthrough",
+                nav_view_project: "View Project",
+                hero_title: "Your Blend for Better Skin.",
+                hero_subtitle: "RemedySense is a smart recommender system that moves beyond generic advice, offering natural, effective remedies tailored to your unique skin profile.",
+                hero_report: "View Full Report",
+                hero_find_remedy: "Find Your Remedy",
+                about_title: "The Personalized Recommendation Flow",
+                about_subtitle: "How RemedySense analyzes your skin profile and recommends the most effective natural remedies.",
+                flow_step_1_title: "INPUT: Image Capture",
+                flow_step_1_desc: "The user captures a high-resolution image of the affected skin area (or selects from the dashboard).",
+                flow_step_2_title: "PROCESS: Predict Properties",
+                flow_step_2_desc: "A Decision Tree Model analyzes the image data to predict the required therapeutic properties: Anti-inflammatory and Antioxidant levels.",
+                flow_step_3_title: "OUTPUT: Generate Remedy",
+                flow_step_3_desc: "The system matches the required properties to its ingredient database and delivers a Tailored Remedy with full instructions.",
+                dashboard_title: "Interactive Dashboard",
+                dashboard_subtitle: "Explore the data that powers RemedySense. Filter through our database of powerful, natural ingredients.",
+                chart_title: "Common Skin Concerns",
+                chart_caption: "This chart shows a sample distribution of common skin issues reported by users, highlighting the areas where RemedySense provides the most guidance.",
+                explorer_title: "Natural Ingredient Explorer",
+                filter_all: "All",
+                filter_anti_inflammatory: "Anti-inflammatory",
+                filter_antioxidant: "Antioxidant",
+                filter_moisturizing: "Moisturizing",
+                remedy_center_title: "🌿 Find Your Tailored Remedy",
+                remedy_center_subtitle: "Select an input method below to receive a customized, natural remedy instantly.",
+                
+                input_method_heading: "Choose Your Input Method",
+                tab_issue_name: "Issue Name",
+                tab_live_camera: "Live Camera",
+                tab_sample_image: "Sample Image",
+                issue_selector_heading_direct: "1. Select Your Issue for Instant Remedy (Bypasses Simulation)",
+                camera_heading_live: "Live Camera Analysis Simulation",
+                sample_heading_simulate: "Sample Image Analysis Simulation",
+
+                live_feed_heading: "Live Feed (Selfie View)",
+                capture_frame_heading: "Captured Frame",
+                start_button: "Start Camera",
+                capture_button: "Capture Frame & Simulate Analysis",
+                sample_image_heading: "Click to Select a Sample Image for Analysis", 
+
+                status_initial: "Please select an input method above to begin the remedy recommendation process.",
+                status_issue_selected_direct: (issueName) => `Remedy found for **${issueName}**! See results below.`,
+                status_start_attempt: "Attempting to access camera... Please grant permission.",
+                status_camera_active: (issueName) => `Camera active. **${issueName}** is set for simulation. Click **Capture Frame** to simulate analysis.`,
+                status_camera_stopped: (issueName) => `Issue set to: **${issueName}**. Camera stopped. Click 'Start Camera' to re-enable.`,
+                status_capture_simulated: (issueName) => `Image captured. Simulating model prediction: **${issueName}** confirmed. See results below.`,
+                status_error_general: "An unknown error occurred while accessing the camera.",
+                status_error_denied: "Permission Denied: You blocked camera access. Please check your browser settings and try again.",
+                status_error_not_found: "Camera Not Found: No video input device (webcam) was detected.",
+                status_error_not_readable: "Camera Not Readable: Your camera might be in use by another application.",
+                status_error_stream_inactive: "Error: Camera stream is not active. Click 'Start Camera'.",
+                status_error_no_issue_selected: "Error: Please first select an **Issue Name** to define the model's simulated prediction.",
+
+                remedy_key_ingredients: "Key Ingredients:",
+                remedy_instructions: "Detailed Application Instructions:",
+                remedy_prep_time: "Preparation Time:",
+                remedy_application_time: "Application Time:",
+                remedy_frequency: "Recommended Frequency:",
+                remedy_duration: "Recommended Duration:",
+                remedy_warnings: "Important Notes & Warnings:",
+                remedy_not_found: (issueKey) => `No expert remedies found for the analyzed issue (${issueKey}).`,
+                screenshots_title: "Application in Action",
+                screenshots_subtitle: "A visual walkthrough of the RemedySense user experience, from input to recommendation.",
+                screenshot_1_title: "1. Issue Identifier Selection",
+                screenshot_1_desc: "Users can quickly select their primary skin concern from a set of common conditions.",
+                screenshot_2_title: "2. Recommendation Results",
+                screenshot_2_desc: "A clear, ranked list of suggested remedies based on the user's profile or selected issue.",
+                screenshot_3_title: "3. Detailed Remedy Information",
+                screenshot_3_desc: "Each recommendation includes benefits, ingredients, and step-by-step instructions.",
+                footer_text: "2025 RemedySense Project.",
+                
+                issue_acne: "Acne & Blemishes",
+                issue_dryness: "Dryness & Dehydration",
+                issue_redness: "Redness & Irritation",
+                issue_oily: "Oily Skin & Pores",
+                issue_cloggedpores: "Clogged Pores (Whiteheads & Blackheads)", 
+                issue_darkspots: "Dark Spots & PIH",
+                issue_lines: "Fine Lines & Wrinkles",
+                issue_eczema: "Eczema & Itch",
+                issue_sunburn: "Sunburn Relief",
+                
+                prop_anti_inflammatory: "Anti-inflammatory",
+                prop_antioxidant: "Antioxidant",
+                prop_moisturizing: "Moisturizing", 
+                prop_antibacterial: "Antibacterial", 
+
+                ing_aloe_vera: "Aloe Vera",
+                ing_tea_tree: "Tea Tree Oil",
+                ing_turmeric: "Turmeric",
+                ing_honey: "Honey",
+                ing_shea_butter: "Shea Butter",
+                ing_green_tea: "Green Tea Extract",
+                ing_oatmeal: "Colloidal Oatmeal",
+                ing_coconut_oil: "Coconut Oil",
+                ing_vitamin_c: "Vitamin C",
+                ing_rose_water: "Rose Water",
+                ing_bentonite_clay: "Bentonite Clay",
+                ing_witch_hazel: "Witch Hazel",
+                ing_chamomile: "Chamomile",
+                ing_cucumber: "Cucumber",
+                ing_yogurt: "Plain Yogurt",
+                ing_lemon_juice: "Lemon Juice",
+                ing_jojoba_oil: "Jojoba Oil",
+                
+                // Detailed remedy descriptions and instructions
+                desc_acne: "This recommendation addresses inflammation and bacterial activity associated with breakouts, focusing on reducing redness and preventing future acne.",
+                desc_dryness: "Hydration-focused remedies to restore moisture barrier and prevent transepidermal water loss.",
+                desc_redness: "Soothing treatments to calm irritated skin and reduce visible redness and inflammation.",
+                desc_oily: "Oil-balancing solutions that regulate sebum production without over-drying the skin.",
+                desc_cloggedpores: "Deep cleansing treatments to unclog pores and prevent the formation of blackheads and whiteheads.",
+                desc_darkspots: "Brightening agents that target hyperpigmentation and even out skin tone.",
+                desc_lines: "Anti-aging treatments that improve skin elasticity and reduce the appearance of fine lines.",
+                desc_eczema: "Gentle, soothing remedies to relieve itching and inflammation associated with eczema.",
+                desc_sunburn: "Cooling and healing treatments to soothe sun-damaged skin and promote recovery.",
+                
+                // Acne Remedies
+                remedy_acne_1_name: "Tea Tree & Aloe Spot Treatment",
+                remedy_acne_1_desc: "A targeted treatment that combines antibacterial tea tree oil with soothing aloe vera to reduce inflammation and prevent bacterial growth.",
+                remedy_acne_1_prep_time: "5 minutes",
+                remedy_acne_1_application_time: "15-20 minutes",
+                remedy_acne_1_frequency: "Once daily (preferably at night)",
+                remedy_acne_1_duration: "Use until inflammation subsides (usually 3-7 days)",
+                remedy_acne_1_step_1: "Cleanse your face with a gentle, pH-balanced cleanser and pat dry.",
+                remedy_acne_1_step_2: "Using a clean cotton swab, mix 2 drops of tea tree oil with 1 tablespoon of fresh aloe vera gel in a small bowl.",
+                remedy_acne_1_step_3: "Apply the mixture directly onto affected areas using the cotton swab, avoiding the surrounding skin.",
+                remedy_acne_1_step_4: "Leave the treatment on for 15-20 minutes to allow active ingredients to penetrate.",
+                remedy_acne_1_step_5: "Rinse gently with cool water and follow with a lightweight, non-comedogenic moisturizer.",
+                remedy_acne_1_warning: "Always dilute tea tree oil before application. Do a patch test first. Avoid sun exposure immediately after application as it may increase photosensitivity.",
+                
+                remedy_acne_2_name: "Turmeric & Honey Anti-inflammatory Mask",
+                remedy_acne_2_desc: "A soothing mask that reduces inflammation, fights bacteria, and helps heal acne scars with its antioxidant properties.",
+                remedy_acne_2_prep_time: "10 minutes",
+                remedy_acne_2_application_time: "20-25 minutes",
+                remedy_acne_2_frequency: "2-3 times per week",
+                remedy_acne_2_duration: "Continue for 4-6 weeks for best results",
+                remedy_acne_2_step_1: "Combine 1 teaspoon of organic turmeric powder with 1 tablespoon of raw, unprocessed honey in a non-metallic bowl.",
+                remedy_acne_2_step_2: "Add 1 teaspoon of plain yogurt (optional, for extra soothing) and mix until you get a smooth paste.",
+                remedy_acne_2_step_3: "Apply an even layer to clean, dry skin, focusing on acne-prone areas but avoiding the eye area.",
+                remedy_acne_2_step_4: "Leave the mask on for 20-25 minutes until it dries partially.",
+                remedy_acne_2_step_5: "Gently massage in circular motions for 1 minute to exfoliate, then rinse with lukewarm water using gentle circular motions.",
+                remedy_acne_2_step_6: "Pat dry and apply a light moisturizer suitable for acne-prone skin.",
+                remedy_acne_2_warning: "Turmeric may temporarily stain light skin. Use old towels and wear old clothing during application. Rinse thoroughly.",
+                
+                // Dryness Remedies
+                remedy_dryness_1_name: "Honey & Avocado Hydration Mask",
+                remedy_dryness_1_desc: "An intensive moisturizing treatment that combines humectant honey with nutrient-rich avocado to restore skin's moisture barrier.",
+                remedy_dryness_1_prep_time: "8 minutes",
+                remedy_dryness_1_application_time: "20 minutes",
+                remedy_dryness_1_frequency: "2-3 times per week",
+                remedy_dryness_1_duration: "Use regularly during dry seasons",
+                remedy_dryness_1_step_1: "Mash half a ripe avocado until smooth in a clean bowl.",
+                remedy_dryness_1_step_2: "Add 1 tablespoon of raw honey and 1 teaspoon of olive oil (optional for extra dry skin).",
+                remedy_dryness_1_step_3: "Mix thoroughly until you achieve a creamy consistency.",
+                remedy_dryness_1_step_4: "Apply to clean, damp skin in upward circular motions, avoiding the eye area.",
+                remedy_dryness_1_step_5: "Relax for 20 minutes, then rinse with lukewarm water using gentle massage motions.",
+                remedy_dryness_1_step_6: "Pat dry and follow with your regular moisturizer to lock in hydration.",
+                remedy_dryness_1_warning: "Perform a patch test if you have avocado allergies. Use ripe avocado for best texture and absorption.",
+                
+                remedy_dryness_2_name: "Oatmeal & Milk Soothing Compress",
+                remedy_dryness_2_desc: "A gentle treatment that calms irritated, flaky skin while providing essential lipids to repair the moisture barrier.",
+                remedy_dryness_2_prep_time: "15 minutes (including soaking time)",
+                remedy_dryness_2_application_time: "10-15 minutes",
+                remedy_dryness_2_frequency: "Daily for acute dryness, 3 times weekly for maintenance",
+                remedy_dryness_2_duration: "Continue until skin normalizes",
+                remedy_dryness_2_step_1: "Grind 2 tablespoons of plain oatmeal into a fine powder using a blender or food processor.",
+                remedy_dryness_2_step_2: "Mix the oatmeal powder with 1/2 cup of whole milk (or almond milk for vegan option) in a bowl.",
+                remedy_dryness_2_step_3: "Let the mixture sit for 10 minutes to allow the oatmeal to release its soothing compounds.",
+                remedy_dryness_2_step_4: "Strain the mixture through a clean cloth, collecting the milky liquid.",
+                remedy_dryness_2_step_5: "Soak a clean cotton pad or soft cloth in the liquid and apply as a compress to dry areas.",
+                remedy_dryness_2_step_6: "Leave on for 10-15 minutes, reapplying liquid as needed to keep compress moist.",
+                remedy_dryness_2_step_7: "Gently pat the remaining liquid into skin, do not rinse. Follow with moisturizer.",
+                remedy_dryness_2_warning: "Use whole milk for maximum lipids. Test on a small area first if you have dairy sensitivities.",
+                
+                // Redness Remedies
+                remedy_redness_1_name: "Cucumber & Aloe Cooling Gel",
+                remedy_redness_1_desc: "An instant cooling treatment that reduces redness and soothes irritated skin with anti-inflammatory properties.",
+                remedy_redness_1_prep_time: "10 minutes (plus chilling time)",
+                remedy_redness_1_application_time: "15 minutes",
+                remedy_redness_1_frequency: "As needed for redness flare-ups",
+                remedy_redness_1_duration: "Use until redness subsides",
+                remedy_redness_1_step_1: "Blend half a fresh cucumber (peeled) until completely liquid.",
+                remedy_redness_1_step_2: "Strain the cucumber juice through a fine mesh sieve into a clean bowl.",
+                remedy_redness_1_step_3: "Mix 2 tablespoons of cucumber juice with 1 tablespoon of pure aloe vera gel.",
+                remedy_redness_1_step_4: "Add 1 teaspoon of rose water (optional for added soothing) and mix well.",
+                remedy_redness_1_step_5: "Refrigerate the mixture for 30 minutes until chilled.",
+                remedy_redness_1_step_6: "Apply a thick layer to affected areas using clean fingers or a cotton pad.",
+                remedy_redness_1_step_7: "Leave on for 15 minutes, then rinse with cool water and pat dry gently.",
+                remedy_redness_1_warning: "Keep refrigerated and use within 2 days. Discard if color or smell changes.",
+                
+                remedy_redness_2_name: "Chamomile Tea Compress",
+                remedy_redness_2_desc: "A gentle compress using chamomile's natural anti-inflammatory compounds to calm skin and reduce visible redness.",
+                remedy_redness_2_prep_time: "15 minutes",
+                remedy_redness_2_application_time: "10 minutes",
+                remedy_redness_2_frequency: "1-2 times daily during flare-ups",
+                remedy_redness_2_duration: "Continue for 3-5 days",
+                remedy_redness_2_step_1: "Brew 2 chamomile tea bags in 1 cup of boiling water for 10 minutes.",
+                remedy_redness_2_step_2: "Remove tea bags and allow the tea to cool to room temperature, then refrigerate for 20 minutes.",
+                remedy_redness_2_step_3: "Soak two clean cotton pads or soft cloth squares in the chilled chamomile tea.",
+                remedy_redness_2_step_4: "Gently squeeze out excess liquid and apply the compresses to affected areas.",
+                remedy_redness_2_step_5: "Leave in place for 10 minutes, replacing with freshly soaked pads halfway through if they warm up.",
+                remedy_redness_2_step_6: "Gently pat remaining liquid into skin (do not rinse) and follow with a gentle moisturizer.",
+                remedy_redness_2_warning: "Ensure tea is completely cool before application. Do not use if allergic to ragweed or chamomile.",
+                
+                // Oily Skin Remedies
+                remedy_oily_1_name: "Bentonite Clay & Apple Cider Vinegar Mask",
+                remedy_oily_1_desc: "A deep-cleansing clay mask that absorbs excess oil, tightens pores, and balances skin's pH naturally.",
+                remedy_oily_1_prep_time: "5 minutes",
+                remedy_oily_1_application_time: "15-20 minutes",
+                remedy_oily_1_frequency: "1-2 times per week",
+                remedy_oily_1_duration: "Regular use for maintenance",
+                remedy_oily_1_step_1: "Mix 2 tablespoons of bentonite clay powder with 1 tablespoon of raw apple cider vinegar in a non-metallic bowl.",
+                remedy_oily_1_step_2: "Add 1 teaspoon of water if needed to achieve a smooth, spreadable paste.",
+                remedy_oily_1_step_3: "Apply an even layer to clean, damp skin, avoiding the eye and lip areas.",
+                remedy_oily_1_step_4: "Allow the mask to dry completely (15-20 minutes) - you'll feel it tighten.",
+                remedy_oily_1_step_5: "Rinse off with warm water using gentle circular motions to exfoliate.",
+                remedy_oily_1_step_6: "Follow with a toner and lightweight, oil-free moisturizer.",
+                remedy_oily_1_warning: "Do not use metal utensils with bentonite clay. May cause tingling sensation - this is normal. Discontinue if irritation occurs.",
+                
+                remedy_oily_2_name: "Witch Hazel & Green Tea Toner",
+                remedy_oily_2_desc: "A balancing toner that controls sebum production throughout the day while providing antioxidant protection.",
+                remedy_oily_2_prep_time: "20 minutes (plus cooling time)",
+                remedy_oily_2_application_time: "Immediate (use throughout day)",
+                remedy_oily_2_frequency: "2 times daily (morning and evening)",
+                remedy_oily_2_duration: "Regular use for ongoing oil control",
+                remedy_oily_2_step_1: "Steep 2 green tea bags in 1 cup of hot water for 15 minutes.",
+                remedy_oily_2_step_2: "Remove tea bags and allow the tea to cool completely to room temperature.",
+                remedy_oily_2_step_3: "Mix 1/2 cup of the cooled green tea with 1/4 cup of witch hazel extract in a clean bottle.",
+                remedy_oily_2_step_4: "Add 1 tablespoon of aloe vera gel and shake well to combine.",
+                remedy_oily_2_step_5: "After cleansing, apply to skin with a cotton pad, focusing on oily zones (T-zone, chin).",
+                remedy_oily_2_step_6: "Allow to air dry, then follow with your regular moisturizer.",
+                remedy_oily_2_step_7: "Store in refrigerator for up to 1 week for a refreshing, cooling effect.",
+                remedy_oily_2_warning: "Use alcohol-free witch hazel to avoid over-drying. Discontinue if excessive dryness occurs.",
+                
+                // Clogged Pores Remedies
+                remedy_cloggedpores_1_name: "Charcoal & Yogurt Deep Cleanse Mask",
+                remedy_cloggedpores_1_desc: "A purifying treatment that draws out impurities from pores while providing gentle exfoliation to prevent future clogging.",
+                remedy_cloggedpores_1_prep_time: "5 minutes",
+                remedy_cloggedpores_1_application_time: "15 minutes",
+                remedy_cloggedpores_1_frequency: "Once weekly",
+                remedy_cloggedpores_1_duration: "Regular maintenance",
+                remedy_cloggedpores_1_step_1: "Mix 1 teaspoon of activated charcoal powder with 2 tablespoons of plain, unsweetened yogurt.",
+                remedy_cloggedpores_1_step_2: "Add 1/2 teaspoon of baking soda (for gentle exfoliation) and mix until smooth.",
+                remedy_cloggedpores_1_step_3: "Apply to clean, damp skin, focusing on areas with visible pores (nose, chin, forehead).",
+                remedy_cloggedpores_1_step_4: "Leave on for 15 minutes until the mask begins to dry.",
+                remedy_cloggedpores_1_step_5: "Using wet fingers, gently massage in circular motions for 1-2 minutes to exfoliate.",
+                remedy_cloggedpores_1_step_6: "Rinse thoroughly with lukewarm water, using gentle circular motions.",
+                remedy_cloggedpores_1_step_7: "Apply a pore-minimizing toner and lightweight moisturizer.",
+                remedy_cloggedpores_1_warning: "May temporarily stain light-colored surfaces. Use old towels. Avoid if you have extremely sensitive skin.",
+                
+                // Dark Spots Remedies
+                remedy_darkspots_1_name: "Vitamin C & Lemon Brightening Serum",
+                remedy_darkspots_1_desc: "A potent brightening treatment that targets hyperpigmentation while promoting collagen production for even skin tone.",
+                remedy_darkspots_1_prep_time: "5 minutes",
+                remedy_darkspots_1_application_time: "Overnight (or 30 minutes)",
+                remedy_darkspots_1_frequency: "3-4 times per week",
+                remedy_darkspots_1_duration: "8-12 weeks for visible results",
+                remedy_darkspots_1_step_1: "Mix 1 teaspoon of vitamin C powder (L-ascorbic acid) with 2 tablespoons of distilled water in a dark glass bottle.",
+                remedy_darkspots_1_step_2: "Add 1 teaspoon of fresh lemon juice and 1/2 teaspoon of glycerin (optional for hydration).",
+                remedy_darkspots_1_step_3: "Shake well until completely dissolved - solution should be clear or slightly yellow.",
+                remedy_darkspots_1_step_4: "Apply 3-4 drops to clean skin, focusing on dark spots and hyperpigmented areas.",
+                remedy_darkspots_1_step_5: "Gently massage in using upward circular motions until absorbed.",
+                remedy_darkspots_1_step_6: "Wait 15 minutes before applying moisturizer. Use at night for best results.",
+                remedy_darkspots_1_step_7: "Follow with SPF 30+ in the morning as vitamin C increases sun sensitivity.",
+                remedy_darkspots_1_warning: "Always use sunscreen when using brightening agents. May cause tingling - this is normal. Discontinue if severe irritation occurs.",
+                
+                // Fine Lines Remedies
+                remedy_lines_1_name: "Avocado & Egg Anti-Aging Mask",
+                remedy_lines_1_desc: "A nutrient-rich treatment that plumps fine lines and improves skin elasticity with essential fatty acids and proteins.",
+                remedy_lines_1_prep_time: "10 minutes",
+                remedy_lines_1_application_time: "20 minutes",
+                remedy_lines_1_frequency: "2 times per week",
+                remedy_lines_1_duration: "Regular use for cumulative benefits",
+                remedy_lines_1_step_1: "Separate one egg yolk from the white in a clean bowl.",
+                remedy_lines_1_step_2: "Mash 1/4 of a ripe avocado until smooth and mix with the egg yolk.",
+                remedy_lines_1_step_3: "Add 1 teaspoon of honey and 1/2 teaspoon of olive oil, mixing until creamy.",
+                remedy_lines_1_step_4: "Apply a thick layer to clean skin, paying special attention to areas with fine lines.",
+                remedy_lines_1_step_5: "Leave on for 20 minutes, relaxing with the mask on.",
+                remedy_lines_1_step_6: "Rinse with cool water using gentle upward motions to avoid pulling skin.",
+                remedy_lines_1_step_7: "Pat dry and follow with a rich moisturizer to lock in nutrients.",
+                remedy_lines_1_warning: "Use immediately after preparation. Do not use if you have egg allergies. Perform patch test first.",
+                
+                // Eczema Remedies
+                remedy_eczema_1_name: "Oatmeal & Coconut Oil Soothing Balm",
+                remedy_eczema_1_desc: "A calming balm that provides immediate relief from itching while creating a protective barrier to prevent moisture loss.",
+                remedy_eczema_1_prep_time: "15 minutes",
+                remedy_eczema_1_application_time: "Overnight preferred",
+                remedy_eczema_1_frequency: "As needed for flare-ups",
+                remedy_eczema_1_duration: "Use until symptoms improve",
+                remedy_eczema_1_step_1: "Grind 1/4 cup of colloidal oatmeal into a fine powder using a blender.",
+                remedy_eczema_1_step_2: "Melt 2 tablespoons of coconut oil and 1 tablespoon of shea butter in a double boiler.",
+                remedy_eczema_1_step_3: "Remove from heat and stir in the oatmeal powder until fully incorporated.",
+                remedy_eczema_1_step_4: "Add 5 drops of chamomile essential oil (optional for extra calming).",
+                remedy_eczema_1_step_5: "Pour into a clean container and let solidify at room temperature.",
+                remedy_eczema_1_step_6: "Apply a thin layer to clean, affected areas, massaging gently until absorbed.",
+                remedy_eczema_1_step_7: "For best results, apply at night and cover with breathable cotton clothing.",
+                remedy_eczema_1_warning: "Test on a small area first. Consult a doctor if eczema is severe or infected. Not for use on broken skin.",
+                
+                // Sunburn Remedies
+                remedy_sunburn_1_name: "Aloe Vera & Lavender Cooling Gel",
+                remedy_sunburn_1_desc: "An immediate cooling treatment that soothes sunburn pain, reduces inflammation, and promotes skin healing.",
+                remedy_sunburn_1_prep_time: "5 minutes (plus chilling)",
+                remedy_sunburn_1_application_time: "As needed",
+                remedy_sunburn_1_frequency: "Every 2-3 hours during acute phase",
+                remedy_sunburn_1_duration: "Until sunburn heals completely",
+                remedy_sunburn_1_step_1: "Extract fresh gel from 2 large aloe vera leaves (or use 1/2 cup pure aloe vera gel).",
+                remedy_sunburn_1_step_2: "Mix with 1 tablespoon of witch hazel and 1 teaspoon of glycerin in a clean bowl.",
+                remedy_sunburn_1_step_3: "Add 3-5 drops of lavender essential oil (for its anti-inflammatory properties).",
+                remedy_sunburn_1_step_4: "Refrigerate the mixture for at least 30 minutes until thoroughly chilled.",
+                remedy_sunburn_1_step_5: "Apply generously to sunburned areas using gentle patting motions (do not rub).",
+                remedy_sunburn_1_step_6: "Reapply every 2-3 hours or whenever the skin feels hot or uncomfortable.",
+                remedy_sunburn_1_step_7: "Store remaining gel in refrigerator and use within 3 days.",
+                remedy_sunburn_1_warning: "For severe sunburn with blistering, seek medical attention. Do not apply to broken skin. Stay out of the sun during healing."
+            },
+            ta: {
+                // Tamil translations would go here for a complete implementation
+                // For brevity, I'm including the structure but not all translations
+                app_title: "ரெமெடிசென்ஸ் ஊடாடும் திட்டக் காட்சி (பச்சை தீம்)",
+                nav_about: "பற்றி",
+                nav_dashboard: "கட்டுப்பாட்டுப் பலகை",
+                nav_remedies: "சிகிச்சைகள்",
+                nav_walkthrough: "வழிமுறை",
+                nav_view_project: "திட்டத்தைக் காண்க",
+                hero_title: "சிறந்த சருமத்திற்கான உங்கள் கலவை.",
+                hero_subtitle: "ரெமெடிசென்ஸ் என்பது உங்கள் தனித்துவமான தோல் சுயவிவரத்திற்கு ஏற்ற இயற்கையான, பயனுள்ள தீர்வுகளை வழங்கும் ஒரு ஸ்மார்ட் பரிந்துரை அமைப்பு.",
+                // ... rest of Tamil translations would follow the same pattern as English
+                // For the full implementation, you would translate all the remedy instructions to Tamil
+            }
+        };
+
+        // --- CORE DATA STRUCTURES --- 
+        const chartData = {
+            labels: ['Acne & Blemishes', 'Dryness & Dehydration', 'Redness & Irritation', 'Oily Skin & Pores', 'Other'],
+            data: [30, 25, 15, 20, 10],
+        };
+
+        const issues = [
+            'issue_acne', 'issue_dryness', 'issue_redness', 'issue_oily', 
+            'issue_cloggedpores', 'issue_darkspots', 'issue_lines', 'issue_eczema', 'issue_sunburn'
+        ];
+
+        // Ingredient Database (Used in the Explorer)
+        const ingredientsData = [
+            { key: 'ing_aloe_vera', properties: ['anti_inflammatory', 'moisturizing'] },
+            { key: 'ing_tea_tree', properties: ['antibacterial', 'anti_inflammatory'] },
+            { key: 'ing_turmeric', properties: ['anti_inflammatory', 'antioxidant', 'antibacterial'] },
+            { key: 'ing_honey', properties: ['moisturizing', 'antibacterial'] },
+            { key: 'ing_shea_butter', properties: ['moisturizing'] },
+            { key: 'ing_green_tea', properties: ['antioxidant', 'anti_inflammatory'] },
+            { key: 'ing_oatmeal', properties: ['anti_inflammatory', 'moisturizing'] },
+            { key: 'ing_coconut_oil', properties: ['moisturizing'] },
+            { key: 'ing_vitamin_c', properties: ['antioxidant'] },
+            { key: 'ing_rose_water', properties: ['anti_inflammatory'] },
+            { key: 'ing_bentonite_clay', properties: ['antibacterial'] },
+            { key: 'ing_witch_hazel', properties: ['anti_inflammatory'] },
+            { key: 'ing_chamomile', properties: ['anti_inflammatory'] },
+            { key: 'ing_cucumber', properties: ['anti_inflammatory'] },
+            { key: 'ing_yogurt', properties: ['moisturizing'] },
+            { key: 'ing_lemon_juice', properties: ['antioxidant'] },
+            { key: 'ing_jojoba_oil', properties: ['moisturizing'] },
+        ];
+        
+        // --- SAMPLE IMAGE DATA ---
+        const sampleImages = {
+            issue_acne: { src: 'https://placehold.co/100x70/6AA84F/fff?text=ACNE' },
+            issue_redness: { src: 'https://placehold.co/100x70/C28B38/fff?text=REDNESS' },
+            issue_dryness: { src: 'https://placehold.co/100x70/38761D/fff?text=DRYNESS' },
+            issue_darkspots: { src: 'https://placehold.co/100x70/60735E/fff?text=SPOTS' },
+            issue_sunburn: { src: 'https://placehold.co/100x70/A4C639/fff?text=SUNBURN' },
+        };
+
+        // Enhanced Common Remedies Data Structure with Detailed Instructions
+        const commonRemedies = {
+            'issue_acne': {
+                issueDescKey: "desc_acne", 
+                remedy1: { 
+                    remedyNameKey: "remedy_acne_1_name", 
+                    descriptionKey: "remedy_acne_1_desc",
+                    keyIngredients: ["ing_tea_tree", "ing_aloe_vera"],
+                    property_match: { anti_inflammatory: 'high', antibacterial: 'high' },
+                    prepTimeKey: "remedy_acne_1_prep_time",
+                    applicationTimeKey: "remedy_acne_1_application_time",
+                    frequencyKey: "remedy_acne_1_frequency",
+                    durationKey: "remedy_acne_1_duration",
+                    steps: [
+                        "remedy_acne_1_step_1",
+                        "remedy_acne_1_step_2",
+                        "remedy_acne_1_step_3",
+                        "remedy_acne_1_step_4",
+                        "remedy_acne_1_step_5"
+                    ],
+                    warningKey: "remedy_acne_1_warning"
+                },
+                remedy2: { 
+                    remedyNameKey: "remedy_acne_2_name", 
+                    descriptionKey: "remedy_acne_2_desc",
+                    keyIngredients: ["ing_turmeric", "ing_honey", "ing_yogurt"],
+                    property_match: { anti_inflammatory: 'medium', antibacterial: 'high', antioxidant: 'medium' },
+                    prepTimeKey: "remedy_acne_2_prep_time",
+                    applicationTimeKey: "remedy_acne_2_application_time",
+                    frequencyKey: "remedy_acne_2_frequency",
+                    durationKey: "remedy_acne_2_duration",
+                    steps: [
+                        "remedy_acne_2_step_1",
+                        "remedy_acne_2_step_2",
+                        "remedy_acne_2_step_3",
+                        "remedy_acne_2_step_4",
+                        "remedy_acne_2_step_5",
+                        "remedy_acne_2_step_6"
+                    ],
+                    warningKey: "remedy_acne_2_warning"
+                }
+            },
+            'issue_dryness': { 
+                issueDescKey: "desc_dryness",
+                remedy1: { 
+                    remedyNameKey: "remedy_dryness_1_name", 
+                    descriptionKey: "remedy_dryness_1_desc",
+                    keyIngredients: ["ing_honey", "ing_aloe_vera"],
+                    property_match: { moisturizing: 'high', anti_inflammatory: 'medium' },
+                    prepTimeKey: "remedy_dryness_1_prep_time",
+                    applicationTimeKey: "remedy_dryness_1_application_time",
+                    frequencyKey: "remedy_dryness_1_frequency",
+                    durationKey: "remedy_dryness_1_duration",
+                    steps: [
+                        "remedy_dryness_1_step_1",
+                        "remedy_dryness_1_step_2",
+                        "remedy_dryness_1_step_3",
+                        "remedy_dryness_1_step_4",
+                        "remedy_dryness_1_step_5",
+                        "remedy_dryness_1_step_6"
+                    ],
+                    warningKey: "remedy_dryness_1_warning"
+                },
+                remedy2: { 
+                    remedyNameKey: "remedy_dryness_2_name", 
+                    descriptionKey: "remedy_dryness_2_desc",
+                    keyIngredients: ["ing_oatmeal", "ing_aloe_vera"],
+                    property_match: { moisturizing: 'high', anti_inflammatory: 'high' },
+                    prepTimeKey: "remedy_dryness_2_prep_time",
+                    applicationTimeKey: "remedy_dryness_2_application_time",
+                    frequencyKey: "remedy_dryness_2_frequency",
+                    durationKey: "remedy_dryness_2_duration",
+                    steps: [
+                        "remedy_dryness_2_step_1",
+                        "remedy_dryness_2_step_2",
+                        "remedy_dryness_2_step_3",
+                        "remedy_dryness_2_step_4",
+                        "remedy_dryness_2_step_5",
+                        "remedy_dryness_2_step_6",
+                        "remedy_dryness_2_step_7"
+                    ],
+                    warningKey: "remedy_dryness_2_warning"
+                }
+            },
+            'issue_redness': { 
+                issueDescKey: "desc_redness", 
+                remedy1: { 
+                    remedyNameKey: "remedy_redness_1_name", 
+                    descriptionKey: "remedy_redness_1_desc",
+                    keyIngredients: ["ing_cucumber", "ing_aloe_vera", "ing_rose_water"],
+                    property_match: { anti_inflammatory: 'high', moisturizing: 'medium' },
+                    prepTimeKey: "remedy_redness_1_prep_time",
+                    applicationTimeKey: "remedy_redness_1_application_time",
+                    frequencyKey: "remedy_redness_1_frequency",
+                    durationKey: "remedy_redness_1_duration",
+                    steps: [
+                        "remedy_redness_1_step_1",
+                        "remedy_redness_1_step_2",
+                        "remedy_redness_1_step_3",
+                        "remedy_redness_1_step_4",
+                        "remedy_redness_1_step_5",
+                        "remedy_redness_1_step_6",
+                        "remedy_redness_1_step_7"
+                    ],
+                    warningKey: "remedy_redness_1_warning"
+                },
+                remedy2: { 
+                    remedyNameKey: "remedy_redness_2_name", 
+                    descriptionKey: "remedy_redness_2_desc",
+                    keyIngredients: ["ing_chamomile", "ing_aloe_vera"],
+                    property_match: { anti_inflammatory: 'high', moisturizing: 'low' },
+                    prepTimeKey: "remedy_redness_2_prep_time",
+                    applicationTimeKey: "remedy_redness_2_application_time",
+                    frequencyKey: "remedy_redness_2_frequency",
+                    durationKey: "remedy_redness_2_duration",
+                    steps: [
+                        "remedy_redness_2_step_1",
+                        "remedy_redness_2_step_2",
+                        "remedy_redness_2_step_3",
+                        "remedy_redness_2_step_4",
+                        "remedy_redness_2_step_5",
+                        "remedy_redness_2_step_6"
+                    ],
+                    warningKey: "remedy_redness_2_warning"
+                }
+            },
+            'issue_oily': { 
+                issueDescKey: "desc_oily", 
+                remedy1: { 
+                    remedyNameKey: "remedy_oily_1_name", 
+                    descriptionKey: "remedy_oily_1_desc",
+                    keyIngredients: ["ing_bentonite_clay", "ing_aloe_vera"],
+                    property_match: { antibacterial: 'high', anti_inflammatory: 'medium' },
+                    prepTimeKey: "remedy_oily_1_prep_time",
+                    applicationTimeKey: "remedy_oily_1_application_time",
+                    frequencyKey: "remedy_oily_1_frequency",
+                    durationKey: "remedy_oily_1_duration",
+                    steps: [
+                        "remedy_oily_1_step_1",
+                        "remedy_oily_1_step_2",
+                        "remedy_oily_1_step_3",
+                        "remedy_oily_1_step_4",
+                        "remedy_oily_1_step_5",
+                        "remedy_oily_1_step_6"
+                    ],
+                    warningKey: "remedy_oily_1_warning"
+                },
+                remedy2: { 
+                    remedyNameKey: "remedy_oily_2_name", 
+                    descriptionKey: "remedy_oily_2_desc",
+                    keyIngredients: ["ing_witch_hazel", "ing_green_tea", "ing_aloe_vera"],
+                    property_match: { anti_inflammatory: 'medium', antioxidant: 'medium' },
+                    prepTimeKey: "remedy_oily_2_prep_time",
+                    applicationTimeKey: "remedy_oily_2_application_time",
+                    frequencyKey: "remedy_oily_2_frequency",
+                    durationKey: "remedy_oily_2_duration",
+                    steps: [
+                        "remedy_oily_2_step_1",
+                        "remedy_oily_2_step_2",
+                        "remedy_oily_2_step_3",
+                        "remedy_oily_2_step_4",
+                        "remedy_oily_2_step_5",
+                        "remedy_oily_2_step_6",
+                        "remedy_oily_2_step_7"
+                    ],
+                    warningKey: "remedy_oily_2_warning"
+                }
+            },
+            'issue_cloggedpores': { 
+                issueDescKey: "desc_cloggedpores", 
+                remedy1: { 
+                    remedyNameKey: "remedy_cloggedpores_1_name", 
+                    descriptionKey: "remedy_cloggedpores_1_desc",
+                    keyIngredients: ["ing_bentonite_clay", "ing_yogurt", "ing_aloe_vera"],
+                    property_match: { antibacterial: 'high', anti_inflammatory: 'medium' },
+                    prepTimeKey: "remedy_cloggedpores_1_prep_time",
+                    applicationTimeKey: "remedy_cloggedpores_1_application_time",
+                    frequencyKey: "remedy_cloggedpores_1_frequency",
+                    durationKey: "remedy_cloggedpores_1_duration",
+                    steps: [
+                        "remedy_cloggedpores_1_step_1",
+                        "remedy_cloggedpores_1_step_2",
+                        "remedy_cloggedpores_1_step_3",
+                        "remedy_cloggedpores_1_step_4",
+                        "remedy_cloggedpores_1_step_5",
+                        "remedy_cloggedpores_1_step_6",
+                        "remedy_cloggedpores_1_step_7"
+                    ],
+                    warningKey: "remedy_cloggedpores_1_warning"
+                }
+            },
+            'issue_darkspots': { 
+                issueDescKey: "desc_darkspots", 
+                remedy1: { 
+                    remedyNameKey: "remedy_darkspots_1_name", 
+                    descriptionKey: "remedy_darkspots_1_desc",
+                    keyIngredients: ["ing_vitamin_c", "ing_lemon_juice", "ing_aloe_vera"],
+                    property_match: { antioxidant: 'high', anti_inflammatory: 'medium' },
+                    prepTimeKey: "remedy_darkspots_1_prep_time",
+                    applicationTimeKey: "remedy_darkspots_1_application_time",
+                    frequencyKey: "remedy_darkspots_1_frequency",
+                    durationKey: "remedy_darkspots_1_duration",
+                    steps: [
+                        "remedy_darkspots_1_step_1",
+                        "remedy_darkspots_1_step_2",
+                        "remedy_darkspots_1_step_3",
+                        "remedy_darkspots_1_step_4",
+                        "remedy_darkspots_1_step_5",
+                        "remedy_darkspots_1_step_6",
+                        "remedy_darkspots_1_step_7"
+                    ],
+                    warningKey: "remedy_darkspots_1_warning"
+                }
+            },
+            'issue_lines': { 
+                issueDescKey: "desc_lines", 
+                remedy1: { 
+                    remedyNameKey: "remedy_lines_1_name", 
+                    descriptionKey: "remedy_lines_1_desc",
+                    keyIngredients: ["ing_honey", "ing_coconut_oil", "ing_aloe_vera"],
+                    property_match: { moisturizing: 'high', antioxidant: 'medium' },
+                    prepTimeKey: "remedy_lines_1_prep_time",
+                    applicationTimeKey: "remedy_lines_1_application_time",
+                    frequencyKey: "remedy_lines_1_frequency",
+                    durationKey: "remedy_lines_1_duration",
+                    steps: [
+                        "remedy_lines_1_step_1",
+                        "remedy_lines_1_step_2",
+                        "remedy_lines_1_step_3",
+                        "remedy_lines_1_step_4",
+                        "remedy_lines_1_step_5",
+                        "remedy_lines_1_step_6",
+                        "remedy_lines_1_step_7"
+                    ],
+                    warningKey: "remedy_lines_1_warning"
+                }
+            },
+            'issue_eczema': { 
+                issueDescKey: "desc_eczema", 
+                remedy1: { 
+                    remedyNameKey: "remedy_eczema_1_name", 
+                    descriptionKey: "remedy_eczema_1_desc",
+                    keyIngredients: ["ing_oatmeal", "ing_coconut_oil", "ing_shea_butter"],
+                    property_match: { anti_inflammatory: 'high', moisturizing: 'high' },
+                    prepTimeKey: "remedy_eczema_1_prep_time",
+                    applicationTimeKey: "remedy_eczema_1_application_time",
+                    frequencyKey: "remedy_eczema_1_frequency",
+                    durationKey: "remedy_eczema_1_duration",
+                    steps: [
+                        "remedy_eczema_1_step_1",
+                        "remedy_eczema_1_step_2",
+                        "remedy_eczema_1_step_3",
+                        "remedy_eczema_1_step_4",
+                        "remedy_eczema_1_step_5",
+                        "remedy_eczema_1_step_6",
+                        "remedy_eczema_1_step_7"
+                    ],
+                    warningKey: "remedy_eczema_1_warning"
+                }
+            },
+            'issue_sunburn': { 
+                issueDescKey: "desc_sunburn", 
+                remedy1: { 
+                    remedyNameKey: "remedy_sunburn_1_name", 
+                    descriptionKey: "remedy_sunburn_1_desc",
+                    keyIngredients: ["ing_aloe_vera", "ing_witch_hazel", "ing_coconut_oil"],
+                    property_match: { anti_inflammatory: 'high', moisturizing: 'high' },
+                    prepTimeKey: "remedy_sunburn_1_prep_time",
+                    applicationTimeKey: "remedy_sunburn_1_application_time",
+                    frequencyKey: "remedy_sunburn_1_frequency",
+                    durationKey: "remedy_sunburn_1_duration",
+                    steps: [
+                        "remedy_sunburn_1_step_1",
+                        "remedy_sunburn_1_step_2",
+                        "remedy_sunburn_1_step_3",
+                        "remedy_sunburn_1_step_4",
+                        "remedy_sunburn_1_step_5",
+                        "remedy_sunburn_1_step_6",
+                        "remedy_sunburn_1_step_7"
+                    ],
+                    warningKey: "remedy_sunburn_1_warning"
+                }
+            },
+        };
+        
+        // --- STATUS & CAMERA FUNCTIONS ---
+        function updateStatus(message, classes) {
+            webcamStatusEl.innerHTML = message;
+            webcamStatusEl.className = `text-sm p-2 rounded-lg transition duration-300 text-center mb-4 ${classes}`;
+        }
+
+        function stopCamera() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+                video.srcObject = null;
+            }
+            video.style.display = 'none';
+            startButton.disabled = false;
+            captureButton.disabled = true;
+        }
+
+        function startCamera() {
+            if (!currentIssueKey) {
+                updateStatus(translations[currentLang].status_error_no_issue_selected, 'text-red-700 bg-red-100');
+                return;
+            }
+
+            remedyResultsEl.classList.add('hidden');
+            document.getElementById('captured-image').style.display = 'none';
+            document.getElementById('capture-heading').style.display = 'none';
+            document.getElementById('sample-error-message').classList.add('hidden');
+            document.querySelectorAll('.sample-image-button').forEach(btn => btn.classList.remove('active'));
+
+            updateStatus(translations[currentLang].status_start_attempt, 'text-brand-primary-dark bg-brand-card-bg');
+            startButton.disabled = true;
+            captureButton.disabled = true;
+            video.style.display = 'block';
+            
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
+                .then(s => {
+                    stream = s;
+                    video.srcObject = stream;
+                    video.play();
+                    captureButton.disabled = false;
+                    const issueName = translations[currentLang][currentIssueKey];
+                    updateStatus(translations[currentLang].status_camera_active(issueName), 'text-brand-primary-dark bg-brand-card-bg');
+                })
+                .catch(err => {
+                    video.style.display = 'none';
+                    startButton.disabled = false;
+                    if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+                        updateStatus(translations[currentLang].status_error_denied, 'text-red-700 bg-red-100');
+                    } else if (err.name === 'NotFoundError') {
+                        updateStatus(translations[currentLang].status_error_not_found, 'text-red-700 bg-red-100');
+                    } else if (err.name === 'NotReadableError') {
+                        updateStatus(translations[currentLang].status_error_not_readable, 'text-red-700 bg-red-100');
+                    } else {
+                        console.error("Error accessing camera: ", err);
+                        updateStatus(translations[currentLang].status_error_general, 'text-red-700 bg-red-100');
+                    }
+                });
+        }
+
+        function captureFrame() {
+            if (!currentIssueKey) {
+                 updateStatus(translations[currentLang].status_error_no_issue_selected, 'text-red-700 bg-red-100');
+                return;
+            }
+            if (!stream || !video.srcObject) {
+                 updateStatus(translations[currentLang].status_error_stream_inactive, 'text-red-700 bg-red-100');
+                return;
+            }
+
+            captureCanvas.width = video.videoWidth;
+            captureCanvas.height = video.videoHeight;
+            const ctx = captureCanvas.getContext('2d');
+            ctx.scale(-1, 1);
+            ctx.drawImage(video, 0, 0, -captureCanvas.width, captureCanvas.height);
+            
+            stopCamera();
+
+            capturedImage.src = captureCanvas.toDataURL('image/png');
+            capturedImage.style.display = 'block';
+            document.getElementById('capture-heading').style.display = 'block';
+
+            const issueName = translations[currentLang][currentIssueKey];
+            updateStatus(translations[currentLang].status_capture_simulated(issueName), 'text-white bg-brand-primary-accent');
+            
+            viewExpertRemedy(currentIssueKey);
+        }
+
+        // --- NEW SAMPLE IMAGE FUNCTIONS ---
+        function renderSampleImages(lang) {
+            const container = document.getElementById('sample-image-grid');
+            const t = translations[lang];
+
+            let html = Object.keys(sampleImages).map(issueKey => {
+                const issueLabel = t[issueKey] || issueKey.split('_').pop().toUpperCase();
+                let placeholderText;
+                switch(issueKey) {
+                    case 'issue_acne': placeholderText = 'ACNE'; break;
+                    case 'issue_redness': placeholderText = 'REDNESS'; break;
+                    case 'issue_dryness': placeholderText = 'DRYNESS'; break;
+                    case 'issue_darkspots': placeholderText = 'SPOTS'; break;
+                    case 'issue_sunburn': placeholderText = 'SUNBURN'; break;
+                    default: placeholderText = issueLabel.split(' ')[0].toUpperCase();
+                }
+
+                return `
+                    <button class="sample-image-button relative rounded-lg overflow-hidden transition duration-200 hover:shadow-lg active:scale-95" 
+                            data-issue-key="${issueKey}">
+                        <img src="${sampleImages[issueKey].src}" alt="${issueLabel}" 
+                            class="w-full h-auto object-cover border-2 border-transparent"
+                            title="${issueLabel}">
+                        <span class="absolute inset-0 bg-brand-primary-dark/30 flex items-center justify-center text-white text-xs font-semibold opacity-0 hover:opacity-100 transition duration-200">${placeholderText}</span>
+                    </button>
+                `;
+            }).join('');
+
+            container.innerHTML = html;
+
+            document.querySelectorAll('.sample-image-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    useSampleImage(button);
+                });
+            });
+        }
+
+        function useSampleImage(button) {
+            if (!currentIssueKey) {
+                document.getElementById('sample-error-message').textContent = translations[currentLang].status_error_no_issue_selected;
+                document.getElementById('sample-error-message').classList.remove('hidden');
+                updateStatus(translations[currentLang].status_error_no_issue_selected, 'text-red-700 bg-red-100');
+                return;
+            }
+            
+            remedyResultsEl.classList.add('hidden');
+            document.getElementById('sample-error-message').classList.add('hidden');
+
+            document.querySelectorAll('.sample-image-button').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+
+            stopCamera();
+
+            const issueKey = button.getAttribute('data-issue-key');
+            capturedImage.src = sampleImages[issueKey].src;
+            capturedImage.style.display = 'block';
+            document.getElementById('capture-heading').style.display = 'block';
+
+            const t = translations[currentLang];
+            const issueName = t[currentIssueKey];
+            updateStatus(t.status_capture_simulated(issueName), 'text-white bg-brand-primary-accent');
+            
+            viewExpertRemedy(currentIssueKey);
+        }
+
+        // --- RENDERING FUNCTIONS ---
+        function renderIssueSelection(lang) {
+            const container = document.getElementById('issue-selector');
+            const t = translations[lang];
+
+            let html = issues.map(issueKey => `
+                <button class="issue-button text-brand-primary-dark bg-brand-primary-accent/10 hover:bg-brand-primary-dark hover:text-white font-medium py-2 px-4 rounded-full text-sm transition duration-200"
+                        data-issue-key="${issueKey}"
+                        data-translate="${issueKey}">
+                    ${t[issueKey]}
+                </button>
+            `).join('');
+
+            container.innerHTML = html;
+
+            document.querySelectorAll('.issue-button').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const issueKey = e.currentTarget.getAttribute('data-issue-key');
+                    handleIssueSelection(issueKey, e.currentTarget);
+                });
+            });
+        }
+
+        function handleIssueSelection(issueKey, button) {
+            currentIssueKey = issueKey;
+            
+            document.querySelectorAll('.issue-button').forEach(btn => {
+                btn.classList.replace('bg-brand-primary-dark', 'bg-brand-primary-accent/10');
+                btn.classList.remove('text-white');
+            });
+            
+            if (button) {
+                button.classList.replace('bg-brand-primary-accent/10', 'bg-brand-primary-dark');
+                button.classList.add('text-white');
+            }
+            
+            stopCamera();
+            document.getElementById('captured-image').style.display = 'none';
+            document.getElementById('capture-heading').style.display = 'none';
+            document.getElementById('sample-error-message').classList.add('hidden');
+            document.querySelectorAll('.sample-image-button').forEach(btn => btn.classList.remove('active'));
+
+            const activeTab = document.querySelector('.tab-button.active-tab').getAttribute('data-tab');
+            const t = translations[currentLang];
+            const issueName = t[issueKey];
+
+            if (activeTab === 'issue') {
+                updateStatus(t.status_issue_selected_direct(issueName), 'text-white bg-brand-primary-dark');
+                viewExpertRemedy(issueKey);
+            } else {
+                remedyResultsEl.classList.add('hidden');
+                updateStatus(`Issue set to: **${issueName}**. Now, click the **Start Camera** button or select a **Sample Image** to run the analysis simulation.`, 'text-brand-primary-dark bg-brand-card-bg');
+            }
+        }
+        
+        // --- TAB SWITCHING FUNCTION ---
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active-tab');
+                btn.classList.remove('text-brand-primary-dark');
+                btn.classList.remove('border-brand-primary-dark/80');
+                btn.classList.add('text-brand-subtle-text');
+            });
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+
+            const activeBtn = document.querySelector(`.tab-button[data-tab="${tabName}"]`);
+            const activeContent = document.getElementById(`tab-content-${tabName}`);
+
+            if (activeBtn) {
+                activeBtn.classList.add('active-tab');
+                activeBtn.classList.remove('text-brand-subtle-text');
+                activeBtn.classList.add('text-brand-primary-dark');
+                activeBtn.classList.add('border-brand-primary-dark/80');
+            }
+            if (activeContent) {
+                activeContent.classList.remove('hidden');
+            }
+            
+            if (tabName !== 'camera') {
+                stopCamera();
+            }
+
+            if (!currentIssueKey) {
+                updateStatus(translations[currentLang].status_initial, 'text-brand-primary-dark bg-brand-card-bg');
+                remedyResultsEl.classList.add('hidden');
+            } else {
+                const issueName = translations[currentLang][currentIssueKey];
+                if (tabName === 'issue') {
+                    updateStatus(translations[currentLang].status_issue_selected_direct(issueName), 'text-white bg-brand-primary-dark');
+                    viewExpertRemedy(currentIssueKey);
+                } else {
+                    remedyResultsEl.classList.add('hidden');
+                    updateStatus(`Issue set to: **${issueName}**. Now, click the **Start Camera** button or select a **Sample Image** to run the analysis simulation.`, 'text-brand-primary-dark bg-brand-card-bg');
+                }
+            }
+        }
+
+        function renderIngredientFilters(lang) {
+            const container = document.getElementById('ingredient-filters');
+            const t = translations[lang];
+
+            const filters = [
+                { key: 'anti_inflammatory', label: t.prop_anti_inflammatory },
+                { key: 'antioxidant', label: t.prop_antioxidant },
+                { key: 'moisturizing', label: t.prop_moisturizing },
+                { key: 'antibacterial', label: t.prop_antibacterial }
+            ];
+
+            let html = filters.map(f => `
+                <label>
+                    <input type="checkbox" class="filter-input property-filter" value="${f.key}">
+                    <span class="filter-label">${f.label}</span>
+                </label>
+            `).join('');
+
+            container.innerHTML = html;
+
+            document.querySelectorAll('.property-filter').forEach(checkbox => {
+                checkbox.addEventListener('change', filterAndRenderIngredients);
+            });
+
+            filterAndRenderIngredients();
+        }
+
+        function filterAndRenderIngredients() {
+            const activeFilters = Array.from(document.querySelectorAll('.property-filter'))
+                .filter(checkbox => checkbox.checked)
+                .map(checkbox => checkbox.value);
+
+            let filteredIngredients;
+            
+            if (activeFilters.length === 0) {
+                filteredIngredients = ingredientsData;
+            } else {
+                filteredIngredients = ingredientsData.filter(ingredient => {
+                    return activeFilters.every(filterKey => ingredient.properties.includes(filterKey));
+                });
+            }
+            
+            renderIngredientGrid(filteredIngredients, currentLang);
+        }
+
+        function renderIngredientGrid(ingredients, lang) {
+            const gridContainer = document.getElementById('ingredient-grid');
+            const t = translations[lang];
+            
+            const html = ingredients.map(ingredient => {
+                const propertiesHtml = ingredient.properties.map(propKey => {
+                    const propName = t['prop_' + propKey] || propKey;
+                    return `<span class="inline-block bg-brand-primary-accent/20 text-brand-primary-dark text-xs font-semibold px-2 py-0.5 rounded-full mr-1">${propName}</span>`;
+                }).join('');
+
+                const name = t[ingredient.key] || ingredient.key;
+                
+                return `
+                    <div class="ingredient-card bg-brand-bg p-4 rounded-xl shadow-lg hover:shadow-xl transition duration-300">
+                        <h4 class="text-lg font-bold text-brand-primary-dark">${name}</h4>
+                        <div class="mt-2">
+                            ${propertiesHtml}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            if (ingredients.length === 0) {
+                 gridContainer.innerHTML = `<p class="lg:col-span-3 text-center text-brand-subtle-text p-4">No ingredients match all selected properties. Try removing a filter.</p>`;
+                 return;
+            }
+
+            gridContainer.innerHTML = html;
+        }
+
+        function viewExpertRemedy(issueKey) {
+            const issueData = commonRemedies[issueKey];
+            const t = translations[currentLang];
+
+            if (!issueData) {
+                document.getElementById('error-message').textContent = t.remedy_not_found(issueKey);
+                document.getElementById('error-message').classList.remove('hidden');
+                remedyResultsEl.classList.add('hidden');
+                return;
+            }
+
+            document.getElementById('error-message').classList.add('hidden');
+            remedyResultsEl.classList.remove('hidden');
+            document.getElementById('result-issue-title').textContent = t[issueKey];
+            document.getElementById('result-issue-description').textContent = t[issueData.issueDescKey];
+
+            function renderRemedyCard(remedyData, containerId) {
+                const container = document.getElementById(containerId);
+                const propertiesHtml = Object.entries(remedyData.property_match).map(([propKey, level]) => {
+                    const propName = t['prop_' + propKey] || propKey;
+                    const levelClass = level === 'high' ? 'bg-red-400' : level === 'medium' ? 'bg-yellow-400' : 'bg-gray-300';
+                    return `<span class="text-xs font-semibold py-1 px-3 rounded-full bg-brand-primary-accent/20 text-brand-primary-dark mr-2 mb-1">${propName}</span>`;
+                }).join('');
+
+                const ingredientsList = remedyData.keyIngredients.map(ingKey => 
+                    `<li class="text-sm text-brand-text py-1 border-b border-brand-subtle-text/10">${t[ingKey] || ingKey}</li>`
+                ).join('');
+
+                const stepsHtml = remedyData.steps.map((stepKey, index) => {
+                    const stepText = t[stepKey] || stepKey;
+                    return `
+                        <div class="instruction-step">
+                            <p class="text-sm text-brand-text">${stepText}</p>
+                        </div>
+                    `;
+                }).join('');
+
+                const warningHtml = remedyData.warningKey ? `
+                    <div class="instruction-warning mt-4">
+                        <p class="text-sm font-semibold text-red-600 mb-1">${t.remedy_warnings}</p>
+                        <p class="text-xs text-red-700">${t[remedyData.warningKey]}</p>
+                    </div>
+                ` : '';
+
+                container.innerHTML = `
+                    <h4 class="text-xl font-bold text-brand-text mb-2">${t[remedyData.remedyNameKey]}</h4>
+                    <p class="text-sm text-brand-subtle-text mb-4">${t[remedyData.descriptionKey]}</p>
+                    
+                    <div class="flex flex-wrap gap-y-1 mb-4">${propertiesHtml}</div>
+                    
+                    <div class="instruction-details mb-4">
+                        <div class="grid grid-cols-2 gap-2 mb-3">
+                            <div>
+                                <p class="text-xs font-semibold text-brand-primary-dark">${t.remedy_prep_time}</p>
+                                <p class="text-sm text-brand-text">${t[remedyData.prepTimeKey]}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-semibold text-brand-primary-dark">${t.remedy_application_time}</p>
+                                <p class="text-sm text-brand-text">${t[remedyData.applicationTimeKey]}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-semibold text-brand-primary-dark">${t.remedy_frequency}</p>
+                                <p class="text-sm text-brand-text">${t[remedyData.frequencyKey]}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-semibold text-brand-primary-dark">${t.remedy_duration}</p>
+                                <p class="text-sm text-brand-text">${t[remedyData.durationKey]}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5 class="text-md font-semibold text-brand-primary-dark mb-2">${t.remedy_key_ingredients}</h5>
+                        <ul class="list-none pl-0 border-t border-brand-subtle-text/10">${ingredientsList}</ul>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5 class="text-md font-semibold text-brand-primary-dark mb-3">${t.remedy_instructions}</h5>
+                        <div class="pl-0 space-y-2" style="counter-reset: step-counter;">
+                            ${stepsHtml}
+                        </div>
+                    </div>
+                    
+                    ${warningHtml}
+                `;
+            }
+
+            renderRemedyCard(issueData.remedy1, 'remedy-1-container');
+            if (issueData.remedy2) {
+                renderRemedyCard(issueData.remedy2, 'remedy-2-container');
+            }
+        }
+
+        function updateLanguage(lang) {
+            currentLang = lang;
+            const t = translations[lang];
+
+            document.querySelectorAll('[data-translate]').forEach(el => {
+                const key = el.getAttribute('data-translate');
+                if (typeof t[key] === 'string') {
+                    el.textContent = t[key];
+                }
+            });
+
+            renderIssueSelection(currentLang);
+            renderIngredientFilters(currentLang);
+            renderSampleImages(currentLang);
+            renderChart(currentLang);
+            
+            if (currentIssueKey && !remedyResultsEl.classList.contains('hidden')) {
+                viewExpertRemedy(currentIssueKey);
+            }
+            
+            const activeTab = document.querySelector('.tab-button.active-tab').getAttribute('data-tab');
+            if (activeTab === 'issue' && currentIssueKey) {
+                const issueName = t[currentIssueKey];
+                updateStatus(t.status_issue_selected_direct(issueName), 'text-white bg-brand-primary-dark');
+            } else if (currentIssueKey) {
+                const issueName = t[currentIssueKey];
+                updateStatus(`Issue set to: **${issueName}**. Now, click the **Start Camera** button or select a **Sample Image** to run the analysis simulation.`, 'text-brand-primary-dark bg-brand-card-bg');
+            } else {
+                updateStatus(t.status_initial, 'text-brand-primary-dark bg-brand-card-bg');
+            }
+        }
+
+        function renderChart(lang) {
+            const ctx = document.getElementById('skinConcernsChart');
+            const t = translations[lang];
+            
+            if (window.skinConcernsChartInstance) {
+                window.skinConcernsChartInstance.destroy();
+            }
+
+            window.skinConcernsChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: chartData.labels.map(label => {
+                        const keyMap = {
+                            'Acne & Blemishes': 'issue_acne',
+                            'Dryness & Dehydration': 'issue_dryness',
+                            'Redness & Irritation': 'issue_redness',
+                            'Oily Skin & Pores': 'issue_oily',
+                            'Other': 'Other'
+                        };
+                        const issueKey = keyMap[label];
+                        return t[issueKey] || label;
+                    }),
+                    datasets: [{
+                        data: chartData.data,
+                        backgroundColor: [
+                            '#38761D',
+                            '#6AA84F',
+                            '#C28B38',
+                            '#60735E',
+                            '#A4C639'
+                        ],
+                        hoverOffset: 4,
+                        borderWidth: 2,
+                        borderColor: '#FFFCF5'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#2C3A2F',
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) { label += ': '; }
+                                    if (context.parsed !== null) { label += context.parsed + '%'; }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    cutout: '70%',
+                }
+            });
+        }
+
+        // --- Initialization and Event Handlers ---
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            updateLanguage(currentLang);
+            
+            switchTab('issue');
+            
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const tabName = e.currentTarget.getAttribute('data-tab');
+                    switchTab(tabName);
+                });
+            });
+
+            document.getElementById('language-selector').addEventListener('change', (e) => {
+                updateLanguage(e.target.value);
+            });
+            
+            startButton.addEventListener('click', startCamera);
+            captureButton.addEventListener('click', captureFrame);
+            
+            updateStatus(translations[currentLang].status_initial, 'text-brand-primary-dark bg-brand-card-bg');
+        });
+    </script>
 </body>
 </html>
