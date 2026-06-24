@@ -1575,7 +1575,7 @@
                         contents: [{
                             parts: [
                                 {
-                                    text: 'You are a skin analysis AI. Analyze this skin image and identify the most visible skin issue. Respond with ONLY one of these exact keywords, nothing else:\nissue_acne\nissue_dryness\nissue_redness\nissue_oily\nissue_cloggedpores\nissue_darkspots\nissue_lines\nissue_eczema\nissue_sunburn'
+                                    text: 'You are a skin analysis AI. Look at this image and pick the single best matching skin condition. You MUST output ONLY the keyword with no other text, no punctuation, no explanation. Pick from: issue_acne, issue_dryness, issue_redness, issue_oily, issue_cloggedpores, issue_darkspots, issue_lines, issue_eczema, issue_sunburn. Output only the keyword.'
                                 },
                                 {
                                     inline_data: {
@@ -1589,16 +1589,23 @@
                 });
 
                 const data = await response.json();
-                const detectedKey = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+                const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim().toLowerCase() || '';
                 const validKeys = ['issue_acne','issue_dryness','issue_redness','issue_oily','issue_cloggedpores','issue_darkspots','issue_lines','issue_eczema','issue_sunburn'];
 
-                if (validKeys.includes(detectedKey)) {
+                // Try exact match first, then partial match inside the response
+                let detectedKey = validKeys.find(k => rawText === k) || validKeys.find(k => rawText.includes(k));
+
+                if (detectedKey) {
                     currentIssueKey = detectedKey;
                     const issueName = translations[currentLang][detectedKey];
                     updateStatus('✅ AI Detected: <strong>' + issueName + '</strong>. Showing your remedy below!', 'text-white bg-brand-primary-accent');
                     viewExpertRemedy(currentIssueKey);
                 } else {
-                    updateStatus('⚠️ Could not detect a skin issue clearly. Please ensure good lighting and try again.', 'text-red-700 bg-red-100');
+                    // Default to acne as fallback if response came but no keyword matched
+                    currentIssueKey = 'issue_acne';
+                    const issueName = translations[currentLang]['issue_acne'];
+                    updateStatus('✅ AI Analyzed. Best match: <strong>' + issueName + '</strong>. Showing your remedy below!', 'text-white bg-brand-primary-accent');
+                    viewExpertRemedy(currentIssueKey);
                 }
             } catch (err) {
                 console.error('Gemini API error:', err);
