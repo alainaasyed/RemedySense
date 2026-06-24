@@ -1508,11 +1508,6 @@
         }
 
         function startCamera() {
-            if (!currentIssueKey) {
-                updateStatus(translations[currentLang].status_error_no_issue_selected, 'text-red-700 bg-red-100');
-                return;
-            }
-
             remedyResultsEl.classList.add('hidden');
             document.getElementById('captured-image').style.display = 'none';
             document.getElementById('capture-heading').style.display = 'none';
@@ -1530,7 +1525,6 @@
                     video.srcObject = stream;
                     video.play();
                     captureButton.disabled = false;
-                    const issueName = translations[currentLang][currentIssueKey];
                     updateStatus(translations[currentLang].status_camera_active(), 'text-brand-primary-dark bg-brand-card-bg');
                 })
                 .catch(err => {
