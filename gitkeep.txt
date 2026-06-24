@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>RemedySense — AI-powered Natural Remedy Recommender</title>
+  <style>
+    body {font-family: Arial, sans-serif; background: #071025; color: #e6eef6; padding: 20px;}
+    .card {background: #0b1220; padding: 20px; border-radius: 12px; margin-bottom: 20px;}
+    a {color: #6ee7b7; text-decoration: none;}
+    .btn {padding: 10px 14px; border-radius: 10px; background: #6ee7b7; color: #021018; display: inline-block; margin: 5px 0;}
+  </style>
+</head>
+<body>
+
+  <h1>RemedySense</h1>
+  <p>An AI system that analyzes skin issues and recommends natural remedies.</p>
+
+  <div class="card">
+    <h2>Features</h2>
+    <ul>
+      <li>Image Analyzer (CNN models)</li>
+      <li>Personalized Remedies</li>
+      <li>Ingredient Details</li>
+    </ul>
+  </div>
+
+  <div class="card" id="demo">
+    <h2>Live Demo</h2>
+    <p>This will embed your AI demo once you have a hosted URL.</p>
+    <iframe src="YOUR_DEMO_URL_HERE" width="100%" height="400px"></iframe>
+  </div>
+
+  <div class="card">
+    <h2>Project Report</h2>
+    <p>Download PDF: <a href="assets/RemedySense_Report.pdf">RemedySense_Report.pdf</a></p>
+  </div>
+
+  <div class="card" id="contact">
+    <h2>Contact</h2>
+    <p>Email: <a href="mailto:your.email@example.com">your.email@example.com</a></p>
+    <p>GitHub: <a href="https://github.com/YOUR_USERNAME/RemedySense">Your Repo</a></p>
+  </div>
+
+</body>
+</html>
